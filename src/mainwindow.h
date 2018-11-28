@@ -22,6 +22,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMimeData>
 
 #include "filefactory.h"
 #include "updater.h"

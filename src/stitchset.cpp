@@ -627,7 +627,7 @@ void StitchSet::reset()
 {
     if(!isMasterSet)
         return;
-    
+    QAbstractItemModel::beginResetModel();
     QFile::remove(stitchSetFileName);
 
     clearStitches();
@@ -636,7 +636,8 @@ void StitchSet::reset()
     foreach(Stitch* s, mStitches)
         s->isBuiltIn = true;
 
-    QAbstractItemModel::reset();
+    //QAbstractItemModel::reset();
+    QAbstractItemModel::endResetModel();
 }
 
 void StitchSet::reloadStitchIcons()

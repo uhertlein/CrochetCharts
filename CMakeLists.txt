@@ -46,9 +46,19 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/version.cpp.in
                 ${CMAKE_CURRENT_BINARY_DIR}/version.cpp)
 set(crochet_version "${CMAKE_CURRENT_BINARY_DIR}/version.cpp")
 
-find_package(Qt4 REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5Network REQUIRED)
+find_package(Qt5OpenGL REQUIRED)
+find_package(Qt5Svg REQUIRED)
+find_package(Qt5PrintSupport REQUIRED)
 
-add_definitions(${QT_DEFINITIONS})
+add_definitions(${Qt5Widgets_DEFINITIONS})
+add_definitions(${Qt5Gui_DEFINITIONS})
+add_definitions(${Qt5Network_DEFINITIONS})
+add_definitions(${Qt5OpenGL_DEFINITIONS})
+add_definitions(${Qt5Svg_DEFINITIONS})
+add_definitions(${Qt5PrintSupport_DEFINITIONS})
 
 option(UNIT_TESTING  "Build the test libraries for this software" OFF)
 option(DOCS "Create docbook documentation" OFF)
@@ -65,17 +75,13 @@ message(STATUS "Build flags: ${CMAKE_CXX_FLAGS}")
 message(STATUS "Linker flags: ${CMAKE_EXE_LINKER_FLAGS}")
 message("-------------------------------------------------------")
 
-include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${Qt5Widgets_INCLUDES})
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 #More info see: http://cmake.org/cmake/help/cmake2.6docs.html#module:FindQt4
 if(WIN32)
     set(QT_USE_QTMAIN true)
 endif()
-
-set(QT_USE_QTSVG true)
-#set(QT_USE_QTOPENGL true)
-set(QT_USE_QTNETWORK true)
-include(${QT_USE_FILE})
 
 #QT4_CREATE_TRANSLATION( qm_files directories ... sources ... ts_files ... OPTIONS ...)
 #QT4_ADD_TRANSLATION( qm_files ts_files ... )

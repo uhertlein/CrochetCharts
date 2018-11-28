@@ -25,7 +25,7 @@
 #include "debug.h"
 
 ItemGroup::ItemGroup(QGraphicsItem *parent, QGraphicsScene *scene)
-    : QGraphicsItemGroup( parent, scene),
+    : QGraphicsItemGroup( parent),
     mScale(QPointF(1.0, 1.0))
 {
     setTransform(QTransform(1,0,0,0,1,0,0,0,1));

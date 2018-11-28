@@ -22,6 +22,7 @@
 #define SCENE_H
 
 #include <QGraphicsScene>
+#include <QMimeData>
 
 #include "cell.h"
 #include "ChartImage.h"

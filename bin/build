@@ -59,7 +59,7 @@ function init_variables {
     QMAKE_VER=`$QMAKE --version | grep "Using Qt version" | awk '{ print $4 }'`
 
     if [[ $QMAKE_VER =~ 5.* ]]; then
-        QMAKE=`which qmake-qt4`
+        QMAKE=`which qmake-qt5`
     fi
 
     CMAKE_FLAGS="$CMAKE_FLAGS -DUNIT_TESTING=${BUILD_TESTS}"

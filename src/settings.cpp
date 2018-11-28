@@ -87,7 +87,7 @@ void Settings::setupValueList() {
     mValueList["email"] = QVariant("");
     mValueList["serialNumber"] = QVariant("");
 
-    QString userDocs = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+    QString userDocs = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
     
     //general application options
     mValueList["checkForUpdates"] = QVariant(true);
@@ -162,7 +162,8 @@ void Settings::setRecentFiles(QStringList files)
 
 QString Settings::userSettingsFolder()
 {
-    QString folder = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    QString folder = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
+        + "/data/organization/application";
     if(!QFileInfo(folder).exists())
         QDir(folder).mkpath(folder);
     return folder + "/";
