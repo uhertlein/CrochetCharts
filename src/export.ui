@@ -610,10 +610,6 @@
        </widget>
       </item>
      </layout>
-     <zorder>gridLayoutWidget</zorder>
-     <zorder>gridLayoutWidget</zorder>
-     <zorder>headerEdit</zorder>
-     <zorder>headerEdit</zorder>
      <zorder>footerEdit</zorder>
      <zorder>label_3</zorder>
      <zorder>label_5</zorder>

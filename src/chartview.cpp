@@ -90,18 +90,12 @@ ChartView::mouseMoveEvent(QMouseEvent* event)
         verticalScrollBar()->setValue(verticalScrollBar()->value() + deltaY);
 
         bool isHorizLimit = false;
-        isHorizLimit = (horizontalScrollBar()->value() == horizontalScrollBar()->minimum())
-                           ? true
-                           : isHorizLimit;
-        isHorizLimit = (horizontalScrollBar()->value() == horizontalScrollBar()->maximum())
-                           ? true
-                           : isHorizLimit;
+        isHorizLimit |= (horizontalScrollBar()->value() == horizontalScrollBar()->minimum());
+        isHorizLimit |= (horizontalScrollBar()->value() == horizontalScrollBar()->maximum());
 
         bool isVertLimit = false;
-        isVertLimit
-            = (verticalScrollBar()->value() == verticalScrollBar()->minimum()) ? true : isVertLimit;
-        isVertLimit
-            = (verticalScrollBar()->value() == verticalScrollBar()->maximum()) ? true : isVertLimit;
+        isVertLimit |= (verticalScrollBar()->value() == verticalScrollBar()->minimum());
+        isVertLimit |= (verticalScrollBar()->value() == verticalScrollBar()->maximum());
 
         if ((deltaX != 0 && !isHorizLimit) || (deltaY != 0 && !isVertLimit))
             emit scrollBarChanged(deltaX, deltaY);
@@ -119,7 +113,7 @@ ChartView::mouseReleaseEvent(QMouseEvent* event)
 void
 ChartView::wheelEvent(QWheelEvent* event)
 {
-    if (event->modifiers() && Qt::CTRL)
+    if (event->modifiers() & Qt::CTRL)
         zoom(event->delta());
     else
         QGraphicsView::wheelEvent(event);
