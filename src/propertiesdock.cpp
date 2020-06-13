@@ -21,23 +21,22 @@
 #include "propertiesdock.h"
 #include "ui_propertiesdock.h"
 
-#include "settings.h"
-
-#include "cell.h"
-#include "itemgroup.h"
-#include "indicator.h"
 #include "ChartImage.h"
-#include <QGraphicsEllipseItem>
-
 #include "ChartItemTools.h"
-#include "crochettab.h"
-#include "stitchlibrary.h"
-#include "stitch.h"
+#include "cell.h"
 #include "colorlistwidget.h"
-#include <qcolordialog.h>
-#include <QFileDialog>
-
+#include "crochettab.h"
+#include "indicator.h"
+#include "itemgroup.h"
 #include "propertiesdata.h"
+#include "settings.h"
+#include "stitch.h"
+#include "stitchlibrary.h"
+
+#include <QFileDialog>
+#include <QGraphicsEllipseItem>
+#include <qcolordialog.h>
+
 #include <cmath>
 
 PropertiesDock::PropertiesDock(QTabWidget* tabWidget, QWidget* parent)
@@ -45,7 +44,7 @@ PropertiesDock::PropertiesDock(QTabWidget* tabWidget, QWidget* parent)
     , closing(false)
     , ui(new Ui::PropertiesDock)
     , mTabWidget(tabWidget)
-    , mScene(0)
+    , mScene(nullptr)
 {
     ui->setupUi(this);
     setVisible(false);
@@ -310,15 +309,15 @@ void
 PropertiesDock::updateDialogUi()
 {
     clearUi();
-    if (closing)
+    setEnabled(mScene != nullptr);
+
+    if (closing || !mScene)
         return;
 
-    int count = mScene->selectedItems().count();
-
+    const auto count = mScene->selectedItems().count();
     if (count == 0)
     {
         showUi(PropertiesDock::SceneUi);
-        return;
     }
     else if (count >= 1)
     {
@@ -602,7 +601,6 @@ void
 PropertiesDock::showCanvas()
 {
     ui->chartGroup->show();
-
     ui->showChartCenter->setChecked(mScene->showChartCenter());
 
     QString type = mScene->guidelines().type();

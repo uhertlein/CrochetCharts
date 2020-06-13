@@ -121,10 +121,10 @@ private:
     PropertiesData selectionProperties();
 
 private:
-    Ui::PropertiesDock* ui;
+    Ui::PropertiesDock* ui = nullptr;
 
-    QTabWidget* mTabWidget;
-    Scene* mScene;
+    QTabWidget* mTabWidget = nullptr;
+    Scene* mScene = nullptr;
     Guidelines mGuidelines;
 };
 
