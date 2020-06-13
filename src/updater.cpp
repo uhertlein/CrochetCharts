@@ -22,18 +22,15 @@
 
 #include <QtNetwork/QNetworkRequest>
 
+#include <QApplication>
 #include <QDesktopServices>
-
 #include <QFile>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QProcess>
 #include <QPushButton>
 
-#include <QProcess>
-
 #include "appinfo.h"
-#include <QApplication>
-
 #include "debug.h"
 #include "settings.h"
 
@@ -58,21 +55,22 @@ Updater::Updater(QWidget* parent)
     arch = "i386";
 #endif
 
-    QString sn = Settings::inst()->value("serialNumber").toString();
     // software, version, os, serial number, arch
+    const auto serialNumber = Settings::inst()->value("serialNumber").toString();
     mUrl = QUrl(QString(url)
                     .arg(AppInfo::inst()->appName.toLower())
                     .arg(AppInfo::inst()->appVersion)
                     .arg(os)
-                    .arg(sn)
+                    .arg(serialNumber)
                     .arg(arch));
 
-    mProgDialog = new QProgressDialog(this);
+    mProgDialog = new QProgressDialog(tr("Checking for updates..."), tr("Cancel"),
+                                      /*minimum*/ 0, /*maximum*/ 100, this);
+    mProgDialog->setAutoClose(false);
+    mProgDialog->setCancelButtonText(tr("Close"));
 }
 
-Updater::~Updater()
-{
-}
+Updater::~Updater() = default;
 
 void
 Updater::checkForUpdates(bool silent)
@@ -90,6 +88,8 @@ Updater::startRequest()
     reply = qnam.get(QNetworkRequest(mUrl));
     connect(reply, SIGNAL(finished()), this, SLOT(httpFinished()));
     connect(reply, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
+
+    mProgDialog->setValue(0);
 }
 
 void
@@ -97,58 +97,65 @@ Updater::httpFinished()
 {
     if (httpRequestAborted)
     {
-        reply->deleteLater();
-        return;
-    }
-
-    QString data = QString(mData);
-
-    if (reply->error())
-    {
-        // TODO: add a warning.
-        qWarning() << "Failed to connect to server.";
+        mProgDialog->setValue(mProgDialog->maximum());
+        mProgDialog->setLabelText(tr("Failed to get update metadata."));
     }
     else
     {
-        QStringList urls = data.split("::", QString::SkipEmptyParts);
-        if (urls.count() == 2)
+        const auto data = QString(mData);
+
+        if (reply->error())
         {
-            QMessageBox msgbox(this);
-            msgbox.setIcon(QMessageBox::Information);
-            msgbox.setText(tr("There is a new version of %1.").arg(AppInfo::inst()->appName));
-            msgbox.setInformativeText(tr("Would you like to download the new version?"));
-            msgbox.setDetailedText(urls.last());
-
-            QPushButton* downloadNow
-                = msgbox.addButton(tr("Download the new version"), QMessageBox::ActionRole);
-            QPushButton* remindLater
-                = msgbox.addButton(tr("Remind me later"), QMessageBox::RejectRole);
-
-            msgbox.exec();
-
-            if (msgbox.clickedButton() == remindLater)
-                return;
-
-            if (msgbox.clickedButton() == downloadNow)
-                downloadInstaller(QUrl(urls.first()));
+            mProgDialog->setValue(mProgDialog->maximum());
+            mProgDialog->setLabelText(tr("Failed to connect to server '%1'").arg(mUrl.host()));
         }
-        else if (!mSilent)
+        else
         {
-            QMessageBox::information(this, tr("No updates available"),
-                                     tr("There are no updates available for %1 at this time.")
-                                         .arg(AppInfo::inst()->appName),
-                                     QMessageBox::Ok);
+            mProgDialog->setValue(mProgDialog->maximum() - 5);
+            mProgDialog->setLabelText(tr("Parsing response..."));
+
+            const QStringList urls = data.split("::", QString::SkipEmptyParts);
+            if (urls.count() == 2)
+            {
+                QMessageBox msgbox(this);
+                msgbox.setIcon(QMessageBox::Information);
+                msgbox.setText(tr("There is a new version of %1.").arg(AppInfo::inst()->appName));
+                msgbox.setInformativeText(tr("Would you like to download the new version?"));
+                msgbox.setDetailedText(urls.last());
+
+                QPushButton* downloadNow
+                    = msgbox.addButton(tr("Download the new version"), QMessageBox::ActionRole);
+                QPushButton* remindLater
+                    = msgbox.addButton(tr("Remind me later"), QMessageBox::RejectRole);
+
+                msgbox.exec();
+
+                if (msgbox.clickedButton() == remindLater)
+                    return;
+
+                if (msgbox.clickedButton() == downloadNow)
+                    downloadInstaller(QUrl(urls.first()));
+            }
+            else
+            {
+                mProgDialog->setValue(mProgDialog->maximum());
+                mProgDialog->setLabelText(
+                    tr("No updates available for '%1'.").arg(AppInfo::inst()->appName));
+            }
         }
     }
 
     reply->deleteLater();
-    reply = 0;
+    reply = nullptr;
 }
 
 void
 Updater::httpReadyRead()
 {
-    mData.append(reply->readAll());
+    const auto response = reply->readAll();
+    mData.append(response);
+
+    mProgDialog->setValue(mProgDialog->value() + 5);
 }
 
 void
@@ -165,7 +172,7 @@ Updater::downloadInstaller(QUrl url)
                                      .arg(installer->fileName())
                                      .arg(installer->errorString()));
         delete installer;
-        installer = 0;
+        installer = nullptr;
         return;
     }
 
