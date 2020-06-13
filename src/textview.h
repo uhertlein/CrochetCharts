@@ -31,7 +31,7 @@ class TextView : public QObject
     Q_OBJECT
 
 public:
-    TextView(QWidget* parent = 0, Scene* scene = 0);
+    TextView(QWidget* parent = nullptr, Scene* scene = nullptr);
     ~TextView();
 
     void

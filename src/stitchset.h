@@ -49,7 +49,7 @@ public:
         Version_1_0_0 = 100
     };
 
-    StitchSet(QObject* parent = 0, bool isMasterSet = false);
+    StitchSet(QObject* parent = nullptr, bool isMasterSet = false);
     ~StitchSet();
 
     /**

@@ -39,7 +39,7 @@ public:
     ExportUi(QTabWidget* tabWidget,
              QMap<QString, int>* stitches,
              QMap<QString, QMap<QString, qint64> >* colors,
-             QWidget* parent = 0);
+             QWidget* parent = nullptr);
 
     ~ExportUi();
 

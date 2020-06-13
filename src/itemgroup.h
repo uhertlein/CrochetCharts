@@ -31,7 +31,7 @@ public:
         Type = UserType + 10
     };
 
-    ItemGroup(QGraphicsItem* parent = 0, QGraphicsScene* scene = 0);
+    ItemGroup(QGraphicsItem* parent = nullptr, QGraphicsScene* scene = nullptr);
     ~ItemGroup();
 
     int
@@ -40,7 +40,7 @@ public:
         return ItemGroup::Type;
     }
     QRectF boundingRect() const;
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr);
 
     bool isGrouped();
 

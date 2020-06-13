@@ -41,12 +41,12 @@ ExportUi::ExportUi(QTabWidget* tab,
                    QWidget* parent)
     : QDialog(parent)
     , exportType("")
+    , selectionOnly(false)
     , scene(new QGraphicsScene(this))
     , ui(new Ui::ExportDialog)
     , mTabWidget(tab)
     , mStitches(stitches)
     , mColors(colors)
-    , selectionOnly(false)
 {
     ui->setupUi(this);
     ui->view->scale(.6, .6);

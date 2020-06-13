@@ -212,7 +212,7 @@ public:
         LineSelect,
     };
 
-    Scene(QObject* parent = 0);
+    Scene(QObject* parent = nullptr);
     ~Scene();
 
     // if you have the position in x, y use the overload function

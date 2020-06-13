@@ -38,11 +38,11 @@ public:
         Type = UserType + 1
     };
 
-    explicit Cell(QGraphicsItem* parent = 0);
+    explicit Cell(QGraphicsItem* parent = nullptr);
     ~Cell();
 
     QRectF boundingRect() const;
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr);
     int
     type() const
     {

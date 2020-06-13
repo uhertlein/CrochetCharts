@@ -33,7 +33,7 @@ class MirrorDock : public QDockWidget
     Q_OBJECT
 
 public:
-    explicit MirrorDock(QWidget* parent = 0);
+    explicit MirrorDock(QWidget* parent = nullptr);
     ~MirrorDock();
 
 signals:

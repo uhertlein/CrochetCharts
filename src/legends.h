@@ -39,7 +39,7 @@ class ColorLegend : public QGraphicsWidget
 {
     Q_OBJECT
 public:
-    ColorLegend(QMap<QString, QMap<QString, qint64> >* colors, QGraphicsItem* parent = 0);
+    ColorLegend(QMap<QString, QMap<QString, qint64> >* colors, QGraphicsItem* parent = nullptr);
     ~ColorLegend();
 
     bool showTitle;
@@ -50,7 +50,7 @@ public:
     QString sortBy;
 
 protected:
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr);
 
 private:
     QMap<QString, QMap<QString, qint64> >* mPatternColors;
@@ -61,7 +61,7 @@ class StitchLegend : public QGraphicsWidget
 {
     Q_OBJECT
 public:
-    StitchLegend(QMap<QString, int>* stitches, QGraphicsItem* parent = 0);
+    StitchLegend(QMap<QString, int>* stitches, QGraphicsItem* parent = nullptr);
     ~StitchLegend();
 
     bool showTitle;
@@ -71,7 +71,7 @@ public:
     int columnCount;
 
 protected:
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr);
 
 private:
     QMap<QString, int>* mPatternStitches;

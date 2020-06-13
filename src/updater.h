@@ -34,7 +34,7 @@ class Updater : public QWidget
 {
     Q_OBJECT
 public:
-    Updater(QWidget* parent = 0);
+    Updater(QWidget* parent = nullptr);
     ~Updater();
 
     void checkForUpdates(bool silent = false);

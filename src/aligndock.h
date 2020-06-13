@@ -33,7 +33,7 @@ class AlignDock : public QDockWidget
     Q_OBJECT
 
 public:
-    explicit AlignDock(QWidget* parent = 0);
+    explicit AlignDock(QWidget* parent = nullptr);
     ~AlignDock();
 
 signals:

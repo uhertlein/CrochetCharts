@@ -35,7 +35,7 @@ public:
         Id = 1100
     };
 
-    SetIndicatorText(Indicator* i, QString otext, QString ntext, QUndoCommand* parent = 0);
+    SetIndicatorText(Indicator* i, QString otext, QString ntext, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -51,7 +51,7 @@ public:
 private:
     QString oldText;
     QString newText;
-    Indicator* i;
+    Indicator* i = nullptr;
 };
 
 class SetCellStitch : public QUndoCommand
@@ -62,7 +62,7 @@ public:
         Id = 1110
     };
 
-    SetCellStitch(Cell* cell, QString newSt, QUndoCommand* parent = 0);
+    SetCellStitch(Cell* cell, QString newSt, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -78,7 +78,7 @@ public:
 private:
     QString oldStitch;
     QString newStitch;
-    Cell* c;
+    Cell* c = nullptr;
 };
 
 class SetChartZLayer : public QUndoCommand
@@ -88,7 +88,7 @@ public:
     {
         Id = 1120
     };
-    SetChartZLayer(ChartImage* ci, const QString& zlayer, QUndoCommand* parent = 0);
+    SetChartZLayer(ChartImage* ci, const QString& zlayer, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -104,7 +104,7 @@ public:
 private:
     QString newLayer;
     QString oldLayer;
-    ChartImage* ci;
+    ChartImage* ci = nullptr;
 };
 
 class SetChartImagePath : public QUndoCommand
@@ -114,7 +114,7 @@ public:
     {
         Id = 1130
     };
-    SetChartImagePath(ChartImage* ci, const QString& path, QUndoCommand* parent = 0);
+    SetChartImagePath(ChartImage* ci, const QString& path, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -130,7 +130,7 @@ public:
 private:
     QString newPath;
     QString oldPath;
-    ChartImage* ci;
+    ChartImage* ci = nullptr;
 };
 
 class SetCellBgColor : public QUndoCommand
@@ -141,7 +141,7 @@ public:
         Id = 1140
     };
 
-    SetCellBgColor(Cell* cell, QColor newCl, QUndoCommand* parent = 0);
+    SetCellBgColor(Cell* cell, QColor newCl, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -157,7 +157,7 @@ public:
 private:
     QColor oldColor;
     QColor newColor;
-    Cell* c;
+    Cell* c = nullptr;
 };
 
 class SetCellColor : public QUndoCommand
@@ -168,7 +168,7 @@ public:
         Id = 1150
     };
 
-    SetCellColor(Cell* cell, QColor newCl, QUndoCommand* parent = 0);
+    SetCellColor(Cell* cell, QColor newCl, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -184,7 +184,7 @@ public:
 private:
     QColor oldColor;
     QColor newColor;
-    Cell* c;
+    Cell* c = nullptr;
 };
 
 class SetItemRotation : public QUndoCommand
@@ -195,7 +195,7 @@ public:
         Id = 1160
     };
 
-    SetItemRotation(QGraphicsItem* item, qreal oldAngl, QPointF pivotPt, QUndoCommand* parent = 0);
+    SetItemRotation(QGraphicsItem* item, qreal oldAngl, QPointF pivotPt, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -209,7 +209,7 @@ public:
     static void setRotation(QGraphicsItem* item, qreal angle, QPointF pivot);
 
 private:
-    QGraphicsItem* i;
+    QGraphicsItem* i = nullptr;
     qreal oldAngle;
     qreal newAngle;
     QPointF pvtPt;
@@ -238,7 +238,7 @@ public:
     SetSelectionRotation(Scene* scene,
                          QList<QGraphicsItem*> itms,
                          qreal degrees,
-                         QUndoCommand* parent = 0);
+                         QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -259,7 +259,7 @@ private:
     qreal newAngle;
 
     QPointF pivotPoint;
-    Scene* s;
+    Scene* s = nullptr;
 };
 
 class SetItemCoordinates : public QUndoCommand
@@ -270,7 +270,7 @@ public:
         Id = 1180
     };
 
-    SetItemCoordinates(QGraphicsItem* item, QPointF oldPos, QUndoCommand* parent = 0);
+    SetItemCoordinates(QGraphicsItem* item, QPointF oldPos, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -286,7 +286,7 @@ public:
 private:
     QPointF oldCoord;
     QPointF newCoord;
-    QGraphicsItem* i;
+    QGraphicsItem* i = nullptr;
 };
 
 class SetItemScale : public QUndoCommand
@@ -297,7 +297,7 @@ public:
         Id = 1190
     };
 
-    SetItemScale(QGraphicsItem* item, QPointF oldScle, QPointF pivotPt, QUndoCommand* parent = 0);
+    SetItemScale(QGraphicsItem* item, QPointF oldScle, QPointF pivotPt, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -315,7 +315,7 @@ private:
     QPointF newScale;
     QPointF mPivot;
 
-    QGraphicsItem* i;
+    QGraphicsItem* i = nullptr;
 };
 
 class AddItem : public QUndoCommand
@@ -326,7 +326,7 @@ public:
         Id = 1200
     };
 
-    AddItem(Scene* scene, QGraphicsItem* item, QUndoCommand* parent = 0);
+    AddItem(Scene* scene, QGraphicsItem* item, QUndoCommand* parent = nullptr);
     ~AddItem();
     void redo();
     void undo();
@@ -340,8 +340,8 @@ public:
     static void add(Scene* scene, QGraphicsItem* item);
 
 private:
-    QGraphicsItem* i;
-    Scene* s;
+    QGraphicsItem* i = nullptr;
+    Scene* s = nullptr;
 };
 
 class RemoveItem : public QUndoCommand
@@ -352,7 +352,7 @@ public:
         Id = 1210
     };
 
-    RemoveItem(Scene* scene, QGraphicsItem* item, QUndoCommand* parent = 0);
+    RemoveItem(Scene* scene, QGraphicsItem* item, QUndoCommand* parent = nullptr);
 
     void redo();
     void undo();
@@ -366,10 +366,10 @@ public:
     static void remove(Scene* scene, QGraphicsItem* item);
 
 private:
-    QGraphicsItem* i;
+    QGraphicsItem* i = nullptr;
     QPointF position;
 
-    Scene* s;
+    Scene* s = nullptr;
 };
 
 class RemoveItems : public QUndoCommand
@@ -380,7 +380,7 @@ public:
         Id = 1220
     };
 
-    RemoveItems(Scene* scene, QList<QGraphicsItem*> items, QUndoCommand* parent = 0);
+    RemoveItems(Scene* scene, QList<QGraphicsItem*> items, QUndoCommand* parent = nullptr);
     ~RemoveItems();
 
     void redo();
@@ -394,9 +394,9 @@ public:
 
 private:
     QList<QGraphicsItem*> items;
-    QGraphicsItemGroup* removegroup;
+    QGraphicsItemGroup* removegroup = nullptr;
 
-    Scene* s;
+    Scene* s = nullptr;
 };
 
 class GroupItems : public QUndoCommand
@@ -407,7 +407,7 @@ public:
         Id = 1230
     };
 
-    GroupItems(Scene* scene, QList<QGraphicsItem*> itemList, QUndoCommand* parent = 0);
+    GroupItems(Scene* scene, QList<QGraphicsItem*> itemList, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -426,8 +426,8 @@ public:
 
 private:
     QList<QGraphicsItem*> items;
-    ItemGroup* g;
-    Scene* s;
+    ItemGroup* g = nullptr;
+    Scene* s = nullptr;
 };
 
 class UngroupItems : public QUndoCommand
@@ -438,7 +438,7 @@ public:
         Id = 1240
     };
 
-    UngroupItems(Scene* scene, ItemGroup* group, QUndoCommand* parent = 0);
+    UngroupItems(Scene* scene, ItemGroup* group, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -451,8 +451,8 @@ public:
 
 private:
     QList<QGraphicsItem*> items;
-    ItemGroup* g;
-    Scene* s;
+    ItemGroup* g = nullptr;
+    Scene* s = nullptr;
 };
 
 class AddLayer : public QUndoCommand
@@ -463,7 +463,7 @@ public:
         Id = 1250
     };
 
-    AddLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent = 0);
+    AddLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent = nullptr);
     ~AddLayer();
 
     void undo();
@@ -476,8 +476,8 @@ public:
     }
 
 private:
-    ChartLayer* mLayer;
-    Scene* s;
+    ChartLayer* mLayer = nullptr;
+    Scene* s = nullptr;
 };
 
 class RemoveLayer : public QUndoCommand
@@ -488,7 +488,7 @@ public:
         Id = 1260
     };
 
-    RemoveLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent = 0);
+    RemoveLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -500,8 +500,8 @@ public:
     }
 
 private:
-    ChartLayer* mLayer;
-    Scene* s;
+    ChartLayer* mLayer = nullptr;
+    Scene* s = nullptr;
 };
 
 class SetLayerStitch : public QUndoCommand
@@ -512,7 +512,7 @@ public:
         Id = 1270
     };
 
-    SetLayerStitch(Scene* scene, Cell* c, unsigned int layer, QUndoCommand* parent = 0);
+    SetLayerStitch(Scene* scene, Cell* cell, unsigned int layer, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -524,10 +524,10 @@ public:
     }
 
 private:
-    Scene* s;
-    Cell* c;
-    unsigned int mNew;
-    unsigned int mOld;
+    Scene* s = nullptr;
+    Cell* c = nullptr;
+    unsigned int mNew = 0;
+    unsigned int mOld = 0;
 };
 
 class SetLayerIndicator : public QUndoCommand
@@ -538,7 +538,7 @@ public:
         Id = 1280
     };
 
-    SetLayerIndicator(Scene* scene, Indicator* c, unsigned int layer, QUndoCommand* parent = 0);
+    SetLayerIndicator(Scene* scene, Indicator* cell, unsigned int layer, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -550,10 +550,10 @@ public:
     }
 
 private:
-    Scene* s;
-    Indicator* c;
-    unsigned int mNew;
-    unsigned int mOld;
+    Scene* s = nullptr;
+    Indicator* c = nullptr;
+    unsigned int mNew = 0;
+    unsigned int mOld = 0;
 };
 
 class SetLayerGroup : public QUndoCommand
@@ -564,7 +564,7 @@ public:
         Id = 1290
     };
 
-    SetLayerGroup(Scene* scene, ItemGroup* c, unsigned int layer, QUndoCommand* parent = 0);
+    SetLayerGroup(Scene* scene, ItemGroup* cell, unsigned int layer, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -576,10 +576,10 @@ public:
     }
 
 private:
-    Scene* s;
-    ItemGroup* c;
-    unsigned int mNew;
-    unsigned int mOld;
+    Scene* s = nullptr;
+    ItemGroup* c = nullptr;
+    unsigned int mNew = 0;
+    unsigned int mOld = 0;
 };
 
 class SetLayerImage : public QUndoCommand
@@ -590,7 +590,7 @@ public:
         Id = 1300
     };
 
-    SetLayerImage(Scene* scene, ChartImage* c, unsigned int layer, QUndoCommand* parent = 0);
+    SetLayerImage(Scene* scene, ChartImage* cell, unsigned int layer, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -602,10 +602,10 @@ public:
     }
 
 private:
-    Scene* s;
-    ChartImage* c;
-    unsigned int mNew;
-    unsigned int mOld;
+    Scene* s = nullptr;
+    ChartImage* c = nullptr;
+    unsigned int mNew = 0;
+    unsigned int mOld = 0;
 };
 
 #endif  // CROCHETCHARTCOMMANDS_H

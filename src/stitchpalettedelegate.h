@@ -27,7 +27,7 @@ class StitchPaletteDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
-    StitchPaletteDelegate(QWidget* parent = 0);
+    StitchPaletteDelegate(QWidget* parent = nullptr);
 
     void paint(QPainter* painter,
                const QStyleOptionViewItem& option,

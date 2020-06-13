@@ -43,7 +43,7 @@ public:
         Type = UserType + 15
     };
 
-    Indicator(QGraphicsItem* parent = 0, QGraphicsScene* scene = 0);
+    Indicator(QGraphicsItem* parent = nullptr, QGraphicsScene* scene = nullptr);
     ~Indicator();
 
     QRectF boundingRect() const;

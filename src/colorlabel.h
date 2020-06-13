@@ -27,7 +27,7 @@ class ColorLabel : public QLabel
 {
     Q_OBJECT
 public:
-    explicit ColorLabel(QWidget* parent = 0);
+    explicit ColorLabel(QWidget* parent = nullptr);
 
     void setColor(QColor c);
     void setText(const QString& text);

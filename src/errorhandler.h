@@ -34,6 +34,9 @@ errorHandler(QtMsgType type, const QMessageLogContext& /*context*/, const QStrin
         // fprintf(stderr, "\033[1;33mWarning\033[0m: %s\n", msg);
         qWarning(qPrintable(msg));
         break;
+    case QtInfoMsg:
+        qInfo(qPrintable(msg));
+        break;
     case QtCriticalMsg:
         // fprintf(stderr, "\033[31mCritical\033[0m: %s\n", msg);
         qCritical(qPrintable(msg));

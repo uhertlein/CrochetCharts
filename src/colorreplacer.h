@@ -33,7 +33,7 @@ class ColorReplacer : public QDialog
     Q_OBJECT
 
 public:
-    explicit ColorReplacer(QList<QString> colorList, QWidget* parent = 0);
+    explicit ColorReplacer(QList<QString> colorList, QWidget* parent = nullptr);
     ~ColorReplacer();
 
     QColor originalColor;

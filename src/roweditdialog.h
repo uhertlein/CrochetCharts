@@ -37,7 +37,7 @@ class RowEditDialog : public QWidget
 {
     Q_OBJECT
 public:
-    RowEditDialog(Scene* scene, TextView* textView, QWidget* parent = 0);
+    RowEditDialog(Scene* scene, TextView* textView, QWidget* parent = nullptr);
     ~RowEditDialog();
 
     void updateRowList();

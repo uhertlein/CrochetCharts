@@ -27,7 +27,7 @@ class ColorListWidget : public QListWidget
 {
     Q_OBJECT
 public:
-    explicit ColorListWidget(QWidget* parent = 0);
+    explicit ColorListWidget(QWidget* parent = nullptr);
 
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* e);

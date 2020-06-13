@@ -50,7 +50,7 @@ public:
         MixedUi = 100,
     };
 
-    PropertiesDock(QTabWidget* tabWidget, QWidget* parent = 0);
+    PropertiesDock(QTabWidget* tabWidget, QWidget* parent = nullptr);
     ~PropertiesDock();
 
     void loadProperties(Guidelines guidelines);

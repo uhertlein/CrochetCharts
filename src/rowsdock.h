@@ -34,7 +34,7 @@ class RowsDock : public QDockWidget
     Q_OBJECT
 
 public:
-    explicit RowsDock(QWidget* parent = 0);
+    explicit RowsDock(QWidget* parent = nullptr);
     ~RowsDock();
 
 signals:

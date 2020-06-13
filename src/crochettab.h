@@ -56,7 +56,7 @@ public:
                         QString defStitch,
                         QColor defFgColor,
                         QColor defBgColor,
-                        QWidget* parent = 0);
+                        QWidget* parent = nullptr);
     ~CrochetTab();
 
     void renderChart(QPainter* painter, QRectF rect = QRectF());

@@ -38,7 +38,7 @@ public:
     };
 
 public:
-    ChartView(QWidget* parent = 0);
+    ChartView(QWidget* parent = nullptr);
     ~ChartView();
 
     void zoomIn();

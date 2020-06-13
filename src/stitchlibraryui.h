@@ -36,7 +36,7 @@ class StitchLibraryUi : public QDialog
 {
     Q_OBJECT
 public:
-    explicit StitchLibraryUi(QWidget* parent = 0);
+    explicit StitchLibraryUi(QWidget* parent = nullptr);
     ~StitchLibraryUi();
 
 private slots:

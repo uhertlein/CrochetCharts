@@ -59,7 +59,7 @@ class MainWindow : public QMainWindow
     friend class File_v2;
 
 public:
-    explicit MainWindow(QStringList fileNames = QStringList(), QWidget* parent = 0);
+    explicit MainWindow(QStringList fileNames = QStringList(), QWidget* parent = nullptr);
     ~MainWindow();
 
     void dropEvent(QDropEvent* e);

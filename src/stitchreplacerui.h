@@ -35,7 +35,7 @@ class StitchReplacerUi : public QDialog
     Q_OBJECT
 
 public:
-    explicit StitchReplacerUi(QString stitch, QList<QString> patternStitches, QWidget* parent = 0);
+    explicit StitchReplacerUi(QString stitch, QList<QString> patternStitches, QWidget* parent = nullptr);
     ~StitchReplacerUi();
 
     QString original;

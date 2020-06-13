@@ -36,7 +36,7 @@ class ResizeUI : public QDockWidget
     Q_OBJECT
 
 public:
-    ResizeUI(QTabWidget* TabWidget, QWidget* parent = 0);
+    ResizeUI(QTabWidget* TabWidget, QWidget* parent = nullptr);
     ~ResizeUI();
 
 signals:

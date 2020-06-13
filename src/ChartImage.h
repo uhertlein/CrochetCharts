@@ -11,8 +11,8 @@ class ChartImage : public QGraphicsObject
 {
     Q_OBJECT
 public:
-    ChartImage(const QString& filename, QGraphicsItem* parent = 0);
-    ChartImage(QDataStream& stream, QGraphicsItem* parent = 0);
+    ChartImage(const QString& filename, QGraphicsItem* parent = nullptr);
+    ChartImage(QDataStream& stream, QGraphicsItem* parent = nullptr);
     ~ChartImage();
 
     enum
@@ -21,7 +21,7 @@ public:
     };
 
     QRectF boundingRect() const;
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr);
     int
     type() const
     {

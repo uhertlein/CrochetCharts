@@ -46,7 +46,7 @@ public:
         WrongSide = 4
     };
 
-    Stitch(QObject* parent = 0);
+    Stitch(QObject* parent = nullptr);
     ~Stitch();
 
     QString

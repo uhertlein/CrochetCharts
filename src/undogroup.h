@@ -27,7 +27,7 @@ class UndoGroup : public QUndoGroup
 {
     Q_OBJECT
 public:
-    UndoGroup(QObject* parent = 0);
+    UndoGroup(QObject* parent = nullptr);
 
     void addStack(QUndoStack* stack);
 

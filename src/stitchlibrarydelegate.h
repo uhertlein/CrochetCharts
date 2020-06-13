@@ -32,7 +32,7 @@ class IconComboBox : public QComboBox
 {
     Q_OBJECT
 public:
-    IconComboBox(QWidget* parent = 0)
+    IconComboBox(QWidget* parent = nullptr)
         : QComboBox(parent)
     {
     }
@@ -64,7 +64,7 @@ class StitchLibraryDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
-    StitchLibraryDelegate(QWidget* parent = 0);
+    StitchLibraryDelegate(QWidget* parent = nullptr);
 
     void paint(QPainter* painter,
                const QStyleOptionViewItem& option,

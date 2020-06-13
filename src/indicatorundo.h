@@ -38,7 +38,7 @@ public:
         Id = 2200
     };
 
-    AddIndicator(Scene* s, QPointF pos, QUndoCommand* parent = 0);
+    AddIndicator(Scene* s, QPointF pos, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
@@ -64,7 +64,7 @@ public:
         Id = 2210
     };
 
-    RemoveIndicator(Scene* s, Indicator* i, QUndoCommand* parent = 0);
+    RemoveIndicator(Scene* s, Indicator* i, QUndoCommand* parent = nullptr);
 
     void redo();
     void undo();
@@ -90,7 +90,7 @@ public:
         Id = 2230
     };
 
-    ChangeTextIndicator(Scene* s, Indicator* item, QString text, QUndoCommand* parent = 0);
+    ChangeTextIndicator(Scene* s, Indicator* item, QString text, QUndoCommand* parent = nullptr);
 
     void redo();
     void undo();

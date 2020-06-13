@@ -24,8 +24,8 @@
 
 ResizeUI::ResizeUI(QTabWidget* tabWidget, QWidget* parent)
     : QDockWidget(parent)
-    , mTabWidget(tabWidget)
     , ui(new Ui::ResizeDialog)
+    , mTabWidget(tabWidget)
 {
     ui->setupUi(this);
     setVisible(false);
