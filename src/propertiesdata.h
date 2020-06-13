@@ -30,7 +30,8 @@ class PropertiesData
 public:
     inline PropertiesData();
 
-    enum UiSelection {
+    enum UiSelection
+    {
         None = 0,
         SceneUi = 5,
         CellUi = 10,
@@ -39,7 +40,7 @@ public:
         IndicatorUi = 25,
         MixedUi = 100
     };
-    
+
     qreal angle;
     QPointF scale;
     QColor color;
@@ -51,6 +52,8 @@ public:
     UiSelection selectionUi;
 };
 
-inline PropertiesData::PropertiesData() {}
+inline PropertiesData::PropertiesData()
+{
+}
 
-#endif // PROPERTIESDATA_H
+#endif  // PROPERTIESDATA_H

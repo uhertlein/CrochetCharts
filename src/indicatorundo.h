@@ -33,14 +33,21 @@ class Scene;
 class AddIndicator : public QUndoCommand
 {
 public:
-    enum { Id = 2200 };
+    enum
+    {
+        Id = 2200
+    };
 
     AddIndicator(Scene* s, QPointF pos, QUndoCommand* parent = 0);
 
     void undo();
     void redo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
 private:
     QPointF position;
@@ -52,14 +59,21 @@ private:
 class RemoveIndicator : public QUndoCommand
 {
 public:
-    enum { Id = 2210 };
+    enum
+    {
+        Id = 2210
+    };
 
     RemoveIndicator(Scene* s, Indicator* i, QUndoCommand* parent = 0);
 
     void redo();
     void undo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
 private:
     QPointF position;
@@ -68,18 +82,24 @@ private:
     Scene* scene;
 };
 
-
 class ChangeTextIndicator : public QUndoCommand
 {
 public:
-    enum { Id = 2230 };
+    enum
+    {
+        Id = 2230
+    };
 
     ChangeTextIndicator(Scene* s, Indicator* item, QString text, QUndoCommand* parent = 0);
 
     void redo();
     void undo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
 private:
     Indicator* i;
@@ -89,4 +109,4 @@ private:
     Scene* scene;
 };
 
-#endif //INDICATORUNDO_H
+#endif  // INDICATORUNDO_H

@@ -35,19 +35,21 @@ AddIndicator::AddIndicator(Scene* s, QPointF pos, QUndoCommand* parent)
     position = pos;
     item = new Indicator();
     scene = s;
-	item->setLayer(scene->getCurrentLayer()->uid());
-	item->setVisible(scene->getCurrentLayer()->visible());
+    item->setLayer(scene->getCurrentLayer()->uid());
+    item->setVisible(scene->getCurrentLayer()->visible());
     setText(QObject::tr("Add indicator"));
 }
 
-void AddIndicator::redo()
+void
+AddIndicator::redo()
 {
     scene->addItem(item);
     item->setPos(position);
     item->setTextInteractionFlags(Qt::TextEditorInteraction);
 }
 
-void AddIndicator::undo()
+void
+AddIndicator::undo()
 {
     scene->removeItem(item);
 }
@@ -64,12 +66,14 @@ RemoveIndicator::RemoveIndicator(Scene* s, Indicator* i, QUndoCommand* parent)
     setText(QObject::tr("Remove indicator"));
 }
 
-void RemoveIndicator::redo()
+void
+RemoveIndicator::redo()
 {
     scene->removeItem(item);
 }
 
-void RemoveIndicator::undo()
+void
+RemoveIndicator::undo()
 {
     scene->addItem(item);
     item->setPos(position);
@@ -79,7 +83,10 @@ void RemoveIndicator::undo()
 /*************************************************\
 | ChangeTextIndicator                             |
 \*************************************************/
-ChangeTextIndicator::ChangeTextIndicator(Scene* s, Indicator* item, QString text, QUndoCommand* parent)
+ChangeTextIndicator::ChangeTextIndicator(Scene* s,
+                                         Indicator* item,
+                                         QString text,
+                                         QUndoCommand* parent)
     : QUndoCommand(parent)
 {
     scene = s;
@@ -91,12 +98,14 @@ ChangeTextIndicator::ChangeTextIndicator(Scene* s, Indicator* item, QString text
     setText(QObject::tr("Change text of indicator"));
 }
 
-void ChangeTextIndicator::redo()
+void
+ChangeTextIndicator::redo()
 {
     i->setText(newText);
 }
 
-void ChangeTextIndicator::undo()
+void
+ChangeTextIndicator::undo()
 {
     i->setText(origText);
 }

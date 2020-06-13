@@ -27,9 +27,9 @@
 
 QStringList Application::mFileOpenEventList;
 
-Application::Application(int &argc, char **argv)
-    : QApplication(argc, argv),
-      mW(0)
+Application::Application(int& argc, char** argv)
+    : QApplication(argc, argv)
+    , mW(0)
 {
     qApp->setApplicationName(AppInfo::inst()->appName);
     qApp->setApplicationVersion(AppInfo::inst()->appVersion);
@@ -40,23 +40,29 @@ Application::Application(int &argc, char **argv)
     library->loadStitchSets();
 }
 
-bool Application::event(QEvent *event)
+bool
+Application::event(QEvent* event)
 {
-    switch (event->type()) {
-        case QEvent::FileOpen: {
-            QString file = static_cast<QFileOpenEvent *>(event)->file();
-            loadFile(file);
-            return true;
-        }
-        default:{
-            return QApplication::event(event);
-        }
+    switch (event->type())
+    {
+    case QEvent::FileOpen:
+    {
+        QString file = static_cast<QFileOpenEvent*>(event)->file();
+        loadFile(file);
+        return true;
+    }
+    default:
+    {
+        return QApplication::event(event);
+    }
     }
 }
 
-void Application::loadFile(const QString &fileName)
+void
+Application::loadFile(const QString& fileName)
 {
-    if(!mW) {
+    if (!mW)
+    {
         qWarning() << "Application::loadFile cannot find a window to load this file!";
         return;
     }
@@ -64,14 +70,13 @@ void Application::loadFile(const QString &fileName)
     mW->loadFile(fileName);
 }
 
-void Application::resendFileOpenEvents(QObject *receiver)
+void
+Application::resendFileOpenEvents(QObject* receiver)
 {
-
-    if(mFileOpenEventList.count() > 0)
+    if (mFileOpenEventList.count() > 0)
     {
-
         QStringListIterator i(mFileOpenEventList);
-        while(i.hasNext())
+        while (i.hasNext())
         {
             QFileOpenEvent event(i.next());
             Application::sendEvent(receiver, &event);
@@ -80,7 +85,8 @@ void Application::resendFileOpenEvents(QObject *receiver)
     }
 }
 
-void Application::setMainWindow(MainWindow *window)
+void
+Application::setMainWindow(MainWindow* window)
 {
     mW = window;
 }

@@ -33,15 +33,23 @@ class TabInterface : public QWidget
 {
     Q_OBJECT
     friend class SaveFile;
+
 public:
-    
     virtual ~TabInterface() = 0;
 
     virtual void renderChart(QPainter* painter, QRectF rect = QRectF()) = 0;
 
-    void setPatternStitches(QMap<QString, int>* stitches) { mPatternStitches = stitches; }
-    void setPatternColors(QMap<QString, QMap<QString, qint64> >* colors) { mPatternColors = colors; }
-    
+    void
+    setPatternStitches(QMap<QString, int>* stitches)
+    {
+        mPatternStitches = stitches;
+    }
+    void
+    setPatternColors(QMap<QString, QMap<QString, qint64> >* colors)
+    {
+        mPatternColors = colors;
+    }
+
     virtual QStringList editModes() = 0;
 
     virtual void setEditMode(int mode) = 0;
@@ -66,14 +74,13 @@ public slots:
 
     virtual void createChart(int rows, int cols, QString defStitch) = 0;
 
-    //void copyInstructions();
+    // void copyInstructions();
 
 private:
     virtual QGraphicsScene* scene() = 0;
 
     QMap<QString, int>* mPatternStitches;
     QMap<QString, QMap<QString, qint64> >* mPatternColors;
-
 };
 
-#endif //TABINTERFACE_H
+#endif  // TABINTERFACE_H

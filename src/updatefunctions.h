@@ -24,16 +24,15 @@
 #include <QString>
 
 /**
- * This function contains snippets of code that should be run before a new version of the software is
- * used.
+ * This function contains snippets of code that should be run before a new version of the software
+ * is used.
  */
-void updateFunction(QString lastUsed)
+void
+updateFunction(QString lastUsed)
 {
-
-    if(lastUsed < "0.9.91-63-gb088c70") {
-
+    if (lastUsed < "0.9.91-63-gb088c70")
+    {
     }
-
 }
 
-#endif //UPDATEFUNCTION_H
+#endif  // UPDATEFUNCTION_H

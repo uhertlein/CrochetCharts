@@ -23,14 +23,15 @@
 #include <QStringList>
 #include <QString>
 
-QString colorizeFunc(QString name)
+QString
+colorizeFunc(QString name)
 {
     QString output;
     QStringList classParts = name.split("::");
     QStringList nameAndType = classParts.first().split(" ");
 
     QString returnType = "";
-    if(nameAndType.count() > 1)
+    if (nameAndType.count() > 1)
         returnType = nameAndType.first() + " ";
     QString className = nameAndType.last();
 
@@ -49,8 +50,10 @@ QString colorizeFunc(QString name)
     output.append("\033[0m(");
 
     QStringList::const_iterator param;
-    for (param = params.begin(); param != params.constEnd(); ++param) {
-        if(param != params.begin()) {
+    for (param = params.begin(); param != params.constEnd(); ++param)
+    {
+        if (param != params.begin())
+        {
             output.append("\033[0m,");
         }
         output.append("\033[036m");
@@ -58,5 +61,4 @@ QString colorizeFunc(QString name)
     }
     output.append("\033[0m)");
     return output;
-
 }

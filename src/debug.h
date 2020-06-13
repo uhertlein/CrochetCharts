@@ -46,28 +46,24 @@
 
 QString colorizeFunc(QString name);
 
-#define DEBUG(message) \
-( \
-    (qDebug() << colorizeFunc(Q_FUNC_INFO).toStdString().c_str() << ":" << QString(message).toStdString().c_str()), \
-    (void)0 \
-)
+#define DEBUG(message)                                                   \
+    ((qDebug() << colorizeFunc(Q_FUNC_INFO).toStdString().c_str() << ":" \
+               << QString(message).toStdString().c_str()),               \
+     (void)0)
 
-#define WARN(message) \
-( \
-    (qWarning() << colorizeFunc(Q_FUNC_INFO).toStdString().c_str() << ":" << QString(message).toStdString().c_str()), \
-    (void)0 \
-)
+#define WARN(message)                                                      \
+    ((qWarning() << colorizeFunc(Q_FUNC_INFO).toStdString().c_str() << ":" \
+                 << QString(message).toStdString().c_str()),               \
+     (void)0)
 
-#define CRITICAL(message) \
-( \
-    (qCritical() << colorizeFunc(Q_FUNC_INFO).toStdString().c_str() << ":" << QString(message).toStdString().c_str()),\
-    (void)0 \
-)
+#define CRITICAL(message)                                                   \
+    ((qCritical() << colorizeFunc(Q_FUNC_INFO).toStdString().c_str() << ":" \
+                  << QString(message).toStdString().c_str()),               \
+     (void)0)
 
-#define FATAL(message) \
-( \
-    (qFatal("%s : %s", colorizeFunc(Q_FUNC_INFO).toStdString().c_str(), QString(message).toStdString().c_str())), \
-    (void)0 \
-)
+#define FATAL(message)                                                   \
+    ((qFatal("%s : %s", colorizeFunc(Q_FUNC_INFO).toStdString().c_str(), \
+             QString(message).toStdString().c_str())),                   \
+     (void)0)
 
-#endif // DEBUG_H
+#endif  // DEBUG_H

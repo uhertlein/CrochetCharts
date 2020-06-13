@@ -29,68 +29,70 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-#include <QPrinter> //for pdf
-#include <QSvgGenerator> //for svg
+#include <QPrinter>       //for pdf
+#include <QSvgGenerator>  //for svg
 
 #include "crochettab.h"
-#include "scene.h" // for to connect the scene to the view.
+#include "scene.h"  // for to connect the scene to the view.
 
-ExportUi::ExportUi(QTabWidget* tab, QMap<QString, int>* stitches,
-                   QMap<QString, QMap<QString, qint64> >* colors, QWidget* parent)
-    : QDialog(parent),
-      exportType(""),
-      scene(new QGraphicsScene(this)),
-      ui(new Ui::ExportDialog),
-      mTabWidget(tab),
-      mStitches(stitches),
-      mColors(colors),
-	  selectionOnly(false)
+ExportUi::ExportUi(QTabWidget* tab,
+                   QMap<QString, int>* stitches,
+                   QMap<QString, QMap<QString, qint64> >* colors,
+                   QWidget* parent)
+    : QDialog(parent)
+    , exportType("")
+    , scene(new QGraphicsScene(this))
+    , ui(new Ui::ExportDialog)
+    , mTabWidget(tab)
+    , mStitches(stitches)
+    , mColors(colors)
+    , selectionOnly(false)
 {
     ui->setupUi(this);
     ui->view->scale(.6, .6);
 
-    //TODO: use later...
+    // TODO: use later...
     ui->showStitchWrongSide->hide();
     ui->showStitchWrongSideLbl->hide();
     ui->colorSortBy->hide();
     ui->colorSortByLbl->hide();
-    //FIXME: chart options...
+    // FIXME: chart options...
     ui->chartOptions->hide();
-	
-    
+
     setupChartOptions();
     setupColorLegendOptions();
     setupStitchLegendOptions();
-	headerFooterToggled(false);
-    
+    headerFooterToggled(false);
+
     updateExportOptions(ui->fileType->currentText());
-    connect(ui->fileType, SIGNAL(currentIndexChanged(QString)),
-            this, SLOT(updateExportOptions(QString)));
+    connect(ui->fileType, SIGNAL(currentIndexChanged(QString)), this,
+            SLOT(updateExportOptions(QString)));
     generateSelectionList(true);
 
-    connect(ui->chartSelection, SIGNAL(currentIndexChanged(QString)), this, SLOT(setSelection(QString)));
-    
+    connect(ui->chartSelection, SIGNAL(currentIndexChanged(QString)), this,
+            SLOT(setSelection(QString)));
+
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(exportData()));
 
     connect(ui->width, SIGNAL(valueChanged(int)), SLOT(updateHightFromWidth(int)));
     connect(ui->height, SIGNAL(valueChanged(int)), SLOT(updateWidthFromHeight(int)));
-	connect(ui->headerFooter, SIGNAL(toggled(bool)), SLOT(headerFooterToggled(bool)));
-
+    connect(ui->headerFooter, SIGNAL(toggled(bool)), SLOT(headerFooterToggled(bool)));
 }
 
 ExportUi::~ExportUi()
 {
-	delete ui;
+    delete ui;
 }
 
-void ExportUi::setupChartOptions()
+void
+ExportUi::setupChartOptions()
 {
-
 }
 
-void ExportUi::setupColorLegendOptions()
-{   
+void
+ExportUi::setupColorLegendOptions()
+{
     cl = new ColorLegend(mColors);
     ui->colorLegendOptions->hide();
 
@@ -101,7 +103,7 @@ void ExportUi::setupColorLegendOptions()
     ui->colorTitle->setChecked(Settings::inst()->value("showColorTitle").toBool());
     int index = ui->colorSortBy->findText(Settings::inst()->value("colorLegendSortBy").toString());
     ui->colorSortBy->setCurrentIndex(index);
-    
+
     connect(ui->colorBorder, SIGNAL(toggled(bool)), SLOT(updateColorLegend()));
     connect(ui->colorHexValue, SIGNAL(toggled(bool)), SLOT(updateColorLegend()));
     connect(ui->colorColumns, SIGNAL(valueChanged(int)), SLOT(updateColorLegend()));
@@ -109,18 +111,19 @@ void ExportUi::setupColorLegendOptions()
     connect(ui->colorBorder, SIGNAL(toggled(bool)), SLOT(updateColorLegend()));
     connect(ui->colorTitle, SIGNAL(toggled(bool)), SLOT(updateColorLegend()));
     connect(ui->colorSortBy, SIGNAL(currentIndexChanged(int)), SLOT(updateColorLegend()));
-    
 }
 #include "debug.h"
-void ExportUi::headerFooterToggled(bool toggled)
+void
+ExportUi::headerFooterToggled(bool toggled)
 {
-	if (toggled)
-		ui->headerFooterLayout->show();
-	else
-		ui->headerFooterLayout->hide();
+    if (toggled)
+        ui->headerFooterLayout->show();
+    else
+        ui->headerFooterLayout->hide();
 }
 
-void ExportUi::setupStitchLegendOptions()
+void
+ExportUi::setupStitchLegendOptions()
 {
     sl = new StitchLegend(mStitches);
     ui->stitchLegendOptions->hide();
@@ -128,7 +131,8 @@ void ExportUi::setupStitchLegendOptions()
     ui->stitchBorder->setChecked(Settings::inst()->value("showStitchBorder").toBool());
     ui->stitchColumns->setValue(Settings::inst()->value("stitchLegendColumnCount").toInt());
     ui->stitchTitle->setChecked(Settings::inst()->value("showStitchTitle").toBool());
-    ui->showStitchDescription->setChecked(Settings::inst()->value("showStitchDescription").toBool());
+    ui->showStitchDescription->setChecked(
+        Settings::inst()->value("showStitchDescription").toBool());
     ui->showStitchWrongSide->setChecked(Settings::inst()->value("showStitchWrongSide").toBool());
 
     connect(ui->stitchBorder, SIGNAL(toggled(bool)), SLOT(updateStitchLegend()));
@@ -138,7 +142,8 @@ void ExportUi::setupStitchLegendOptions()
     connect(ui->showStitchWrongSide, SIGNAL(toggled(bool)), SLOT(updateStitchLegend()));
 }
 
-void ExportUi::updateColorLegend()
+void
+ExportUi::updateColorLegend()
 {
     cl->showHexValues = ui->colorHexValue->isChecked();
     cl->columnCount = ui->colorColumns->value();
@@ -146,31 +151,34 @@ void ExportUi::updateColorLegend()
     cl->showBorder = ui->colorBorder->isChecked();
     cl->showTitle = ui->colorTitle->isChecked();
     cl->sortBy = ui->colorSortBy->currentText();
-    
+
     scene->update();
 }
 
-void ExportUi::updateStitchLegend()
+void
+ExportUi::updateStitchLegend()
 {
     sl->showBorder = ui->stitchBorder->isChecked();
     sl->columnCount = ui->stitchColumns->value();
     sl->showTitle = ui->stitchTitle->isChecked();
     sl->showDescription = ui->showStitchDescription->isChecked();
     sl->showWrongSide = ui->showStitchWrongSide->isChecked();
-    
+
     scene->update();
 }
 
-void ExportUi::updateExportOptions(QString expType)
+void
+ExportUi::updateExportOptions(QString expType)
 {
     exportType = expType;
-    if(exportType == "pdf") {
+    if (exportType == "pdf")
+    {
         ui->optionsGroupBox->setVisible(true);
 
         ui->selectionLbl->setVisible(true);
         ui->chartSelection->setVisible(true);
         generateSelectionList(true);
-        
+
         ui->resolution->setVisible(false);
         ui->resolutionLbl->setVisible(false);
         ui->resolution->setValue(96);
@@ -181,21 +189,23 @@ void ExportUi::updateExportOptions(QString expType)
 
         ui->pageToChartSize->setVisible(true);
         ui->pageSizeLbl->setVisible(true);
-		
-		ui->headerFooter->setVisible(true);
-		ui->headerFooterLbl->setVisible(true);
-		if (ui->headerFooter->isChecked()) ui->headerFooterLayout->show();
 
-    } else if(exportType == "svg") {
-        //eui->optionsGroupBox->setVisible(false);
+        ui->headerFooter->setVisible(true);
+        ui->headerFooterLbl->setVisible(true);
+        if (ui->headerFooter->isChecked())
+            ui->headerFooterLayout->show();
+    }
+    else if (exportType == "svg")
+    {
+        // eui->optionsGroupBox->setVisible(false);
         ui->selectionLbl->setVisible(true);
         ui->chartSelection->setVisible(true);
         generateSelectionList(false);
-        
+
         ui->resolution->setVisible(false);
         ui->resolutionLbl->setVisible(false);
         ui->resolution->setValue(96);
-        
+
         ui->height->setVisible(false);
         ui->heightLbl->setVisible(false);
         ui->width->setVisible(false);
@@ -203,22 +213,23 @@ void ExportUi::updateExportOptions(QString expType)
 
         ui->pageToChartSize->setVisible(false);
         ui->pageSizeLbl->setVisible(false);
-		
-		ui->headerFooter->setVisible(false);
-		ui->headerFooterLbl->setVisible(false);
-		ui->headerFooterLayout->hide();
-        
-    } else { // jpg, jpeg, png, gif, tiff, bmp, etc.
+
+        ui->headerFooter->setVisible(false);
+        ui->headerFooterLbl->setVisible(false);
+        ui->headerFooterLayout->hide();
+    }
+    else
+    {  // jpg, jpeg, png, gif, tiff, bmp, etc.
         ui->optionsGroupBox->setVisible(true);
 
         ui->selectionLbl->setVisible(true);
         ui->chartSelection->setVisible(true);
         generateSelectionList(false);
-        
+
         ui->resolution->setVisible(true);
         ui->resolutionLbl->setVisible(true);
         ui->resolution->setValue(96);
-        
+
         ui->height->setVisible(true);
         ui->heightLbl->setVisible(true);
         ui->width->setVisible(true);
@@ -226,52 +237,60 @@ void ExportUi::updateExportOptions(QString expType)
 
         ui->pageToChartSize->setVisible(false);
         ui->pageSizeLbl->setVisible(false);
-		
-		ui->headerFooter->setVisible(true);
-		ui->headerFooterLbl->setVisible(true);
-		if (ui->headerFooter->isChecked()) ui->headerFooterLayout->show();
+
+        ui->headerFooter->setVisible(true);
+        ui->headerFooterLbl->setVisible(true);
+        if (ui->headerFooter->isChecked())
+            ui->headerFooterLayout->show();
     }
 }
 
-void ExportUi::generateSelectionList(bool showAll)
+void
+ExportUi::generateSelectionList(bool showAll)
 {
     QString curSelection = ui->chartSelection->currentText();
     ui->chartSelection->clear();
-    
+
     QStringList options;
-    if(showAll)
+    if (showAll)
         options << tr("All Charts");
     options << tr("Stitch Legend") << tr("Color Legend");
-    
+
     QString curChart;
     int count = mTabWidget->count();
-    for(int i = 0; i < count; ++i) {
+    for (int i = 0; i < count; ++i)
+    {
         options << mTabWidget->tabText(i);
-        if(i == mTabWidget->currentIndex())
+        if (i == mTabWidget->currentIndex())
             curChart = mTabWidget->tabText(i);
     }
 
     ui->chartSelection->addItems(options);
 
     int index = ui->chartSelection->findText(curSelection);
-    if(index > 0)
+    if (index > 0)
         ui->chartSelection->setCurrentIndex(index);
     else
         ui->chartSelection->setCurrentIndex(ui->chartSelection->findText(curChart));
 
     curSelection = ui->chartSelection->currentText();
-    if(curSelection == tr("Stitch Legend") || curSelection == tr("Color Legend")) {
+    if (curSelection == tr("Stitch Legend") || curSelection == tr("Color Legend"))
+    {
         ui->view->setScene(scene);
-    } else {
+    }
+    else
+    {
         CrochetTab* tab = 0;
-        for(int i = 0; i < count; ++i) {
-            if(curSelection == mTabWidget->tabText(i)) {
+        for (int i = 0; i < count; ++i)
+        {
+            if (curSelection == mTabWidget->tabText(i))
+            {
                 tab = qobject_cast<CrochetTab*>(mTabWidget->widget(i));
                 break;
             }
         }
 
-        if(!tab)
+        if (!tab)
             return;
         ui->view->setScene(tab->scene());
         QRectF r = ui->view->scene()->itemsBoundingRect();
@@ -286,7 +305,8 @@ void ExportUi::generateSelectionList(bool showAll)
     }
 }
 
-void ExportUi::exportData()
+void
+ExportUi::exportData()
 {
     exportType = ui->fileType->currentText();
     selection = ui->chartSelection->currentText();
@@ -294,23 +314,23 @@ void ExportUi::exportData()
     width = ui->width->text().remove(" px").toInt();
     height = ui->height->text().remove(" px").toInt();
     pageToChartSize = ui->pageToChartSize->isChecked();
-	selectionOnly = ui->selectionOnly->isChecked();
-	includeHeaderFooter = ui->headerFooter->isChecked();
-		
+    selectionOnly = ui->selectionOnly->isChecked();
+    includeHeaderFooter = ui->headerFooter->isChecked();
+
     QString filter;
-    if(exportType == "pdf")
+    if (exportType == "pdf")
         filter = tr("Portable Document Format (pdf)(*.pdf)");
-    else if(exportType == "svg")
+    else if (exportType == "svg")
         filter = tr("Scaled Vector Graphics (svg)(*.svg *.svgz)");
-    else if(exportType == "jpeg")
+    else if (exportType == "jpeg")
         filter = tr("Joint Photographic Experts Group (jpeg)(*.jpeg *.jpg)");
-    else if(exportType == "png")
+    else if (exportType == "png")
         filter = tr("Portable Network Graphics (png)(*.png)");
-    else if(exportType == "gif")
+    else if (exportType == "gif")
         filter = tr("Graphics Interchange Format (gif)(*.gif)");
-    else if(exportType == "tiff")
+    else if (exportType == "tiff")
         filter = tr("Tagged Image File Format (tiff)(*.tiff *.tif)");
-    else if(exportType == "bmp")
+    else if (exportType == "bmp")
         filter = tr("Bitmap (bmp)(*.bmp)");
     else
         filter = tr("");
@@ -318,111 +338,126 @@ void ExportUi::exportData()
     QString fileLoc = Settings::inst()->value("fileLocation").toString();
     fileName = QFileDialog::getSaveFileName(this, tr("Export Pattern As..."), fileLoc, filter);
 
-    if(fileName.isEmpty())
+    if (fileName.isEmpty())
         return;
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    //we don't want the dotted lines in the image.
-	QList< QList<QGraphicsItem*> > selectedPerTab;
-	for(int i = 0; i < mTabWidget->count(); ++i) {
-		CrochetTab* t = qobject_cast<CrochetTab*>(mTabWidget->widget(i));
-		selectedPerTab.append(t->selectedItems());
-		if (!selectionOnly)
-			if(t) t->clearSelection();
-	}
+    // we don't want the dotted lines in the image.
+    QList<QList<QGraphicsItem*> > selectedPerTab;
+    for (int i = 0; i < mTabWidget->count(); ++i)
+    {
+        CrochetTab* t = qobject_cast<CrochetTab*>(mTabWidget->widget(i));
+        selectedPerTab.append(t->selectedItems());
+        if (!selectionOnly)
+            if (t)
+                t->clearSelection();
+    }
 
-    if(selection == tr("Stitch Legend") || selection == tr("Color Legend")) {
-        if(exportType == "pdf")
+    if (selection == tr("Stitch Legend") || selection == tr("Color Legend"))
+    {
+        if (exportType == "pdf")
             exportLegendPdf();
         else if (exportType == "svg")
             exportLegendSvg();
         else
             exportLegendImg();
-
-    } else { //charts
-        if(exportType == "pdf")
+    }
+    else
+    {  // charts
+        if (exportType == "pdf")
             exportPdf();
-        else if(exportType == "svg")
+        else if (exportType == "svg")
             exportSvg();
         else
             exportImg();
     }
-	
-	//restore the selected items
-	for(int i = 0; i < selectedPerTab.count(); ++i) {
-		foreach(QGraphicsItem* item, selectedPerTab[i]) {
-			item->setSelected(true);
-		}
-	}
+
+    // restore the selected items
+    for (int i = 0; i < selectedPerTab.count(); ++i)
+    {
+        foreach (QGraphicsItem* item, selectedPerTab[i])
+        {
+            item->setSelected(true);
+        }
+    }
 
     QApplication::restoreOverrideCursor();
 }
 
-int ExportUi::exec()
+int
+ExportUi::exec()
 {
     int retValue = QDialog::exec();
-    
 
     return retValue;
 }
 
-void ExportUi::setSelection(QString selection)
+void
+ExportUi::setSelection(QString selection)
 {
-    if(selection.isEmpty())
+    if (selection.isEmpty())
         return;
 
-    if(selection == tr("Stitch Legend")) {
+    if (selection == tr("Stitch Legend"))
+    {
         ui->view->setScene(scene);
         ui->stitchLegendOptions->show();
         ui->colorLegendOptions->hide();
         ui->chartOptions->hide();
-		ui->selectionOnly->hide();
-		ui->selectionOnlyLbl->hide();
-        
-        if(scene->items().contains(cl))
+        ui->selectionOnly->hide();
+        ui->selectionOnlyLbl->hide();
+
+        if (scene->items().contains(cl))
             scene->removeItem(cl);
-        if(!scene->items().contains(sl))
+        if (!scene->items().contains(sl))
             scene->addItem(sl);
-    } else if(selection == tr("Color Legend")) {
+    }
+    else if (selection == tr("Color Legend"))
+    {
         ui->view->setScene(scene);
         ui->stitchLegendOptions->hide();
         ui->colorLegendOptions->show();
         ui->chartOptions->hide();
         ui->selectionOnly->hide();
-		ui->selectionOnlyLbl->hide();
-		
-        if(scene->items().contains(sl))
+        ui->selectionOnlyLbl->hide();
+
+        if (scene->items().contains(sl))
             scene->removeItem(sl);
-        if(!scene->items().contains(cl))
+        if (!scene->items().contains(cl))
             scene->addItem(cl);
-    } else {
-		CrochetTab* tab = 0;
-        for(int i = 0; i < mTabWidget->count(); ++i) {
-            if(selection == mTabWidget->tabText(i) || selection == tr("All Charts")) {
+    }
+    else
+    {
+        CrochetTab* tab = 0;
+        for (int i = 0; i < mTabWidget->count(); ++i)
+        {
+            if (selection == mTabWidget->tabText(i) || selection == tr("All Charts"))
+            {
                 tab = qobject_cast<CrochetTab*>(mTabWidget->widget(i));
                 break;
             }
         }
-        
-        if(!tab)
+
+        if (!tab)
             return;
-        
+
         ui->view->setScene(tab->scene());
-        
+
         ui->selectionOnly->show();
-		ui->selectionOnlyLbl->show();
+        ui->selectionOnlyLbl->show();
         ui->stitchLegendOptions->hide();
         ui->colorLegendOptions->hide();
-//FIXME: Add Chart Options.
+        // FIXME: Add Chart Options.
         ui->chartOptions->hide();
         ui->view->centerOn(tab->scene()->sceneRect().center());
     }
-    
+
     updateChartSizeRatio(selection);
 }
 
-void ExportUi::exportLegendPdf()
+void
+ExportUi::exportLegendPdf()
 {
     QPainter* p = new QPainter();
 
@@ -432,162 +467,180 @@ void ExportUi::exportLegendPdf()
     printer->setResolution(resolution);
 
     QSizeF size = scene->sceneRect().size();
-    if(pageToChartSize)
+    if (pageToChartSize)
         printer->setPaperSize(size, QPrinter::Point);
 
     p->begin(printer);
-	
-	//we store the height of the header for later
-	int headerSize = 0;
-	int footerSize = 0;
-	
-	//and print the header
-	if (includeHeaderFooter) {
-		headerSize = renderHeader(*p, ui->headerEdit->toPlainText());
-		footerSize = renderFooter(*p, ui->footerEdit->toPlainText());
-	}
-	
-    scene->render(p, QRectF(0, headerSize, p->window().width(), p->window().height() - headerSize - footerSize));
+
+    // we store the height of the header for later
+    int headerSize = 0;
+    int footerSize = 0;
+
+    // and print the header
+    if (includeHeaderFooter)
+    {
+        headerSize = renderHeader(*p, ui->headerEdit->toPlainText());
+        footerSize = renderFooter(*p, ui->footerEdit->toPlainText());
+    }
+
+    scene->render(p, QRectF(0, headerSize, p->window().width(),
+                            p->window().height() - headerSize - footerSize));
 
     p->end();
 }
 
-void ExportUi::exportLegendSvg()
+void
+ExportUi::exportLegendSvg()
 {
     QPainter* p = new QPainter();
-    
+
     QSvgGenerator gen;
 
     gen.setResolution(resolution);
     gen.setTitle(QFileInfo(fileName).baseName());
-    gen.setDescription(tr("This file was generated by %1").arg(qApp->applicationName()) );
+    gen.setDescription(tr("This file was generated by %1").arg(qApp->applicationName()));
     gen.setViewBox(scene->sceneRect());
     gen.setFileName(fileName);
     gen.setSize(scene->sceneRect().size().toSize());
-    
+
     p->begin(&gen);
-	
+
     scene->render(p);
 
     p->end();
 }
 
-void ExportUi::exportLegendImg()
+void
+ExportUi::exportLegendImg()
 {
-    if(mColors->count() < 1) {
+    if (mColors->count() < 1)
+    {
         QMessageBox msgbox(this);
         msgbox.setText(tr("There are no colors to put into the key."));
         msgbox.setInformativeText(tr("A color key will not be generated."));
         msgbox.setIcon(QMessageBox::Information);
         msgbox.setStandardButtons(QMessageBox::Ok);
-        
+
         msgbox.exec();
         return;
     }
-    
+
     QPainter* p = new QPainter(this);
-	
-	QSize size = scene->sceneRect().size().toSize();
+
+    QSize size = scene->sceneRect().size().toSize();
     QPixmap pix = QPixmap(size);
 
     p->begin(&pix);
-	
+
     scene->render(p);
 
     p->end();
     pix.save(fileName);
 }
 
-int ExportUi::renderHeader(QPainter &painter, QString text) 
+int
+ExportUi::renderHeader(QPainter& painter, QString text)
 {
     painter.save();
     painter.resetTransform();
     painter.setFont(QFont("Courier New", 12));
-    QRect boundingRect = painter.boundingRect(painter.window(), Qt::AlignJustify | Qt::TextWordWrap, text);
+    QRect boundingRect
+        = painter.boundingRect(painter.window(), Qt::AlignJustify | Qt::TextWordWrap, text);
     painter.drawText(boundingRect, Qt::AlignJustify | Qt::TextWordWrap, text);
     painter.restore();
     return boundingRect.height();
 }
- 
-int ExportUi::renderFooter(QPainter &painter, QString text) 
+
+int
+ExportUi::renderFooter(QPainter& painter, QString text)
 {
     painter.save();
     painter.resetTransform();
     painter.setFont(QFont("Courier New", 12));
-    QRect boundingRect = painter.boundingRect(painter.window(), Qt::AlignJustify | Qt::TextWordWrap, text);
+    QRect boundingRect
+        = painter.boundingRect(painter.window(), Qt::AlignJustify | Qt::TextWordWrap, text);
     painter.translate(0, painter.window().height() - boundingRect.height());
     painter.drawText(boundingRect, Qt::AlignJustify | Qt::TextWordWrap, text);
     painter.restore();
     return boundingRect.height();
 }
 
-void ExportUi::exportPdf()
+void
+ExportUi::exportPdf()
 {
     int tabCount = mTabWidget->count();
     QPainter* p = new QPainter();
-    
+
     QPrinter* printer = new QPrinter(QPrinter::HighResolution);
     printer->setOutputFormat(QPrinter::PdfFormat);
     printer->setOutputFileName(fileName);
     printer->setResolution(96);
 
     QSizeF size = ui->view->scene()->sceneRect().size();
-    if(pageToChartSize)
+    if (pageToChartSize)
         printer->setPaperSize(size, QPrinter::Point);
-    
-    p->begin(printer);
-    
-    bool firstPass = true;
-    for(int i = 0; i < tabCount; ++i) {
-		//every pass
-        if(!firstPass) {
-			//start a new page with the printer
-            printer->newPage();
-		}
 
-		//we store the height of the header for later
-		int headerSize = 0;
-		int footerSize = 0;
-		
-		//and print the header
-		if (includeHeaderFooter) {
-			headerSize = renderHeader(*p, ui->headerEdit->toPlainText());
-			footerSize = renderFooter(*p, ui->footerEdit->toPlainText());
-		}
-			
-        if(selection == tr("All Charts") || selection == mTabWidget->tabText(i)) {
+    p->begin(printer);
+
+    bool firstPass = true;
+    for (int i = 0; i < tabCount; ++i)
+    {
+        // every pass
+        if (!firstPass)
+        {
+            // start a new page with the printer
+            printer->newPage();
+        }
+
+        // we store the height of the header for later
+        int headerSize = 0;
+        int footerSize = 0;
+
+        // and print the header
+        if (includeHeaderFooter)
+        {
+            headerSize = renderHeader(*p, ui->headerEdit->toPlainText());
+            footerSize = renderFooter(*p, ui->footerEdit->toPlainText());
+        }
+
+        if (selection == tr("All Charts") || selection == mTabWidget->tabText(i))
+        {
             CrochetTab* tab = qobject_cast<CrochetTab*>(mTabWidget->widget(i));
-			
-			//calculate the position of the drawing, because of the header
-			QRectF renderRect = p->window();
-			renderRect.moveTop(headerSize);
-			
-            //only render the selection if we must
-			if (selectionOnly)
-				tab->renderChartSelected(p, QRectF(0, headerSize, p->window().width(), p->window().height() - headerSize - footerSize));
-			else
-				tab->renderChart(p, QRectF(0, headerSize, p->window().width(), p->window().height() - headerSize - footerSize));
+
+            // calculate the position of the drawing, because of the header
+            QRectF renderRect = p->window();
+            renderRect.moveTop(headerSize);
+
+            // only render the selection if we must
+            if (selectionOnly)
+                tab->renderChartSelected(p, QRectF(0, headerSize, p->window().width(),
+                                                   p->window().height() - headerSize - footerSize));
+            else
+                tab->renderChart(p, QRectF(0, headerSize, p->window().width(),
+                                           p->window().height() - headerSize - footerSize));
             firstPass = false;
-            if(selection != tr("All Charts"))
+            if (selection != tr("All Charts"))
                 break;
         }
     }
     p->end();
 }
 
-void ExportUi::exportSvg()
+void
+ExportUi::exportSvg()
 {
     int tabCount = mTabWidget->count();
 
     CrochetTab* tab = 0;
 
-    for(int i = 0; i < tabCount; ++i) {
-        if(selection == mTabWidget->tabText(i)) {
+    for (int i = 0; i < tabCount; ++i)
+    {
+        if (selection == mTabWidget->tabText(i))
+        {
             tab = qobject_cast<CrochetTab*>(mTabWidget->widget(i));
-
         }
     }
-    
+
     QRectF rect = tab->scene()->itemsBoundingRect();
 
     QSvgGenerator gen;
@@ -595,22 +648,25 @@ void ExportUi::exportSvg()
     gen.setSize(rect.size().toSize());
     gen.setViewBox(rect);
 
-    gen.setTitle(QFileInfo(fileName).baseName() + " (" + mTabWidget->tabText(mTabWidget->indexOf(tab)) + ")");
-    gen.setDescription(tr("This file was generated by %1").arg(qApp->applicationName()) );
+    gen.setTitle(QFileInfo(fileName).baseName() + " ("
+                 + mTabWidget->tabText(mTabWidget->indexOf(tab)) + ")");
+    gen.setDescription(tr("This file was generated by %1").arg(qApp->applicationName()));
 
     QPainter p;
     p.begin(&gen);
-		
-	if (selectionOnly)
-		tab->renderChartSelected(&p, QRectF(QPointF(rect.x(), rect.y()),QSizeF((qreal)width, (qreal)height)));
-	else
-		tab->renderChart(&p, QRectF(QPointF(rect.x(), rect.y()),QSizeF((qreal)width, (qreal)height)));
-    
-    p.end();
 
+    if (selectionOnly)
+        tab->renderChartSelected(
+            &p, QRectF(QPointF(rect.x(), rect.y()), QSizeF((qreal)width, (qreal)height)));
+    else
+        tab->renderChart(&p,
+                         QRectF(QPointF(rect.x(), rect.y()), QSizeF((qreal)width, (qreal)height)));
+
+    p.end();
 }
 
-void ExportUi::exportImg()
+void
+ExportUi::exportImg()
 {
     int tabCount = mTabWidget->count();
     QPainter* p = new QPainter();
@@ -623,49 +679,60 @@ void ExportUi::exportImg()
     p->begin(&img);
     p->fillRect(0, 0, width, height, QColor(Qt::white));
 
-	//we store the height of the header for later
-	int headerSize = 0;
-	int footerSize = 0;
-	
-	//and print the header
-	if (includeHeaderFooter) {
-		headerSize = renderHeader(*p, ui->headerEdit->toPlainText());
-		footerSize = renderFooter(*p, ui->footerEdit->toPlainText());
-	}
+    // we store the height of the header for later
+    int headerSize = 0;
+    int footerSize = 0;
 
-    for(int i = 0; i < tabCount; ++i) {
-        if(selection == mTabWidget->tabText(i)) {
+    // and print the header
+    if (includeHeaderFooter)
+    {
+        headerSize = renderHeader(*p, ui->headerEdit->toPlainText());
+        footerSize = renderFooter(*p, ui->footerEdit->toPlainText());
+    }
+
+    for (int i = 0; i < tabCount; ++i)
+    {
+        if (selection == mTabWidget->tabText(i))
+        {
             CrochetTab* tab = qobject_cast<CrochetTab*>(mTabWidget->widget(i));
             if (selectionOnly)
-				tab->renderChartSelected(p, QRectF(QPointF(0,headerSize),QSizeF((qreal)width, (qreal)height - headerSize - footerSize)));
-			else
-				tab->renderChart(p, QRectF(QPointF(0,headerSize),QSizeF((qreal)width, (qreal)height - headerSize - footerSize)));
+                tab->renderChartSelected(
+                    p, QRectF(QPointF(0, headerSize),
+                              QSizeF((qreal)width, (qreal)height - headerSize - footerSize)));
+            else
+                tab->renderChart(
+                    p, QRectF(QPointF(0, headerSize),
+                              QSizeF((qreal)width, (qreal)height - headerSize - footerSize)));
         }
     }
-	
+
     p->end();
 
     img.save(fileName);
 }
 
-void ExportUi::updateChartSizeRatio(QString selection)
+void
+ExportUi::updateChartSizeRatio(QString selection)
 {
-
-    if(selection == tr("Stitch Legend") || selection == tr("Color Legend")) {
+    if (selection == tr("Stitch Legend") || selection == tr("Color Legend"))
+    {
         ui->width->setValue(ui->view->sceneRect().width());
         ui->height->setValue(ui->view->sceneRect().height());
-    } else {
-
+    }
+    else
+    {
         CrochetTab* tab = 0;
-        for(int i = 0; i < mTabWidget->count(); ++i) {
-            if(selection == mTabWidget->tabText(i)) {
+        for (int i = 0; i < mTabWidget->count(); ++i)
+        {
+            if (selection == mTabWidget->tabText(i))
+            {
                 tab = qobject_cast<CrochetTab*>(mTabWidget->widget(i));
                 break;
             }
         }
-        if(!tab)
+        if (!tab)
             return;
-        
+
         QRectF rect = tab->scene()->itemsBoundingRect();
 
         ui->height->setValue(rect.height());
@@ -673,14 +740,16 @@ void ExportUi::updateChartSizeRatio(QString selection)
     }
 }
 
-qreal ExportUi::sceneRatio(QRectF rect)
+qreal
+ExportUi::sceneRatio(QRectF rect)
 {
     qreal ratio = 1.0;
     ratio = rect.height() / rect.width();
     return ratio;
 }
 
-void ExportUi::updateWidthFromHeight(int height)
+void
+ExportUi::updateWidthFromHeight(int height)
 {
     int width = ceil(height / sceneRatio(ui->view->scene()->itemsBoundingRect()));
     ui->width->blockSignals(true);
@@ -688,7 +757,8 @@ void ExportUi::updateWidthFromHeight(int height)
     ui->width->blockSignals(false);
 }
 
-void ExportUi::updateHightFromWidth(int width)
+void
+ExportUi::updateHightFromWidth(int width)
 {
     int height = ceil(width * sceneRatio(ui->view->scene()->itemsBoundingRect()));
     ui->height->blockSignals(true);

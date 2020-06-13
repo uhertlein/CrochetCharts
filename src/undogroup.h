@@ -30,12 +30,11 @@ public:
     UndoGroup(QObject* parent = 0);
 
     void addStack(QUndoStack* stack);
-    
+
 signals:
     void isModified(bool clean);
-    
+
 private slots:
     void checkAllCleanStates();
-
 };
-#endif //UNDOGROUP_H
+#endif  // UNDOGROUP_H

@@ -29,25 +29,26 @@
 #include <QColorDialog>
 #include "stitchlibrary.h"
 
-
-SettingsUi::SettingsUi(QWidget *parent)
-    : QDialog(parent), stitchColorUpdated(false),
-    ui(new Ui::SettingsDialog)
+SettingsUi::SettingsUi(QWidget* parent)
+    : QDialog(parent)
+    , stitchColorUpdated(false)
+    , ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
 
-    //in case the form gets saved on the wrong tab.
+    // in case the form gets saved on the wrong tab.
     ui->tabWidget->setCurrentIndex(0);
 
 #ifdef Q_WS_MAC
     this->setWindowTitle(tr("Preferences"));
 #else
     this->setWindowTitle(tr("Options"));
-#endif //Q_WS_MAC
+#endif  // Q_WS_MAC
 
-    connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(buttonClicked(QAbstractButton*)));
+    connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)),
+            SLOT(buttonClicked(QAbstractButton*)));
 
-    //TODO: add later for expanded use of software.
+    // TODO: add later for expanded use of software.
     ui->showStitchWrongSide->hide();
     ui->showStitchWrongSideLbl->hide();
     ui->colorLegendSortBy->hide();
@@ -55,9 +56,11 @@ SettingsUi::SettingsUi(QWidget *parent)
 
     setupDialogWidgets();
 
-    for(int i = 0; i < ui->tabWidget->count(); ++i) {
-        foreach(QObject *obj, ui->tabWidget->widget(i)->children()) {
-            if(isSettingsWidget(obj))
+    for (int i = 0; i < ui->tabWidget->count(); ++i)
+    {
+        foreach (QObject* obj, ui->tabWidget->widget(i)->children())
+        {
+            if (isSettingsWidget(obj))
                 load(obj);
         }
     }
@@ -69,12 +72,16 @@ SettingsUi::~SettingsUi()
     ui = 0;
 }
 
-void SettingsUi::buttonClicked(QAbstractButton *button)
+void
+SettingsUi::buttonClicked(QAbstractButton* button)
 {
-    if(ui->buttonBox->buttonRole(button) ==  QDialogButtonBox::ResetRole) {
-        for(int i = 0; i < ui->tabWidget->count(); ++i) {
-            foreach(QObject *obj, ui->tabWidget->widget(i)->children()) {
-                if(isSettingsWidget(obj))
+    if (ui->buttonBox->buttonRole(button) == QDialogButtonBox::ResetRole)
+    {
+        for (int i = 0; i < ui->tabWidget->count(); ++i)
+        {
+            foreach (QObject* obj, ui->tabWidget->widget(i)->children())
+            {
+                if (isSettingsWidget(obj))
                     loadDefualt(obj);
             }
         }
@@ -82,16 +89,19 @@ void SettingsUi::buttonClicked(QAbstractButton *button)
     }
 }
 
-int SettingsUi::exec()
+int
+SettingsUi::exec()
 {
     int retValue = QDialog::exec();
 
-    if(retValue != QDialog::Accepted)
+    if (retValue != QDialog::Accepted)
         return retValue;
 
-    for(int i = 0; i < ui->tabWidget->count(); ++i) {
-        foreach(QObject *obj, ui->tabWidget->widget(i)->children()) {
-            if(isSettingsWidget(obj))
+    for (int i = 0; i < ui->tabWidget->count(); ++i)
+    {
+        foreach (QObject* obj, ui->tabWidget->widget(i)->children())
+        {
+            if (isSettingsWidget(obj))
                 save(obj);
         }
     }
@@ -100,91 +110,123 @@ int SettingsUi::exec()
     return retValue;
 }
 
-void SettingsUi::load(QObject *w)
+void
+SettingsUi::load(QObject* w)
 {
     QVariant value = Settings::inst()->value(w->objectName());
 
-    if(w->inherits("QLineEdit")) {
+    if (w->inherits("QLineEdit"))
+    {
         qobject_cast<QLineEdit*>(w)->setText(value.toString());
-    } else if (w->inherits("QCheckBox")) {
+    }
+    else if (w->inherits("QCheckBox"))
+    {
         qobject_cast<QCheckBox*>(w)->setChecked(value.toBool());
-    } else if (w->inherits("QSpinBox")) {
+    }
+    else if (w->inherits("QSpinBox"))
+    {
         qobject_cast<QSpinBox*>(w)->setValue(value.toInt());
-    } else if (w->inherits("QComboBox")) {
-        QComboBox *cb = qobject_cast<QComboBox*>(w);
+    }
+    else if (w->inherits("QComboBox"))
+    {
+        QComboBox* cb = qobject_cast<QComboBox*>(w);
         int index = cb->findText(value.toString());
         cb->setCurrentIndex(index);
-    } else {
+    }
+    else
+    {
         qWarning() << "Trying to load unknown settings type";
     }
-
 }
 
-void SettingsUi::loadDefualt(QObject *w)
+void
+SettingsUi::loadDefualt(QObject* w)
 {
     QVariant value = Settings::inst()->defaultValue(w->objectName());
 
-    if(w->inherits("QLineEdit")) {
+    if (w->inherits("QLineEdit"))
+    {
         qobject_cast<QLineEdit*>(w)->setText(value.toString());
-    } else if (w->inherits("QCheckBox")) {
+    }
+    else if (w->inherits("QCheckBox"))
+    {
         qobject_cast<QCheckBox*>(w)->setChecked(value.toBool());
-    } else if (w->inherits("QSpinBox")) {
+    }
+    else if (w->inherits("QSpinBox"))
+    {
         qobject_cast<QSpinBox*>(w)->setValue(value.toInt());
-    } else if (w->inherits("QComboBox")) {
-        QComboBox *cb = qobject_cast<QComboBox*>(w);
+    }
+    else if (w->inherits("QComboBox"))
+    {
+        QComboBox* cb = qobject_cast<QComboBox*>(w);
         int index = cb->findText(value.toString());
         cb->setCurrentIndex(index);
-    } else {
+    }
+    else
+    {
         qWarning() << "Trying to load unknown settings type";
     }
 }
 
-void SettingsUi::save(QObject *w)
+void
+SettingsUi::save(QObject* w)
 {
     QVariant value;
-    if(w->inherits("QLineEdit")) {
+    if (w->inherits("QLineEdit"))
+    {
         value = QVariant(qobject_cast<QLineEdit*>(w)->text());
-    } else if (w->inherits("QCheckBox")) {
+    }
+    else if (w->inherits("QCheckBox"))
+    {
         value = QVariant(qobject_cast<QCheckBox*>(w)->isChecked());
-    } else if (w->inherits("QSpinBox")) {
+    }
+    else if (w->inherits("QSpinBox"))
+    {
         value = QVariant(qobject_cast<QSpinBox*>(w)->value());
-    } else if (w->inherits("QComboBox")) {
+    }
+    else if (w->inherits("QComboBox"))
+    {
         value = QVariant(qobject_cast<QComboBox*>(w)->currentText());
-    } else {
+    }
+    else
+    {
         qWarning() << "Trying to save unknown settings type";
     }
 
-    if(value.isValid())
+    if (value.isValid())
         Settings::inst()->setValue(w->objectName(), value);
 }
 
-bool SettingsUi::isSettingsWidget(QObject *obj)
+bool
+SettingsUi::isSettingsWidget(QObject* obj)
 {
-    if(obj->inherits("QLineEdit"))
+    if (obj->inherits("QLineEdit"))
         return true;
-    if(obj->inherits("QCheckBox"))
+    if (obj->inherits("QCheckBox"))
         return true;
-    if(obj->inherits("QSpinBox"))
+    if (obj->inherits("QSpinBox"))
         return true;
-    if(obj->inherits("QComboBox"))
+    if (obj->inherits("QComboBox"))
         return true;
 
     return false;
 }
 
-void SettingsUi::selectFolder()
+void
+SettingsUi::selectFolder()
 {
     QString defLoc = Settings::inst()->value("fileLocation").toString();
 
     QString folder = QFileDialog::getExistingDirectory(this, tr("Select Default Folder"), defLoc);
 
-    if(folder.isEmpty())
+    if (folder.isEmpty())
         return;
 
     ui->fileLocation->setText(folder);
 }
 
-QPixmap SettingsUi::drawColorBox(QColor color, QSize size)
+QPixmap
+SettingsUi::drawColorBox(QColor color, QSize size)
 {
     QPixmap pix = QPixmap(size);
     QPainter p;
@@ -196,23 +238,30 @@ QPixmap SettingsUi::drawColorBox(QColor color, QSize size)
     return pix;
 }
 
-void SettingsUi::setColor()
+void
+SettingsUi::setColor()
 {
-    QPushButton *b = static_cast<QPushButton*>(sender());
+    QPushButton* b = static_cast<QPushButton*>(sender());
     QColor color = QColorDialog::getColor(mPrimaryColor, this, tr("Select Color"));
 
-    if (color.isValid()) {
-        if(b->objectName() == "primaryColorBttn") {
+    if (color.isValid())
+    {
+        if (b->objectName() == "primaryColorBttn")
+        {
             ui->primaryColorBttn->setIcon(QIcon(drawColorBox(QColor(color), QSize(32, 32))));
             mOriginalColor = mPrimaryColor;
             mNewColor = color;
             mPrimaryColor = color;
-        } else if(b->objectName() == "alternateColorBttn") {
+        }
+        else if (b->objectName() == "alternateColorBttn")
+        {
             ui->alternateColorBttn->setIcon(QIcon(drawColorBox(QColor(color), QSize(32, 32))));
             mOriginalColor = mAlternateColor;
             mNewColor = color;
             mAlternateColor = color;
-        } else if(b->objectName() == "dotColorBttn") {
+        }
+        else if (b->objectName() == "dotColorBttn")
+        {
             ui->dotColorBttn->setIcon(QIcon(drawColorBox(QColor(color), QSize(32, 32))));
             mDotColor = color;
         }
@@ -221,13 +270,14 @@ void SettingsUi::setColor()
     stitchColorUpdated = true;
 }
 
-void SettingsUi::setupDialogWidgets()
+void
+SettingsUi::setupDialogWidgets()
 {
-    //Application
-    //TODO: use auto completer to help fill in the default file location field.
+    // Application
+    // TODO: use auto completer to help fill in the default file location field.
     connect(ui->folderSelector, SIGNAL(clicked()), SLOT(selectFolder()));
 
-    //Charts
+    // Charts
     connect(ui->primaryColorBttn, SIGNAL(clicked()), SLOT(setColor()));
     connect(ui->alternateColorBttn, SIGNAL(clicked()), SLOT(setColor()));
     connect(ui->dotColorBttn, SIGNAL(clicked()), SLOT(setColor()));
@@ -246,35 +296,36 @@ void SettingsUi::setupDialogWidgets()
     ui->dotColorBttn->setIcon(QIcon(drawColorBox(QColor(dotColor), QSize(32, 32))));
     mDotColor = dotColor;
 
-    //Legends
+    // Legends
     QStringList list;
     list << tr("Age") << tr("Color") << tr("Quantity");
     ui->colorLegendSortBy->addItems(list);
-
 }
 
-void SettingsUi::saveDialogWidgets()
+void
+SettingsUi::saveDialogWidgets()
 {
-    //Application
+    // Application
 
-    //Charts
+    // Charts
     Settings::inst()->setValue("stitchPrimaryColor", QVariant(mPrimaryColor.name()));
     Settings::inst()->setValue("stitchAlternateColor", QVariant(mAlternateColor.name()));
     Settings::inst()->setValue("chartIndicatorColor", QVariant(mDotColor.name()));
 
     StitchLibrary::inst()->reloadAllStitchIcons();
 
-    //Instructions
+    // Instructions
     Settings::inst()->setValue("syntaxColor", QVariant(mKeywordColor.name()));
 
-    //Legends
+    // Legends
 }
 
-void SettingsUi::resetDialogWidgets()
+void
+SettingsUi::resetDialogWidgets()
 {
-    //Application
+    // Application
 
-    //Charts
+    // Charts
     QString color = Settings::inst()->defaultValue("stitchPrimaryColor").toString();
     ui->primaryColorBttn->setIcon(QIcon(drawColorBox(QColor(color), QSize(32, 32))));
     mPrimaryColor = color;
@@ -287,5 +338,5 @@ void SettingsUi::resetDialogWidgets()
     ui->dotColorBttn->setIcon(QIcon(drawColorBox(QColor(color), QSize(32, 32))));
     mDotColor = color;
 
-    //Legends
+    // Legends
 }

@@ -31,36 +31,68 @@ class Cell : public QGraphicsSvgItem
     friend class SaveFile;
     friend class File_v1;
     friend class File_v2;
+
 public:
+    enum
+    {
+        Type = UserType + 1
+    };
 
-    enum { Type = UserType + 1 };
-    
-    explicit Cell(QGraphicsItem *parent = 0);
+    explicit Cell(QGraphicsItem* parent = 0);
     ~Cell();
-    
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
-    int type () const { return Cell::Type; }
 
-    bool event(QEvent *e);
+    QRectF boundingRect() const;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
+    int
+    type() const
+    {
+        return Cell::Type;
+    }
+
+    bool event(QEvent* e);
 
     bool isGrouped();
 
-    void setHighlight(bool state) { mHighlight = state; update(); }
-    Cell* copy(Cell *cell = 0);
-    
-    void setBgColor(QColor c = QColor(Qt::white));
-    QColor bgColor() const { return mBgColor; }
-    
-    void setColor(QColor c = QColor(Qt::black));
-    QColor color() const { return mColor; }
+    void
+    setHighlight(bool state)
+    {
+        mHighlight = state;
+        update();
+    }
+    Cell* copy(Cell* cell = 0);
 
-    void setStitch(Stitch *s);
+    void setBgColor(QColor c = QColor(Qt::white));
+    QColor
+    bgColor() const
+    {
+        return mBgColor;
+    }
+
+    void setColor(QColor c = QColor(Qt::black));
+    QColor
+    color() const
+    {
+        return mColor;
+    }
+
+    void setStitch(Stitch* s);
     void setStitch(QString s);
-    Stitch* stitch() const { return mStitch; }
-	
-	unsigned int layer() { return mLayer; }
-	void setLayer(unsigned int layer) { mLayer = layer; }
+    Stitch*
+    stitch() const
+    {
+        return mStitch;
+    }
+
+    unsigned int
+    layer()
+    {
+        return mLayer;
+    }
+    void
+    setLayer(unsigned int layer)
+    {
+        mLayer = layer;
+    }
 
     /**
      * The stitch name.
@@ -68,21 +100,20 @@ public:
     QString name();
 
     void useAlternateRenderer(bool useAlt);
-    
+
 signals:
     void stitchChanged(QString oldSt, QString newSt);
     void colorChanged(QString oldColor, QString newColor);
     void bgColorChanged(QString oldColor, QString newColor);
-    
+
 private:
-	//the layer of the cell
-	unsigned int mLayer;
+    // the layer of the cell
+    unsigned int mLayer;
     QColor mBgColor;
     QColor mColor;
     QPointer<Stitch> mStitch;
 
     bool mHighlight;
-
 };
 
-#endif // CELL_H
+#endif  // CELL_H

@@ -41,39 +41,44 @@
 #include <QLayout>
 #include <QClipboard>
 
-CrochetTab::CrochetTab(Scene::ChartStyle style, int defEditMode, QString defStitch,
-                       QColor defFgColor, QColor defBgColor, QWidget* parent)
-        : QWidget(parent),
-        ui(new Ui::OptionsBar),
-        mChartStyle(style)
+CrochetTab::CrochetTab(Scene::ChartStyle style,
+                       int defEditMode,
+                       QString defStitch,
+                       QColor defFgColor,
+                       QColor defBgColor,
+                       QWidget* parent)
+    : QWidget(parent)
+    , ui(new Ui::OptionsBar)
+    , mChartStyle(style)
 {
     QVBoxLayout* l = new QVBoxLayout(this);
     QWidget* top = new QWidget(this);
     l->addWidget(top);
-    
+
     QVBoxLayout* tl = new QVBoxLayout(top);
     top->setLayout(tl);
     top->setContentsMargins(0, 0, 0, 0);
 
-    QPoint centerOn = QPoint(0,0);
-    
+    QPoint centerOn = QPoint(0, 0);
+
     mView = new ChartView(top);
     mScene = new Scene(mView);
-	mView->setAcceptDrops(true);
-	setAcceptDrops(true);
-    mScene->setSceneRect(-2500,-2500, 5000,5000);
+    mView->setAcceptDrops(true);
+    setAcceptDrops(true);
+    mScene->setSceneRect(-2500, -2500, 5000, 5000);
     centerOn = QPoint(0, 0);
 
     mTextView = new TextView(this, mScene);
 
-    connect(mView, SIGNAL(scrollBarChanged(int,int)), mScene, SLOT(updateRubberBand(int,int)));
-    
-    connect(mScene, SIGNAL(stitchChanged(QString,QString)), SLOT(stitchChanged(QString,QString)));
-    connect(mScene, SIGNAL(colorChanged(QString,QString)), SLOT(colorChanged(QString,QString)));
+    connect(mView, SIGNAL(scrollBarChanged(int, int)), mScene, SLOT(updateRubberBand(int, int)));
+
+    connect(mScene, SIGNAL(stitchChanged(QString, QString)), SLOT(stitchChanged(QString, QString)));
+    connect(mScene, SIGNAL(colorChanged(QString, QString)), SLOT(colorChanged(QString, QString)));
     connect(mScene, SIGNAL(rowEdited(bool)), SIGNAL(tabModified(bool)));
     connect(mScene, SIGNAL(guidelinesUpdated(Guidelines)), SIGNAL(guidelinesUpdated(Guidelines)));
-	connect(mScene, SIGNAL(layersChanged(QList<ChartLayer*>&, ChartLayer*)), this, SLOT(layersChangedSlot(QList<ChartLayer*>&, ChartLayer*)));
-	
+    connect(mScene, SIGNAL(layersChanged(QList<ChartLayer*>&, ChartLayer*)), this,
+            SLOT(layersChangedSlot(QList<ChartLayer*>&, ChartLayer*)));
+
     mView->setScene(mScene);
     QPoint pt = mView->mapFromScene(centerOn);
     mView->centerOn(pt.x(), pt.y());
@@ -82,28 +87,28 @@ CrochetTab::CrochetTab(Scene::ChartStyle style, int defEditMode, QString defStit
     mScene->setEditStitch(defStitch);
     mScene->setEditFgColor(defFgColor);
     mScene->setEditBgColor(defBgColor);
-    
+
     QWidget* w = new QWidget(top);
     ui->setupUi(w);
     tl->addWidget(mView);
     tl->addWidget(w);
 
     ui->horizontalLayout->setMargin(0);
-       
+
     l->setMargin(0);
     tl->setMargin(0);
     w->setContentsMargins(0, 0, 0, 0);
-    
+
     setContentsMargins(0, 0, 0, 0);
 
-    mView->setMinimumSize(width(), height()*2/3);
-    
+    mView->setMinimumSize(width(), height() * 2 / 3);
+
     mView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
     mRowEditDialog = new RowEditDialog(scene(), mTextView, this);
     ui->verticalLayout->insertWidget(0, mRowEditDialog);
     mRowEditDialog->hide();
-   
+
     connect(ui->copyInstructions, SIGNAL(clicked()), SLOT(copyInstructions()));
 
     connect(ui->zoom, SIGNAL(valueChanged(int)), SLOT(zoomChanged(int)));
@@ -112,69 +117,78 @@ CrochetTab::CrochetTab(Scene::ChartStyle style, int defEditMode, QString defStit
 
 CrochetTab::~CrochetTab()
 {
-	delete ui;
+    delete ui;
 }
 
-QStringList CrochetTab::editModes()
+QStringList
+CrochetTab::editModes()
 {
     return mScene->modes();
 }
 
-int CrochetTab::editMode() const
+int
+CrochetTab::editMode() const
 {
-    return (int) mScene->editMode();
+    return (int)mScene->editMode();
 }
 
-void CrochetTab::setEditMode(int mode)
+void
+CrochetTab::setEditMode(int mode)
 {
     mScene->setEditMode((Scene::EditMode)mode);
 }
 
-void CrochetTab::setSelectMode(Scene::SelectMode mode)
+void
+CrochetTab::setSelectMode(Scene::SelectMode mode)
 {
-	mScene->setSelectMode(mode);
+    mScene->setSelectMode(mode);
 }
 
-Scene::SelectMode CrochetTab::selectMode() const
+Scene::SelectMode
+CrochetTab::selectMode() const
 {
-	return mScene->selectMode();
+    return mScene->selectMode();
 }
 
-void CrochetTab::renderChartSelected(QPainter* painter, QRectF rect)
+void
+CrochetTab::renderChartSelected(QPainter* painter, QRectF rect)
 {
-	
     QRectF r = mScene->selectedItemsBoundingRect(mScene->selectedItems());
-	//make all unselected items invisible
-	QList<QGraphicsItem*> selected = mScene->selectedItems();
-	foreach(QGraphicsItem* item, mScene->items()) {
-		item->setVisible(false);
-	}
-	foreach(QGraphicsItem* item, selected) {
-		item->setVisible(true);
-	}
+    // make all unselected items invisible
+    QList<QGraphicsItem*> selected = mScene->selectedItems();
+    foreach (QGraphicsItem* item, mScene->items())
+    {
+        item->setVisible(false);
+    }
+    foreach (QGraphicsItem* item, selected)
+    {
+        item->setVisible(true);
+    }
     mScene->render(painter, rect, r);
 
     mView->centerOn(r.center());
-	
-	//and make them visible once more
-	foreach(QGraphicsItem* item, mScene->items()) {
-		item->setVisible(true);
-	}
+
+    // and make them visible once more
+    foreach (QGraphicsItem* item, mScene->items())
+    {
+        item->setVisible(true);
+    }
 }
 
-void CrochetTab::renderChart(QPainter* painter, QRectF rect)
+void
+CrochetTab::renderChart(QPainter* painter, QRectF rect)
 {
-
     QRectF r = mScene->itemsBoundingRect();
     mScene->render(painter, rect, r);
 
     mView->centerOn(r.center());
 }
 
-void CrochetTab::stitchChanged(QString oldSt, QString newSt)
+void
+CrochetTab::stitchChanged(QString oldSt, QString newSt)
 {
-
-    if (!oldSt.isEmpty()) {
+    if (!oldSt.isEmpty())
+    {
         mPatternStitches->operator[](oldSt)--;
         if (mPatternStitches->operator[](oldSt) == 0)
             mPatternStitches->remove(oldSt);
@@ -188,52 +202,60 @@ void CrochetTab::stitchChanged(QString oldSt, QString newSt)
     emit chartStitchChanged();
 }
 
-void CrochetTab::colorChanged(QString oldColor, QString newColor)
+void
+CrochetTab::colorChanged(QString oldColor, QString newColor)
 {
-
-    if (!oldColor.isEmpty()) {
+    if (!oldColor.isEmpty())
+    {
         mPatternColors->operator[](oldColor)["count"]--;
         if (mPatternColors->operator[](oldColor)["count"] == 0)
             mPatternColors->remove(oldColor);
     }
 
-    if (!mPatternColors->contains(newColor)) {
+    if (!mPatternColors->contains(newColor))
+    {
         QMap<QString, qint64> properties;
         properties["added"] = QDateTime::currentDateTime().toMSecsSinceEpoch();
         properties["count"] = 1;
         mPatternColors->insert(newColor, properties);
-    } else
+    }
+    else
         mPatternColors->operator[](newColor)["count"]++;
 
     emit chartColorChanged();
 }
 
-void CrochetTab::layersChangedSlot(QList<ChartLayer*>& layers, ChartLayer* selected)
+void
+CrochetTab::layersChangedSlot(QList<ChartLayer*>& layers, ChartLayer* selected)
 {
-	emit layersChanged(layers, selected);
+    emit layersChanged(layers, selected);
 }
 
-void CrochetTab::zoomIn()
+void
+CrochetTab::zoomIn()
 {
     mView->zoomIn();
 }
 
-void CrochetTab::zoomOut()
+void
+CrochetTab::zoomOut()
 {
     mView->zoomOut();
 }
 
-void CrochetTab::zoomChanged(int value)
+void
+CrochetTab::zoomChanged(int value)
 {
     mView->zoomLevel(value);
 }
 
-void CrochetTab::updateZoomLevel(int percent)
+void
+CrochetTab::updateZoomLevel(int percent)
 {
     int value = 100;
-    if(percent <= ui->zoom->maximum() && percent >= ui->zoom->minimum())
+    if (percent <= ui->zoom->maximum() && percent >= ui->zoom->minimum())
         value = percent;
-    else if(percent > ui->zoom->maximum())
+    else if (percent > ui->zoom->maximum())
         value = ui->zoom->maximum();
     else if (percent < ui->zoom->minimum())
         value = ui->zoom->minimum();
@@ -243,230 +265,272 @@ void CrochetTab::updateZoomLevel(int percent)
     ui->zoom->blockSignals(false);
 }
 
-QUndoStack* CrochetTab::undoStack()
+QUndoStack*
+CrochetTab::undoStack()
 {
     return mScene->undoStack();
 }
 
-void CrochetTab::createChart(Scene::ChartStyle style, int rows, int cols, QString defStitch, QSizeF rowSize, int increaseBy)
+void
+CrochetTab::createChart(
+    Scene::ChartStyle style, int rows, int cols, QString defStitch, QSizeF rowSize, int increaseBy)
 {
-    if(style == Scene::Rows) {
+    if (style == Scene::Rows)
+    {
         mScene->createRowsChart(rows, cols, defStitch, rowSize);
 
         mView->centerOn(mView->mapFromScene(mScene->itemsBoundingRect().bottomRight()));
         QPointF pt = mScene->itemsBoundingRect().topLeft();
         mView->ensureVisible(pt.x(), pt.y(), 50, 50);
-    } else if(style == Scene::Rounds) {
+    }
+    else if (style == Scene::Rounds)
+    {
         mScene->createRoundsChart(rows, cols, defStitch, rowSize, increaseBy);
-    } else if(style == Scene::Blank) {
+    }
+    else if (style == Scene::Blank)
+    {
         mScene->createBlankChart();
     }
-    
-    mRowEditDialog->updateRowList();    
+
+    mRowEditDialog->updateRowList();
 }
 
-void CrochetTab::setEditBgColor(QColor color)
+void
+CrochetTab::setEditBgColor(QColor color)
 {
     mScene->setEditBgColor(color);
 }
 
-void CrochetTab::setEditFgColor(QColor color)
+void
+CrochetTab::setEditFgColor(QColor color)
 {
     mScene->setEditFgColor(color);
 }
 
-void CrochetTab::setEditStitch(QString stitch)
+void
+CrochetTab::setEditStitch(QString stitch)
 {
     mScene->setEditStitch(stitch);
 }
 
-void CrochetTab::copyInstructions()
+void
+CrochetTab::copyInstructions()
 {
     QClipboard* clipboard = QApplication::clipboard();
 
     QString instructions = mTextView->copyInstructions();
     clipboard->setText(instructions);
-    
 }
 
-void CrochetTab::setShowChartCenter(bool state)
+void
+CrochetTab::setShowChartCenter(bool state)
 {
-
     mScene->setShowChartCenter(state);
 
     emit tabModified(true);
 }
 
-void CrochetTab::sceneUpdate()
+void
+CrochetTab::sceneUpdate()
 {
     mScene->update();
 }
 
-void CrochetTab::clearSelection()
+void
+CrochetTab::clearSelection()
 {
-
     mScene->clearSelection();
     mScene->update();
-
 }
 
-void CrochetTab::showRowEditor(bool state)
+void
+CrochetTab::showRowEditor(bool state)
 {
-    if(state) {
+    if (state)
+    {
         mRowEditDialog->show();
-    } else {
+    }
+    else
+    {
         mRowEditDialog->hide();
     }
-    
-	//why clear the selection here???
-    //mScene->clearSelection();
+
+    // why clear the selection here???
+    // mScene->clearSelection();
 }
 
-void CrochetTab::replaceStitches(QString original, QString replacement)
+void
+CrochetTab::replaceStitches(QString original, QString replacement)
 {
     mScene->replaceStitches(original, replacement);
 }
 
-void CrochetTab::replaceColor(QColor original, QColor replacement, int selection)
+void
+CrochetTab::replaceColor(QColor original, QColor replacement, int selection)
 {
     mScene->replaceColor(original, replacement, selection);
 }
 
-void CrochetTab::updateRows()
+void
+CrochetTab::updateRows()
 {
     mRowEditDialog->updateRowList();
 }
 
-void CrochetTab::alignSelection(int alignmentStyle)
+void
+CrochetTab::alignSelection(int alignmentStyle)
 {
-    mScene->alignSelection(alignmentStyle);   
+    mScene->alignSelection(alignmentStyle);
 }
 
-void CrochetTab::distributeSelection(int distributionStyle)
+void
+CrochetTab::distributeSelection(int distributionStyle)
 {
     mScene->distributeSelection(distributionStyle);
 }
 
-void CrochetTab::arrangeGrid(QSize grid, QSize alignment, QSize spacing, bool useSelection)
+void
+CrochetTab::arrangeGrid(QSize grid, QSize alignment, QSize spacing, bool useSelection)
 {
     mScene->arrangeGrid(grid, alignment, spacing, useSelection);
 }
 
-void CrochetTab::addLayer(const QString& layer)
+void
+CrochetTab::addLayer(const QString& layer)
 {
-	mScene->addLayerUndoable(layer);
+    mScene->addLayerUndoable(layer);
 }
 
-void CrochetTab::addLayer(const QString& layer, unsigned int uid)
+void
+CrochetTab::addLayer(const QString& layer, unsigned int uid)
 {
-	mScene->addLayerUndoable(layer, uid);
+    mScene->addLayerUndoable(layer, uid);
 }
 
-void CrochetTab::removeSelectedLayer()
+void
+CrochetTab::removeSelectedLayer()
 {
-	mScene->removeSelectedLayer();
+    mScene->removeSelectedLayer();
 }
 
-void CrochetTab::mergeLayer(unsigned int from, unsigned int to)
+void
+CrochetTab::mergeLayer(unsigned int from, unsigned int to)
 {
-	mScene->mergeLayer(from, to);
+    mScene->mergeLayer(from, to);
 }
 
-void CrochetTab::selectLayer(unsigned int uid)
+void
+CrochetTab::selectLayer(unsigned int uid)
 {
-	mScene->selectLayer(uid);
+    mScene->selectLayer(uid);
 }
 
-void CrochetTab::editedLayer(ChartLayer* layer)
+void
+CrochetTab::editedLayer(ChartLayer* layer)
 {
-	mScene->editedLayer(layer);
+    mScene->editedLayer(layer);
 }
 
-void CrochetTab::copy(int direction)
+void
+CrochetTab::copy(int direction)
 {
     mScene->copy(direction);
 }
 
-void CrochetTab::mirror(int direction)
+void
+CrochetTab::mirror(int direction)
 {
     mScene->mirror(direction);
 }
 
-void CrochetTab::rotate(qreal degrees)
+void
+CrochetTab::rotate(qreal degrees)
 {
     mScene->rotate(degrees);
 }
 
-void CrochetTab::resizeScene(QRectF rectangle)
+void
+CrochetTab::resizeScene(QRectF rectangle)
 {
-	mScene->resizeScene(rectangle);
+    mScene->resizeScene(rectangle);
 }
 
-void CrochetTab::copy()
+void
+CrochetTab::copy()
 {
     mScene->copy();
 }
 
-void CrochetTab::cut()
+void
+CrochetTab::cut()
 {
     mScene->cut();
 }
 
-void CrochetTab::paste()
+void
+CrochetTab::paste()
 {
     mScene->paste();
 }
 
-void CrochetTab::insertImage(const QString& filename, QPointF pos)
+void
+CrochetTab::insertImage(const QString& filename, QPointF pos)
 {
-	mScene->insertImage(filename, pos);
+    mScene->insertImage(filename, pos);
 }
 
-void CrochetTab::group()
+void
+CrochetTab::group()
 {
     mScene->group();
 }
 
-void CrochetTab::ungroup()
+void
+CrochetTab::ungroup()
 {
     mScene->ungroup();
 }
 
-bool CrochetTab::hasChartCenter()
+bool
+CrochetTab::hasChartCenter()
 {
     return mScene->showChartCenter();
 }
 
-void CrochetTab::setChartCenter(bool state)
+void
+CrochetTab::setChartCenter(bool state)
 {
     mScene->setShowChartCenter(state);
 }
 
-bool CrochetTab::hasGuidelines()
+bool
+CrochetTab::hasGuidelines()
 {
-    if(mScene->guidelines().type() != tr("None"))
+    if (mScene->guidelines().type() != tr("None"))
         return true;
     return false;
 }
 
-void CrochetTab::propertiesUpdate(QString property, QVariant newValue)
+void
+CrochetTab::propertiesUpdate(QString property, QVariant newValue)
 {
     mScene->propertiesUpdate(property, newValue);
 }
 
-void CrochetTab::updateDefaultStitchColor(QColor originalColor, QColor newColor)
+void
+CrochetTab::updateDefaultStitchColor(QColor originalColor, QColor newColor)
 {
     mScene->updateDefaultStitchColor(originalColor, newColor);
 }
 
-QList<QGraphicsItem*> CrochetTab::selectedItems()
+QList<QGraphicsItem*>
+CrochetTab::selectedItems()
 {
-
     return mScene->selectedItems();
 }
 
-void CrochetTab::setGuidelinesType(QString guide)
+void
+CrochetTab::setGuidelinesType(QString guide)
 {
     mScene->setGuidelinesType(guide);
 }
-

@@ -33,11 +33,12 @@
 Settings* Settings::mInstance = NULL;
 
 // singleton constructor:
-Settings* Settings::inst()
+Settings*
+Settings::inst()
 {
-   if (!mInstance)   // Only allow one instance of the settings.
-      mInstance = new Settings();
-   return mInstance;
+    if (!mInstance)  // Only allow one instance of the settings.
+        mInstance = new Settings();
+    return mInstance;
 }
 
 Settings::Settings()
@@ -51,60 +52,65 @@ Settings::~Settings()
     setValue("recentFiles", QVariant(mRecentFiles));
 }
 
-void Settings::setValue(const QString &key, const QVariant &value)
+void
+Settings::setValue(const QString& key, const QVariant& value)
 {
-    //only save values that aren't defaults, this allows for undefined values to change with updates,
-    //while defined values are fixed.
-    if(mValueList[key] != value)
+    // only save values that aren't defaults, this allows for undefined values to change with
+    // updates, while defined values are fixed.
+    if (mValueList[key] != value)
         mSettings.setValue(key, value);
     else
         mSettings.remove(key);
-
 }
 
-QVariant Settings::value(const QString &key) const
+QVariant
+Settings::value(const QString& key) const
 {
     return mSettings.value(key, defaultValue(key));
 }
 
-QVariant Settings::defaultValue ( const QString& key ) const
+QVariant
+Settings::defaultValue(const QString& key) const
 {
     QVariant value = mValueList.value(key);
-    if(!value.isValid())
+    if (!value.isValid())
         qWarning() << "There is no default value for the option:" << key;
     return value;
 }
 
-void Settings::setupValueList() {
-
-    //look up values for setting server/webpage for license and update testing.
-    mValueList["updatePage"] = QVariant(AppInfo::inst()->liveUpdatePage + AppInfo::inst()->liveUpdatePageVals);
+void
+Settings::setupValueList()
+{
+    // look up values for setting server/webpage for license and update testing.
+    mValueList["updatePage"]
+        = QVariant(AppInfo::inst()->liveUpdatePage + AppInfo::inst()->liveUpdatePageVals);
     mValueList["lastUsed"] = QVariant("");
-    
-    //license information
+
+    // license information
     mValueList["firstName"] = QVariant("");
     mValueList["lastName"] = QVariant("");
     mValueList["email"] = QVariant("");
     mValueList["serialNumber"] = QVariant("");
 
     QString userDocs = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    
-    //general application options
+
+    // general application options
     mValueList["checkForUpdates"] = QVariant(true);
     mValueList["fileLocation"] = QVariant(userDocs);
 
     mValueList["maxRecentFiles"] = QVariant(5);
     mValueList["recentFiles"] = QVariant(QStringList());
-    
+
     mValueList["geometry"] = QVariant("");
-    mValueList["windowState"] = QVariant(" "); //use a space because it works for the comparison when saving variables.
-    
+    mValueList["windowState"]
+        = QVariant(" ");  // use a space because it works for the comparison when saving variables.
+
     mValueList["generateTextRepeats"] = QVariant(true);
     mValueList["showChartCenter"] = QVariant(false);
 
     mValueList["pasteOffset"] = QVariant(tr("On mouse cursor"));
-    
-    //charts options
+
+    // charts options
     mValueList["defaultStitch"] = QVariant("ch");
     mValueList["rowCount"] = QVariant(15);
     mValueList["stitchCount"] = QVariant(15);
@@ -112,7 +118,7 @@ void Settings::setupValueList() {
     mValueList["cellWidth"] = QVariant(64);
     mValueList["chartStyle"] = QVariant(tr("Blank"));
     mValueList["increaseBy"] = QVariant(12);
-    
+
     mValueList["useAltColors"] = QVariant(true);
     mValueList["stitchPrimaryColor"] = QVariant("#000000");
     mValueList["stitchAlternateColor"] = QVariant("#3366aa");
@@ -120,52 +126,52 @@ void Settings::setupValueList() {
     mValueList["chartRowIndicator"] = QVariant(tr("Dots and Text"));
     mValueList["chartIndicatorColor"] = QVariant("#c00000");
     mValueList["showIndicatorOutline"] = QVariant(false);
-	
-	//tools options
-	mValueList["replaceStitchWithPress"] = QVariant(true);
+
+    // tools options
+    mValueList["replaceStitchWithPress"] = QVariant(true);
     mValueList["centerNewStitchOnMouse"] = QVariant(true);
     mValueList["pasteOnMouseLocation"] = QVariant(true);
-	mValueList["rotateAroundCenter"] = QVariant(true);
-	mValueList["scaleAroundCenter"] = QVariant(true);
-	
-    //stitch legend options
+    mValueList["rotateAroundCenter"] = QVariant(true);
+    mValueList["scaleAroundCenter"] = QVariant(true);
+
+    // stitch legend options
     mValueList["stitchLegendColumnCount"] = QVariant(2);
     mValueList["showStitchDescription"] = QVariant(true);
     mValueList["showStitchWrongSide"] = QVariant(false);
     mValueList["showStitchTitle"] = QVariant(true);
     mValueList["showStitchBorder"] = QVariant(true);
 
-    //color legend options
+    // color legend options
     mValueList["colorPrefix"] = QVariant("C");
     mValueList["colorLegendColumnCount"] = QVariant(2);
     mValueList["colorLegendSortBy"] = QVariant(tr("Age"));
     mValueList["showColorHexValues"] = QVariant(false);
     mValueList["showColorBorder"] = QVariant(true);
     mValueList["showColorTitle"] = QVariant(true);
-
 }
 
-void Settings::addRecentFile(QString fileName)
+void
+Settings::addRecentFile(QString fileName)
 {
-
-    if(mRecentFiles.contains(fileName))
+    if (mRecentFiles.contains(fileName))
         mRecentFiles.removeAll(fileName);
     mRecentFiles.prepend(fileName);
     setValue("recentFiles", QVariant(mRecentFiles));
 }
 
-void Settings::setRecentFiles(QStringList files)
+void
+Settings::setRecentFiles(QStringList files)
 {
     mRecentFiles = files;
     setValue("recentFiles", QVariant(mRecentFiles));
 }
 
-QString Settings::userSettingsFolder()
+QString
+Settings::userSettingsFolder()
 {
     QString folder = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
-        + "/data/organization/application";
-    if(!QFileInfo(folder).exists())
+                     + "/data/organization/application";
+    if (!QFileInfo(folder).exists())
         QDir(folder).mkpath(folder);
     return folder + "/";
 }
-

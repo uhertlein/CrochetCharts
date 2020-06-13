@@ -39,25 +39,66 @@
 
 #define SCENE_CLAMP_BORDER_SIZE 50
 
-class Guidelines {
+class Guidelines
+{
 public:
     explicit Guidelines();
 
-    QString type() const { return mType; }
-    void setType(QString type) { mType = type; }
+    QString
+    type() const
+    {
+        return mType;
+    }
+    void
+    setType(QString type)
+    {
+        mType = type;
+    }
 
-    int rows() const { return mRows; }
-    void setRows(int rows) { mRows = rows; }
-    int columns() const { return mColumns; }
-    void setColumns(int columns) { mColumns = columns; }
+    int
+    rows() const
+    {
+        return mRows;
+    }
+    void
+    setRows(int rows)
+    {
+        mRows = rows;
+    }
+    int
+    columns() const
+    {
+        return mColumns;
+    }
+    void
+    setColumns(int columns)
+    {
+        mColumns = columns;
+    }
 
-    int cellHeight() const { return mCellHeight; }
-    void setCellHeight(int cellHeight) { mCellHeight = cellHeight; }
-    int cellWidth() const { return mCellWidth; }
-    void setCellWidth(int cellWidth) { mCellWidth = cellWidth; }
+    int
+    cellHeight() const
+    {
+        return mCellHeight;
+    }
+    void
+    setCellHeight(int cellHeight)
+    {
+        mCellHeight = cellHeight;
+    }
+    int
+    cellWidth() const
+    {
+        return mCellWidth;
+    }
+    void
+    setCellWidth(int cellWidth)
+    {
+        mCellWidth = cellWidth;
+    }
 
-    bool operator==(const Guidelines &other) const;
-    bool operator!=(const Guidelines &other) const;
+    bool operator==(const Guidelines& other) const;
+    bool operator!=(const Guidelines& other) const;
 
 private:
     QString mType;
@@ -69,8 +110,8 @@ private:
     int mCellWidth;
 };
 
-Q_CORE_EXPORT QDataStream & operator<< ( QDataStream & stream, Guidelines & guidelines );
-QDebug operator<<(QDebug d, Guidelines & guidelines);
+Q_CORE_EXPORT QDataStream& operator<<(QDataStream& stream, Guidelines& guidelines);
+QDebug operator<<(QDebug d, Guidelines& guidelines);
 
 Q_DECLARE_METATYPE(Guidelines)
 
@@ -81,26 +122,58 @@ public:
     {
     }
 
-    QString style() { return mStyle; }
-    void setStyle(QString style) { mStyle = style; }
+    QString
+    style()
+    {
+        return mStyle;
+    }
+    void
+    setStyle(QString style)
+    {
+        mStyle = style;
+    }
 
-    QString html() { return mHtml; }
-    void setHtml(QString html) { mHtml = html; }
-	
-	QFont font() { return mFont; }
-	void setFont(const QFont& font) { mFont = font; }
-	
-	int size() { return mSize; }
-	void setSize(int size) { mSize = size; }
-	
+    QString
+    html()
+    {
+        return mHtml;
+    }
+    void
+    setHtml(QString html)
+    {
+        mHtml = html;
+    }
+
+    QFont
+    font()
+    {
+        return mFont;
+    }
+    void
+    setFont(const QFont& font)
+    {
+        mFont = font;
+    }
+
+    int
+    size()
+    {
+        return mSize;
+    }
+    void
+    setSize(int size)
+    {
+        mSize = size;
+    }
+
 private:
-	QFont mFont;
-	int mSize;
+    QFont mFont;
+    int mSize;
     QString mHtml;
     QString mStyle;
 };
 
-QDebug operator<<(QDebug d, IndicatorProperties & properties);
+QDebug operator<<(QDebug d, IndicatorProperties& properties);
 Q_DECLARE_METATYPE(IndicatorProperties)
 
 class QKeyEvent;
@@ -115,34 +188,36 @@ class Scene : public QGraphicsScene
     friend class TextView;
 
 public:
-
-    enum EditMode {
-        StitchEdit = 10, //place stitches on the chart.
-        ColorEdit = 11,       //place colors behind stitches.
+    enum EditMode
+    {
+        StitchEdit = 10,  // place stitches on the chart.
+        ColorEdit = 11,   // place colors behind stitches.
         RowEdit = 12,
-        RotationEdit = 14,       //adjust the angle of the
-        ScaleEdit = 15,       //scale the stitches.
+        RotationEdit = 14,  // adjust the angle of the
+        ScaleEdit = 15,     // scale the stitches.
         IndicatorEdit = 16
     };
 
-    enum ChartStyle {
-        Rows = 100, // flat chart rows calc'ed based on grid.
-        Rounds,     // round chart rows clac'ed with trig.
-        Blank       // start w/no sts and allow anything.
+    enum ChartStyle
+    {
+        Rows = 100,  // flat chart rows calc'ed based on grid.
+        Rounds,      // round chart rows clac'ed with trig.
+        Blank        // start w/no sts and allow anything.
     };
-	
-	enum SelectMode {
-		BoxSelect,
-		LassoSelect,
-		LineSelect,
-	};
-    
-    Scene(QObject *parent = 0);
+
+    enum SelectMode
+    {
+        BoxSelect,
+        LassoSelect,
+        LineSelect,
+    };
+
+    Scene(QObject* parent = 0);
     ~Scene();
 
-    //if you have the position in x, y use the overload function
+    // if you have the position in x, y use the overload function
     Cell* cell(int row, int column);
-    //convert x,y to rows, columns.
+    // convert x,y to rows, columns.
     Cell* cell(QPoint position);
 
     /**
@@ -150,29 +225,49 @@ public:
      * return QPoint(column, row);
      * if return = -1,-1 isVoid.
      */
-    QPoint indexOf(Cell *c);
-    
+    QPoint indexOf(Cell* c);
+
     int rowCount();
     int columnCount(int row);
     int maxColumnCount();
-	QList<ChartLayer*> layers();
+    QList<ChartLayer*> layers();
 
-	//returns the first selectable item that intersects with the given position
-	QGraphicsItem* selectableItemAt(const QPointF& pos);
+    // returns the first selectable item that intersects with the given position
+    QGraphicsItem* selectableItemAt(const QPointF& pos);
 
     void setEditMode(EditMode mode);
-    EditMode editMode() { return mMode; }
+    EditMode
+    editMode()
+    {
+        return mMode;
+    }
 
-	void setSelectMode(Scene::SelectMode mode);
-	Scene::SelectMode selectMode() const;
+    void setSelectMode(Scene::SelectMode mode);
+    Scene::SelectMode selectMode() const;
 
-    void setEditStitch(QString stitch) { mEditStitch = stitch; }
+    void
+    setEditStitch(QString stitch)
+    {
+        mEditStitch = stitch;
+    }
 
-    void setEditFgColor(QColor color) { mEditFgColor = color; }
-    void setEditBgColor(QColor color) { mEditBgColor = color; }
+    void
+    setEditFgColor(QColor color)
+    {
+        mEditFgColor = color;
+    }
+    void
+    setEditBgColor(QColor color)
+    {
+        mEditBgColor = color;
+    }
 
-    QUndoStack* undoStack() { return &mUndoStack; }
-    
+    QUndoStack*
+    undoStack()
+    {
+        return &mUndoStack;
+    }
+
     QStringList modes();
 
     void moveRowUp(int row);
@@ -183,7 +278,7 @@ public:
     void alignSelection(int alignmentStyle);
     void distributeSelection(int distributionStyle);
     void arrangeGrid(QSize grid, QSize alignment, QSize spacing, bool useSelection);
-    
+
     /**
      * directions: left = 1
      *             right = 2
@@ -191,9 +286,9 @@ public:
      *             down = 4
      */
     void mirror(int direction);
-	void copy(int direction);
+    void copy(int direction);
     void rotate(qreal degrees);
-	void resizeScene(QRectF sceneRect);
+    void resizeScene(QRectF sceneRect);
 
     void group();
     void ungroup();
@@ -201,19 +296,19 @@ public:
     void createRowsChart(int rows, int cols, QString defStitch, QSizeF rowSize);
     void createBlankChart();
 
-    void addItem(QGraphicsItem *item);
-    void removeItem(QGraphicsItem *item);
+    void addItem(QGraphicsItem* item);
+    void removeItem(QGraphicsItem* item);
 
-	//returns the current layer and creates a new layer if no layer is currently selected
-	ChartLayer* getCurrentLayer();
-	//returns the layer with the given id or creates a new one with that id if none exists yet
-	ChartLayer* getLayer(int uid);
+    // returns the current layer and creates a new layer if no layer is currently selected
+    ChartLayer* getCurrentLayer();
+    // returns the layer with the given id or creates a new one with that id if none exists yet
+    ChartLayer* getLayer(int uid);
 
     /**
      * Add a row of stitches to the grid.
      * If append == false, use the rowPos to insert the row into the grid.
      */
-    void gridAddRow(QList< Cell* > row, bool append = true, int before = 0);
+    void gridAddRow(QList<Cell*> row, bool append = true, int before = 0);
 
     /**
      * @brief propertiesUpdate - updates the properties of all selected items.
@@ -227,61 +322,60 @@ public:
     void updateDefaultStitchColor(QColor originalColor, QColor newColor);
 
     void updateSceneRect();
-	
-	/**
-	 * Snap to grid functions
-	 */
-	QPointF snapPositionToGrid(const QPointF& pos) const;
-	QPointF snapPositionToRows(const QPointF& pos) const;
-	QPointF snapPositionToRounds(const QPointF& pos) const;
-	QPointF snapPositionToTriangles(const QPointF& pos) const;
-	void snapGraphicsItemToGrid(QGraphicsItem& item);
-	
-public slots:    
-	void showProperties();
+
+    /**
+     * Snap to grid functions
+     */
+    QPointF snapPositionToGrid(const QPointF& pos) const;
+    QPointF snapPositionToRows(const QPointF& pos) const;
+    QPointF snapPositionToRounds(const QPointF& pos) const;
+    QPointF snapPositionToTriangles(const QPointF& pos) const;
+    void snapGraphicsItemToGrid(QGraphicsItem& item);
+
+public slots:
+    void showProperties();
     void copy();
     void cut();
     void paste();
-	void insertImage(const QString& filename, QPointF pos);
+    void insertImage(const QString& filename, QPointF pos);
     void deleteSelection();
-    
+
 protected:
-    void copyRecursively(QDataStream &stream, QList<QGraphicsItem*> items);
-    void pasteRecursively(QDataStream &stream, QList<QGraphicsItem*> *group);
+    void copyRecursively(QDataStream& stream, QList<QGraphicsItem*> items);
+    void pasteRecursively(QDataStream& stream, QList<QGraphicsItem*>* group);
 
     /**
      * This function removes a cell from the 'grid'. if the row is empty it removes the row too.
      */
-    void removeFromRows(Cell *c);
+    void removeFromRows(Cell* c);
 
-    
 public slots:
-	/**
-	 * layer manipulation functions
-	 */
-	void addLayer(const QString& name);
-	void addLayer(const QString& name, unsigned int uid);
-	void addLayer(ChartLayer* layer);
-	
-	void addLayerUndoable(const QString& name);
-	void addLayerUndoable(const QString& name, unsigned int uid);
-	
-	void removeLayer(unsigned int uid);
-	void removeLayerUndoable(unsigned int uid);
-	
-	void removeSelectedLayer();
-	
-	void selectLayer(unsigned int uid);
-	void editedLayer(ChartLayer* layer);
-	void refreshLayers();
-	
-	void mergeLayer(unsigned int from, unsigned int to);
-	/**
-	 * row manipulation functions
-	 */
+    /**
+     * layer manipulation functions
+     */
+    void addLayer(const QString& name);
+    void addLayer(const QString& name, unsigned int uid);
+    void addLayer(ChartLayer* layer);
+
+    void addLayerUndoable(const QString& name);
+    void addLayerUndoable(const QString& name, unsigned int uid);
+
+    void removeLayer(unsigned int uid);
+    void removeLayerUndoable(unsigned int uid);
+
+    void removeSelectedLayer();
+
+    void selectLayer(unsigned int uid);
+    void editedLayer(ChartLayer* layer);
+    void refreshLayers();
+
+    void mergeLayer(unsigned int from, unsigned int to);
+    /**
+     * row manipulation functions
+     */
     void createRow();
     void updateRow(int row);
-    
+
     /**
      * highlight (select) all the stitches in row @param row.
      */
@@ -297,48 +391,52 @@ public slots:
 
     void updateRubberBand(int dx, int dy);
 
-    void editorLostFocus(Indicator *item);
-    void editorGotFocus(Indicator *item);
-    
+    void editorLostFocus(Indicator* item);
+    void editorGotFocus(Indicator* item);
+
 signals:
-	void showPropertiesSignal();
+    void showPropertiesSignal();
     void stitchChanged(QString oldSt, QString newSt);
     void colorChanged(QString oldColor, QString newColor);
-	void layersChanged(QList<ChartLayer*>& layers, ChartLayer* selected);
+    void layersChanged(QList<ChartLayer*>& layers, ChartLayer* selected);
 
     void rowSelected();
 
-    //When ever a row is edited emit this signal.
+    // When ever a row is edited emit this signal.
     void rowEdited(bool state);
 
     void guidelinesUpdated(Guidelines guidelines);
-    
+
 protected:
-//    virtual void    helpEvent ( QGraphicsSceneHelpEvent * helpEvent )
-    void contextMenuEvent(QGraphicsSceneContextMenuEvent *e);
+    //    virtual void    helpEvent ( QGraphicsSceneHelpEvent * helpEvent )
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent* e);
 
-    void keyReleaseEvent(QKeyEvent *keyEvent);
-    void keyPressEvent(QKeyEvent *keyEvent);
-    
-    void stitchModeKeyRelease(QKeyEvent *keyEvent);
-    void angleModeKeyRelease(QKeyEvent *keyEvent);
-    void scaleModeKeyRelease(QKeyEvent *keyEvent);
-    
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *e);
-    void mousePressEvent(QGraphicsSceneMouseEvent *e);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *e);
+    void keyReleaseEvent(QKeyEvent* keyEvent);
+    void keyPressEvent(QKeyEvent* keyEvent);
 
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
-    
-    QList<Indicator*> indicators() { return mIndicators; }
+    void stitchModeKeyRelease(QKeyEvent* keyEvent);
+    void angleModeKeyRelease(QKeyEvent* keyEvent);
+    void scaleModeKeyRelease(QKeyEvent* keyEvent);
+
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* e);
+    void mousePressEvent(QGraphicsSceneMouseEvent* e);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* e);
+
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* e);
+
+    QList<Indicator*>
+    indicators()
+    {
+        return mIndicators;
+    }
 
     /**
-     * vertical:   
+     * vertical:
      *             0 - don't change alignment
      *             1 - align top
      *             2 - align center v
      *             3 - align bottom
-     * horizontal: 
+     * horizontal:
      *             0 - don't change alignment
      *             1 - align left
      *             2 - align center h
@@ -346,63 +444,65 @@ protected:
      */
     void align(int vertical, int horizontal);
     /**
-     * vertical:   
+     * vertical:
      *             0 - don't change distribution
      *             1 - distribute top
      *             2 - distribute center v
      *             3 - distribute bottom
-     * horizontal: 
+     * horizontal:
      *             0 - don't change distribution
      *             1 - distribute left
      *             2 - distribute center h
      *             3 - distribute right
      */
     void distribute(int vertical, int horizontal);
-    
+
     void alignToPath();
     void distributeToPath();
 
     /**
      * To distribute the stitches evenly we first need to know the sort order of the stitches
      * we're about to work on, based on which edge we're looking at.
-     * 
+     *
      * sortEdge: 1 = left; 2 = center; 3 = right
      * bad values for sortEdge will result in a left align sort.
      */
-    QList<QGraphicsItem*> sortItemsHorizontally(QList<QGraphicsItem*> unsortedItems, int sortEdge = 0);
-    
+    QList<QGraphicsItem*> sortItemsHorizontally(QList<QGraphicsItem*> unsortedItems,
+                                                int sortEdge = 0);
+
     /**
      * To distribute the stitches evenly we first need to know the sort order of the stitches
      * we're about to work on, based on which edge we're looking at.
-     * 
+     *
      * @sortEdge: 1 = top; 2 = center; 3 = bottom
      * bad values for @sortEdge will result in a top align sort.
      */
-    QList< QGraphicsItem* > sortItemsVertically(QList< QGraphicsItem* > unsortedItems, int sortEdge = 0);
-    
+    QList<QGraphicsItem*> sortItemsVertically(QList<QGraphicsItem*> unsortedItems,
+                                              int sortEdge = 0);
+
     /**
      * Return a sceneBoundingRect for the selected items.
      * @vertical and @horizontal determine what kind of bounding rect will be returned.
-     * 
-     * vertical:   
+     *
+     * vertical:
      *             0 - use extremes for top and bottom
      *             1 - use the tops of all stitches
      *             2 - use the centers of all stitches
      *             3 - use the bottoms of all stitches
-     * horizontal: 
+     * horizontal:
      *             0 - use extremes for left and right
      *             1 - use the left edges of all stitches
      *             2 - use the centers of all stitches
      *             3 - use the right edges of all stitches
      */
-    QRectF selectionBoundingRect(QList< QGraphicsItem* > items, int vertical, int horizontal);
+    QRectF selectionBoundingRect(QList<QGraphicsItem*> items, int vertical, int horizontal);
 
 public:
-    ItemGroup* group(QList<QGraphicsItem*> items, ItemGroup *g = 0);
-    void ungroup(ItemGroup *group);
+    ItemGroup* group(QList<QGraphicsItem*> items, ItemGroup* g = 0);
+    void ungroup(ItemGroup* group);
 
-    void addToGroup(int groupNumber, QGraphicsItem *i);
-	ItemGroup* getGroup(int groupNumber);
+    void addToGroup(int groupNumber, QGraphicsItem* i);
+    ItemGroup* getGroup(int groupNumber);
     QRectF selectedItemsBoundingRect(QList<QGraphicsItem*> items);
 
     /**
@@ -410,34 +510,41 @@ public:
      */
     QRectF itemsBoundingRect();
 
-    void render(QPainter *painter, const QRectF &target = QRectF(), const QRectF &source = QRectF(),
+    void render(QPainter* painter,
+                const QRectF& target = QRectF(),
+                const QRectF& source = QRectF(),
                 Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
-	void drawBackground(QPainter * painter, const QRectF & rect);
-	void setBackground(bool enabled);
+    void drawBackground(QPainter* painter, const QRectF& rect);
+    void setBackground(bool enabled);
+
 protected:
-    void colorModeMouseMove(QGraphicsSceneMouseEvent *e);
-    void colorModeMouseRelease(QGraphicsSceneMouseEvent *e);
+    void colorModeMouseMove(QGraphicsSceneMouseEvent* e);
+    void colorModeMouseRelease(QGraphicsSceneMouseEvent* e);
 
-    void indicatorModeMouseMove(QGraphicsSceneMouseEvent *e);
-    void indicatorModeMouseRelease(QGraphicsSceneMouseEvent *e);
+    void indicatorModeMouseMove(QGraphicsSceneMouseEvent* e);
+    void indicatorModeMouseRelease(QGraphicsSceneMouseEvent* e);
 
-    void angleModeMousePress(QGraphicsSceneMouseEvent *e);
-    void angleModeMouseMove(QGraphicsSceneMouseEvent *e);
-    void angleModeMouseRelease(QGraphicsSceneMouseEvent *e);
+    void angleModeMousePress(QGraphicsSceneMouseEvent* e);
+    void angleModeMouseMove(QGraphicsSceneMouseEvent* e);
+    void angleModeMouseRelease(QGraphicsSceneMouseEvent* e);
 
-    void scaleModeMousePress(QGraphicsSceneMouseEvent *e);
-    void scaleModeMouseMove(QGraphicsSceneMouseEvent *e);
-    void scaleModeMouseRelease(QGraphicsSceneMouseEvent *e);
+    void scaleModeMousePress(QGraphicsSceneMouseEvent* e);
+    void scaleModeMouseMove(QGraphicsSceneMouseEvent* e);
+    void scaleModeMouseRelease(QGraphicsSceneMouseEvent* e);
 
-    void rowEditMousePress(QGraphicsSceneMouseEvent *e);
-    void rowEditMouseMove(QGraphicsSceneMouseEvent *e);
-    void rowEditMouseRelease(QGraphicsSceneMouseEvent *e);
-    
-    void stitchModeMouseMove(QGraphicsSceneMouseEvent *e);
-    void stitchModeMousePress(QGraphicsSceneMouseEvent *e);
-    void stitchModeMouseRelease(QGraphicsSceneMouseEvent *e);
+    void rowEditMousePress(QGraphicsSceneMouseEvent* e);
+    void rowEditMouseMove(QGraphicsSceneMouseEvent* e);
+    void rowEditMouseRelease(QGraphicsSceneMouseEvent* e);
 
-    QSizeF defaultSize() const { return mDefaultSize; }
+    void stitchModeMouseMove(QGraphicsSceneMouseEvent* e);
+    void stitchModeMousePress(QGraphicsSceneMouseEvent* e);
+    void stitchModeMouseRelease(QGraphicsSceneMouseEvent* e);
+
+    QSizeF
+    defaultSize() const
+    {
+        return mDefaultSize;
+    }
 
     void updateStitchRenderer();
 
@@ -447,37 +554,37 @@ private:
     /**
      * Used in the mouse*Event()s to keep the mouse movements on the same cell.
      */
-    QGraphicsItem *mCurItem;
+    QGraphicsItem* mCurItem;
     QPointF mCellStartPos;
     QPointF mLeftButtonDownPos;
 
     QPainterPath mSelectionPath;
-    
-    Indicator *mCurIndicator;
-    
+
+    Indicator* mCurIndicator;
+
     /**
      * The difference between where the user clicked on the object and the (x,y) of the object.
      */
     QSizeF mDiff;
     qreal mOldAngle;
 
-	SelectMode mSelectMode;
-	AbstractSelectionBand* mSelectionBand;
-    //QRubberBand *mRubberBand;
+    SelectMode mSelectMode;
+    AbstractSelectionBand* mSelectionBand;
+    // QRubberBand *mRubberBand;
     QPointF mRubberBandStart;
 
     QMap<QGraphicsItem*, QPointF> mOldPositions;
-    
-    //Is the user moving an object.
+
+    // Is the user moving an object.
     bool mMoving;
     bool mIsRubberband;
     bool mHasSelection;
     bool mSnapTo;
-	//true if multiple items are being edited at the same time 
-	bool mMultiEdit;
-    
+    // true if multiple items are being edited at the same time
+    bool mMultiEdit;
+
     EditMode mMode;
-    
+
     QString mEditStitch;
     QColor mEditFgColor;
     QColor mEditBgColor;
@@ -490,55 +597,56 @@ private:
     QPointF mPivotPt;
     QPointF mOrigin;
 
-    //rows keeps track of the st order for individual rows;
-    QList< QList<Cell*> > grid;
-    
+    // rows keeps track of the st order for individual rows;
+    QList<QList<Cell*> > grid;
+
     qreal scenePosToAngle(QPointF pt);
 
     int mRowSpacing;
     QSizeF mDefaultSize;
     QString mDefaultStitch;
-    
+
     /**
      *Hold the list of cells we're working with to create a new row.
      */
     QList<QGraphicsItem*> mRowSelection;
-    
+
     QUndoStack mUndoStack;
-    
+
     QList<Indicator*> mIndicators;
 
-    Cell *mStartCell;
-    Cell *mEndCell;
-    Cell *mPreviousCell;
+    Cell* mStartCell;
+    Cell* mEndCell;
+    Cell* mPreviousCell;
 
     /**
      *The line between the last cell and the mouse.
      */
-    QGraphicsLineItem *mRowLine;
+    QGraphicsLineItem* mRowLine;
 
     /**
      *All lines connecting one cell to another cell for rows.
      */
     QList<QGraphicsLineItem*> mRowLines;
-    
+
     QList<ItemGroup*> mGroups;
-	
-	QHash<unsigned int, ChartLayer*> mLayers;
-	ChartLayer* mSelectedLayer;
-	
-	bool mbackgroundIsEnabled;
-	
-/***
- * Generic private functions
- ***/
+
+    QHash<unsigned int, ChartLayer*> mLayers;
+    ChartLayer* mSelectedLayer;
+
+    bool mbackgroundIsEnabled;
+
+    /***
+     * Generic private functions
+     ***/
 private:
-	QGraphicsItem* mirror_rec(QGraphicsItem* item, QPointF displacement, QRectF selectionRect, bool flipX, bool flipY);
-	QGraphicsItem* copy_rec(QGraphicsItem* item, QPointF displacement);
-/***
- *
- * Rounds specific functions:
- */
+    QGraphicsItem* mirror_rec(
+        QGraphicsItem* item, QPointF displacement, QRectF selectionRect, bool flipX, bool flipY);
+    QGraphicsItem* copy_rec(QGraphicsItem* item, QPointF displacement);
+    /***
+     *
+     * Rounds specific functions:
+     */
 public:
     /**
      * Is there a visible center symbol?
@@ -551,28 +659,45 @@ public:
     /**
      * Does the chart have a symbol at all?
      */
-    bool hasChartCenter() { return (mCenterSymbol ? true : false); }
-    QGraphicsItem* chartCenter() { return mCenterSymbol; }
-    
+    bool
+    hasChartCenter()
+    {
+        return (mCenterSymbol ? true : false);
+    }
+    QGraphicsItem*
+    chartCenter()
+    {
+        return mCenterSymbol;
+    }
+
 public slots:
     void setShowChartCenter(bool state);
-	void setSnapAngle(bool state);
+    void setSnapAngle(bool state);
+
 public:
-	bool snapAngle() const { return mSnapAngle; };
+    bool
+    snapAngle() const
+    {
+        return mSnapAngle;
+    };
+
 protected:
-    void setCellPosition(int row, int column, Cell *c, int columns);
-    
+    void setCellPosition(int row, int column, Cell* c, int columns);
+
 private:
     QPointF calcPoint(double radius, double angleInDegrees, QPointF origin);
 
-    QGraphicsItem *mCenterSymbol;
+    QGraphicsItem* mCenterSymbol;
     bool mShowChartCenter;
-	bool mSnapAngle;
-	
+    bool mSnapAngle;
 
 public:
     void setGuidelinesType(QString guides);
-    Guidelines guidelines() { return mGuidelines; }
+    Guidelines
+    guidelines()
+    {
+        return mGuidelines;
+    }
 
     void replaceStitches(QString original, QString replacement);
 
@@ -591,9 +716,11 @@ protected slots:
     void updateGuidelines();
 
 private:
-	void generateGuidelinesRows(int spacingW, int spacingH, int columns, int rows, QPointF center);
-	void generateGuidelinesRounds(int spacingW, int spacingH, int columns, int rows, QPointF center);
-	void generateGuidelinesTriangles(int spacingW, int spacingH, int columns, int rows, QPointF center);
+    void generateGuidelinesRows(int spacingW, int spacingH, int columns, int rows, QPointF center);
+    void generateGuidelinesRounds(
+        int spacingW, int spacingH, int columns, int rows, QPointF center);
+    void generateGuidelinesTriangles(
+        int spacingW, int spacingH, int columns, int rows, QPointF center);
 
     /**
      * @brief mGuidelinesLines - Hold all the lines that make up the grid
@@ -606,4 +733,4 @@ private:
     Guidelines mGuidelines;
 };
 
-#endif //SCENE_H
+#endif  // SCENE_H

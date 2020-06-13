@@ -20,11 +20,10 @@
  \****************************************************************************/
 #include "file.h"
 
-File::File(MainWindow *mw, FileFactory *parent) :
-    mMainWindow(mw),
-    mParent(parent),
-    mInternalStitchSet(0)
+File::File(MainWindow* mw, FileFactory* parent)
+    : mMainWindow(mw)
+    , mParent(parent)
+    , mInternalStitchSet(0)
 {
     mTabWidget = mMainWindow->tabWidget();
-
 }

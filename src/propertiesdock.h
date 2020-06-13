@@ -27,8 +27,9 @@
 
 #include "debug.h"
 
-namespace Ui {
-    class PropertiesDock;
+namespace Ui
+{
+class PropertiesDock;
 }
 
 class PropertiesData;
@@ -38,18 +39,18 @@ class PropertiesDock : public QDockWidget
     Q_OBJECT
 
 public:
-
-    enum UiSelection {
+    enum UiSelection
+    {
         SceneUi = 10,
         CellUi = 15,
         ItemGroupUi = 16,
         CenterUi = 20,
         IndicatorUi = 25,
-		ChartImageUi = 30,
+        ChartImageUi = 30,
         MixedUi = 100,
     };
 
-    PropertiesDock(QTabWidget* tabWidget, QWidget *parent = 0);
+    PropertiesDock(QTabWidget* tabWidget, QWidget* parent = 0);
     ~PropertiesDock();
 
     void loadProperties(Guidelines guidelines);
@@ -61,13 +62,13 @@ public slots:
 
 signals:
     void propertiesUpdated(QString property, QVariant newValue);
-	void setGridType(QString type);
+    void setGridType(QString type);
 
 private slots:
     void tabChanged(int tabNumber);
     void updateDialogUi();
 
-	void chartUpdateAlignAngle(bool state);
+    void chartUpdateAlignAngle(bool state);
     void chartUpdateChartCenter(bool state);
     void chartUpdateGuidelines();
 
@@ -82,10 +83,10 @@ private slots:
 
     void cellUpdateFgColor();
     void cellUpdateBgColor();
-	
-	void chartImageUpdateZLayer(const QString & path);
-	void chartImageUpdatePath(const QString& path);
-	void chartImageChoosePath();
+
+    void chartImageUpdateZLayer(const QString& path);
+    void chartImageUpdatePath(const QString& path);
+    void chartImageChoosePath();
 
     void updateGuidelinesUi();
     void indicatorUpdate();
@@ -105,7 +106,7 @@ private:
     void showMixedObjects();
     void showCanvas();
     void showItemGroup();
-	void showSingleChartImage();
+    void showSingleChartImage();
 
     void clearUi();
 
@@ -120,11 +121,11 @@ private:
     PropertiesData selectionProperties();
 
 private:
-    Ui::PropertiesDock *ui;
+    Ui::PropertiesDock* ui;
 
     QTabWidget* mTabWidget;
     Scene* mScene;
     Guidelines mGuidelines;
 };
 
-#endif // PROPERTIESDOCK_H
+#endif  // PROPERTIESDOCK_H

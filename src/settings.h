@@ -31,12 +31,13 @@ class Settings : public QObject
 {
     Q_OBJECT
     friend class TestSettings;
+
 public:
     static Settings* inst();
     ~Settings();
 
-    void setValue(const QString &key, const QVariant &value);
-    QVariant value(const QString &key) const;
+    void setValue(const QString& key, const QVariant& value);
+    QVariant value(const QString& key) const;
 
     /**
      * The folder where the user's settings are stored. W/trailing slash.
@@ -46,39 +47,50 @@ public:
     /**
      * return the default value of a given key.
      */
-    QVariant defaultValue ( const QString& key ) const;
+    QVariant defaultValue(const QString& key) const;
 
     /**
      * list of open files. All files should be added toLower().
      */
     QMap<QString, MainWindow*> files;
 
-    void saveSettings() { mSettings.sync(); }
+    void
+    saveSettings()
+    {
+        mSettings.sync();
+    }
 
     void addRecentFile(QString fileName);
 
-    QStringList recentFiles() { return mRecentFiles; }
+    QStringList
+    recentFiles()
+    {
+        return mRecentFiles;
+    }
     void setRecentFiles(QStringList files);
 
 protected:
-    QString fileName() { return mSettings.fileName(); }
-    
+    QString
+    fileName()
+    {
+        return mSettings.fileName();
+    }
+
 private:
     /**
      * list of recent files. All strings added case sensitively (they'll be used to open the files).
      */
     QStringList mRecentFiles;
-    
+
     static Settings* mInstance;
-    
+
     Settings();
 
     void setupValueList();
-    
+
     QSettings mSettings;
 
     QMap<QString, QVariant> mValueList;
-
 };
 
-#endif //SETTINGS_H
+#endif  // SETTINGS_H

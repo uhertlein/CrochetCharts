@@ -30,7 +30,8 @@
 #include "stitchlibrary.h"
 
 StitchIconUi::StitchIconUi(QWidget* parent)
-    : QDialog(parent), ui(new Ui::StitchIconDialog)
+    : QDialog(parent)
+    , ui(new Ui::StitchIconDialog)
 {
     ui->setupUi(this);
 
@@ -48,7 +49,8 @@ StitchIconUi::~StitchIconUi()
 {
 }
 
-void StitchIconUi::loadIcons()
+void
+StitchIconUi::loadIcons()
 {
     QStringList dirs, setDir;
     QString userFolder = Settings::inst()->userSettingsFolder();
@@ -56,17 +58,20 @@ void StitchIconUi::loadIcons()
     QDir dir;
 
     dir.setPath(userFolder);
-    
-    //get all set folders.
-    foreach(QString folder, dir.entryList(QDir::Dirs)) {
-        if(folder != "." && folder != "..")
+
+    // get all set folders.
+    foreach (QString folder, dir.entryList(QDir::Dirs))
+    {
+        if (folder != "." && folder != "..")
             dirs << userFolder + folder;
     }
-    
-    //get all files from all set folders.
-    foreach(QString folder, dirs) {
+
+    // get all files from all set folders.
+    foreach (QString folder, dirs)
+    {
         dir.setPath(folder);
-        foreach(QString file, dir.entryList(QDir::Files)) {
+        foreach (QString file, dir.entryList(QDir::Files))
+        {
             QIcon icon = QIcon(folder + "/" + file);
             QString name = QFileInfo(file).baseName();
             QString setName = StitchLibrary::inst()->findStitchSetName(folder);
@@ -79,32 +84,37 @@ void StitchIconUi::loadIcons()
     }
 }
 
-void StitchIconUi::addIcon()
+void
+StitchIconUi::addIcon()
 {
     QString dir = Settings::inst()->value("fileLocation").toString();
-    QStringList sources = QFileDialog::getOpenFileNames(this, tr("Add Icon"), dir, "Image Files (*.svg *.svgz *.png *.gif *.jpg *.jpeg)");
+    QStringList sources = QFileDialog::getOpenFileNames(
+        this, tr("Add Icon"), dir, "Image Files (*.svg *.svgz *.png *.gif *.jpg *.jpeg)");
 
-    if(sources.count() <= 0)
+    if (sources.count() <= 0)
         return;
 
-    foreach(QString source, sources) {
+    foreach (QString source, sources)
+    {
         QString dest = Settings::inst()->userSettingsFolder() + "icons/";
 
-        if(!QFileInfo(dest).exists())
+        if (!QFileInfo(dest).exists())
             QDir(Settings::inst()->userSettingsFolder()).mkpath(dest);
-        
+
         QFileInfo srcInfo(source);
 
         dest += srcInfo.baseName();
         QFileInfo destInfo(dest);
 
-        if(destInfo.exists()) {
+        if (destInfo.exists())
+        {
             QMessageBox msgbox(this);
             msgbox.setText(tr("A file with the name '%1' already exists.").arg(srcInfo.fileName()));
             msgbox.setInformativeText(tr("Would you like to replace the existing file?"));
             msgbox.setIcon(QMessageBox::Question);
-            QPushButton* overwrite = msgbox.addButton(tr("Replace existing file"), QMessageBox::AcceptRole);
-            /*QPushButton* cancel =*/ msgbox.addButton(tr("Cancel"), QMessageBox::RejectRole);
+            QPushButton* overwrite
+                = msgbox.addButton(tr("Replace existing file"), QMessageBox::AcceptRole);
+            /*QPushButton* cancel =*/msgbox.addButton(tr("Cancel"), QMessageBox::RejectRole);
 
             msgbox.exec();
 
@@ -119,20 +129,22 @@ void StitchIconUi::addIcon()
     }
 }
 
-void StitchIconUi::removeIcon()
+void
+StitchIconUi::removeIcon()
 {
     QList<QListWidgetItem*> items = ui->iconList->selectedItems();
 
-    if(items.count() <= 0)
+    if (items.count() <= 0)
         return;
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    //TODO: do we want to allow the user to remove set icons?
-    //TODO: indicate that you cannot remove built in stitches.
-    foreach(QListWidgetItem* item, items) {
+    // TODO: do we want to allow the user to remove set icons?
+    // TODO: indicate that you cannot remove built in stitches.
+    foreach (QListWidgetItem* item, items)
+    {
         QString fileName = item->data(Qt::UserRole).toString();
-        if(fileName.startsWith(":/"))
+        if (fileName.startsWith(":/"))
             continue;
         QFile::remove(fileName);
         ui->iconList->takeItem(ui->iconList->row(item));
@@ -145,64 +157,71 @@ void StitchIconUi::removeIcon()
     QApplication::restoreOverrideCursor();
 }
 
-void StitchIconUi::saveIcon()
+void
+StitchIconUi::saveIcon()
 {
     QList<QListWidgetItem*> items = ui->iconList->selectedItems();
-    
-    if(items.count() <= 0)
+
+    if (items.count() <= 0)
         return;
 
     QString dir = Settings::inst()->value("fileLocation").toString();
     QString dest = QFileDialog::getExistingDirectory(this, tr("Save Folder"), dir);
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    if(dest.isEmpty())
+    if (dest.isEmpty())
         return;
-    
-    foreach(QListWidgetItem* item, items) {
+
+    foreach (QListWidgetItem* item, items)
+    {
         QString fileName = item->data(Qt::UserRole).toString();
         QFile::copy(fileName, dest + "/" + QFileInfo(fileName).fileName());
-    
     }
 
     QString path = QDir::toNativeSeparators(dest);
     QDesktopServices::openUrl(QUrl("file:///" + path));
     QApplication::restoreOverrideCursor();
-    
 }
 
-void StitchIconUi::updateIconList(QString fileName)
+void
+StitchIconUi::updateIconList(QString fileName)
 {
-
-    if(fileName.isEmpty())
+    if (fileName.isEmpty())
         return;
 
     QListWidgetItem* item = 0;
-    
+
     QFileInfo fileInfo(fileName);
-    QList<QListWidgetItem*> foundItems = ui->iconList->findItems(fileInfo.baseName(), Qt::MatchExactly);
-    if(foundItems.count() > 0) {
-        foreach(QListWidgetItem* i, foundItems) {
-            QString itemPath =  i->data(Qt::UserRole).toString();
-            if(itemPath == fileName)
+    QList<QListWidgetItem*> foundItems
+        = ui->iconList->findItems(fileInfo.baseName(), Qt::MatchExactly);
+    if (foundItems.count() > 0)
+    {
+        foreach (QListWidgetItem* i, foundItems)
+        {
+            QString itemPath = i->data(Qt::UserRole).toString();
+            if (itemPath == fileName)
                 item = i;
         }
     }
 
     QIcon icon = QIcon(fileName);
 
-    if(!item) {
-        QListWidgetItem* item = new QListWidgetItem(icon,fileInfo.baseName(),ui->iconList);
+    if (!item)
+    {
+        QListWidgetItem* item = new QListWidgetItem(icon, fileInfo.baseName(), ui->iconList);
         item->setData(Qt::UserRole, QVariant(fileName));
         item->setToolTip(fileName);
         ui->iconList->addItem(item);
-    } else {
+    }
+    else
+    {
         item->setIcon(icon);
         ui->iconList->update();
     }
 }
 
-void StitchIconUi::updateIconSelection()
+void
+StitchIconUi::updateIconSelection()
 {
     QList<QListWidgetItem*> items = ui->iconList->selectedItems();
 
@@ -211,4 +230,3 @@ void StitchIconUi::updateIconSelection()
     ui->removeIcon->setEnabled(state);
     ui->saveIcon->setEnabled(state);
 }
-

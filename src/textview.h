@@ -34,7 +34,11 @@ public:
     TextView(QWidget* parent = 0, Scene* scene = 0);
     ~TextView();
 
-    void setScene(Scene* scene) { mScene = scene; }
+    void
+    setScene(Scene* scene)
+    {
+        mScene = scene;
+    }
 
     QString copyInstructions();
 
@@ -43,7 +47,7 @@ public:
      * If cleanOutput = true do any special processing for the text.
      **/
     QString generateTextRow(int row, bool cleanOutput = false, bool useRepeats = false);
-    
+
 private:
     /**
      * This function strips off any incomplete repeat indicators or other
@@ -65,7 +69,7 @@ private:
      * Take a list of stitches and convert them into a crochet sentence.
      */
     QString generateText(QStringList row, bool useRepeats = false);
-    
+
     /**
      * Returns the number of repeat matches occurring in stitches
      */
@@ -73,7 +77,6 @@ private:
 
 private:
     Scene* mScene;
-
 };
 
-#endif //TEXTVIEW_H
+#endif  // TEXTVIEW_H

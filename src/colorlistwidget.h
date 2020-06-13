@@ -27,12 +27,12 @@ class ColorListWidget : public QListWidget
 {
     Q_OBJECT
 public:
-    explicit ColorListWidget(QWidget *parent = 0);
+    explicit ColorListWidget(QWidget* parent = 0);
 
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *e);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* e);
 
-    void dragEnterEvent(QDragEnterEvent *e);
+    void dragEnterEvent(QDragEnterEvent* e);
 
     static QPixmap drawColorBox(QColor color, QSize size);
 
@@ -45,4 +45,4 @@ private:
     QPointF mDragStart;
 };
 
-#endif // COLORLISTWIDGET_H
+#endif  // COLORLISTWIDGET_H

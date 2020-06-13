@@ -24,14 +24,14 @@
 #include "ChartItemTools.h"
 #include "debug.h"
 
-ItemGroup::ItemGroup(QGraphicsItem *parent, QGraphicsScene *scene)
-    : QGraphicsItemGroup( parent),
-    mScale(QPointF(1.0, 1.0))
+ItemGroup::ItemGroup(QGraphicsItem* parent, QGraphicsScene* scene)
+    : QGraphicsItemGroup(parent)
+    , mScale(QPointF(1.0, 1.0))
 {
-    setTransform(QTransform(1,0,0,0,1,0,0,0,1));
+    setTransform(QTransform(1, 0, 0, 0, 1, 0, 0, 0, 1));
     setPos(0, 0);
-	setTransformOriginPoint(0, 0);
-	setRotation(0);
+    setTransformOriginPoint(0, 0);
+    setRotation(0);
 
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemIsSelectable);
@@ -42,22 +42,26 @@ ItemGroup::~ItemGroup()
 {
 }
 
-QRectF ItemGroup::boundingRect() const
+QRectF
+ItemGroup::boundingRect() const
 {
-	QRectF bb = QGraphicsItemGroup::boundingRect();
+    QRectF bb = QGraphicsItemGroup::boundingRect();
     return bb;
 }
 
-void ItemGroup::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void
+ItemGroup::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
-
     QGraphicsItemGroup::paint(painter, option, widget);
 }
 
-bool ItemGroup::isGrouped()
+bool
+ItemGroup::isGrouped()
 {
-    if(parentItem()) {
-        if(parentItem()->Type == ItemGroup::Type) {
+    if (parentItem())
+    {
+        if (parentItem()->Type == ItemGroup::Type)
+        {
             return true;
         }
     }
@@ -65,8 +69,8 @@ bool ItemGroup::isGrouped()
     return false;
 }
 
-void ItemGroup::addToGroup(QGraphicsItem *item)
+void
+ItemGroup::addToGroup(QGraphicsItem* item)
 {
-
     QGraphicsItemGroup::addToGroup(item);
 }

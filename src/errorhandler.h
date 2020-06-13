@@ -21,26 +21,28 @@
 #ifndef ERRORHANDLER_H
 #define ERRORHANDLER_H
 
-void errorHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+void
+errorHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
-    switch (type) {
-        case QtDebugMsg:
-            //fprintf(stderr, "%s\n", msg);
-            qDebug(qPrintable(msg));
-            break;
-        case QtWarningMsg:
-            //fprintf(stderr, "\033[1;33mWarning\033[0m: %s\n", msg);
-            qWarning(qPrintable(msg));
-            break;
-        case QtCriticalMsg:
-            //fprintf(stderr, "\033[31mCritical\033[0m: %s\n", msg);
-            qCritical(qPrintable(msg));
-            break;
-        case QtFatalMsg:
-            //fprintf(stderr, "\033[31mFatal\033[0m: %s\n", msg);
-            qFatal(qPrintable(msg));
-            abort();
+    switch (type)
+    {
+    case QtDebugMsg:
+        // fprintf(stderr, "%s\n", msg);
+        qDebug(qPrintable(msg));
+        break;
+    case QtWarningMsg:
+        // fprintf(stderr, "\033[1;33mWarning\033[0m: %s\n", msg);
+        qWarning(qPrintable(msg));
+        break;
+    case QtCriticalMsg:
+        // fprintf(stderr, "\033[31mCritical\033[0m: %s\n", msg);
+        qCritical(qPrintable(msg));
+        break;
+    case QtFatalMsg:
+        // fprintf(stderr, "\033[31mFatal\033[0m: %s\n", msg);
+        qFatal(qPrintable(msg));
+        abort();
     }
 }
 
-#endif // ERRORHANDLER_H
+#endif  // ERRORHANDLER_H

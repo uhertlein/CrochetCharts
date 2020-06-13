@@ -32,13 +32,14 @@
 
 #include "errorhandler.h"
 
-int main(int argc, char *argv[])
+int
+main(int argc, char* argv[])
 {
     qInstallMessageHandler(errorHandler);
     Application a(argc, argv);
 
     QStringList arguments = QCoreApplication::arguments();
-    arguments.removeFirst(); // remove the application name from the list.
+    arguments.removeFirst();  // remove the application name from the list.
 
     MainWindow w(arguments);
     a.setMainWindow(&w);
@@ -49,7 +50,7 @@ int main(int argc, char *argv[])
     splash.show();
     splash.showMessage(QObject::tr("Loading..."));
     qApp->processEvents();
-   
+
     QString curVersion = AppInfo::inst()->appVersion;
     QString lastUsed = Settings::inst()->value("lastUsed").toString();
     updateFunction(lastUsed);

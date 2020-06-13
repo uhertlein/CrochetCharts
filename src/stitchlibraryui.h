@@ -27,15 +27,16 @@
 
 class StitchSet;
 
-namespace Ui {
-    class StitchLibraryDialog;
+namespace Ui
+{
+class StitchLibraryDialog;
 }
 
 class StitchLibraryUi : public QDialog
 {
     Q_OBJECT
 public:
-    explicit StitchLibraryUi(QWidget *parent = 0);
+    explicit StitchLibraryUi(QWidget* parent = 0);
     ~StitchLibraryUi();
 
 private slots:
@@ -44,7 +45,7 @@ private slots:
     void addStitch();
     void removeStitch();
     void addSelected();
-    
+
     void resetLibrary();
 
     void hideProperties();
@@ -53,10 +54,10 @@ private slots:
 
     void createSet();
     void removeSet();
-    
+
     void importSet();
     void exportSet();
-   
+
 private slots:
     void iconDialog();
 
@@ -65,13 +66,13 @@ private slots:
      * resize the cells to fit the stitch that's now in the row.
      **/
     void updateRowSizes();
-    
+
     void filterStitchList(QString newText);
     void clearStitchFilter();
 
 private:
-    Ui::StitchLibraryDialog *ui;
-    QSortFilterProxyModel *mProxyModel;
+    Ui::StitchLibraryDialog* ui;
+    QSortFilterProxyModel* mProxyModel;
 
     void setDialogSize();
 
@@ -79,12 +80,12 @@ private:
      *Set the author, set name, email, url, etc.
      */
     void setupPropertiesBox();
-    void setButtonStates(StitchSet *set);
+    void setButtonStates(StitchSet* set);
 
-    //update the source dropdown list and switch to setName
+    // update the source dropdown list and switch to setName
     void updateSourceDropDown(QString setName = "");
 
     StitchSet* addStitchSet(QString fileName);
 };
 
-#endif //STITCHLIBRARYUI_H
+#endif  // STITCHLIBRARYUI_H

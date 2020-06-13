@@ -32,8 +32,8 @@ class QDomElement;
 #else
 class QXmlStreamWriter;
 class QXmlStreamReader;
-#endif //Q_WS_MAC
-    
+#endif  // Q_WS_MAC
+
 class StitchSet : public QAbstractItemModel
 {
     Q_OBJECT
@@ -42,10 +42,13 @@ class StitchSet : public QAbstractItemModel
     friend class FileFactory;
     friend class File_v1;
     friend class File_v2;
-public:
 
-    enum SaveVersion { Version_1_0_0 = 100 };
-    
+public:
+    enum SaveVersion
+    {
+        Version_1_0_0 = 100
+    };
+
     StitchSet(QObject* parent = 0, bool isMasterSet = false);
     ~StitchSet();
 
@@ -71,20 +74,60 @@ public:
      */
     void saveDataFile(QString fileName);
 
-    const QString name() const { return mName; }
-    void setName(QString n) { mName = n; }
+    const QString
+    name() const
+    {
+        return mName;
+    }
+    void
+    setName(QString n)
+    {
+        mName = n;
+    }
 
-    const QString author() { return mAuthor; }
-    void setAuthor(QString a) { mAuthor = a; }
+    const QString
+    author()
+    {
+        return mAuthor;
+    }
+    void
+    setAuthor(QString a)
+    {
+        mAuthor = a;
+    }
 
-    const QString email() { return mEmail; }
-    void setEmail(QString e) { mEmail = e; }
+    const QString
+    email()
+    {
+        return mEmail;
+    }
+    void
+    setEmail(QString e)
+    {
+        mEmail = e;
+    }
 
-    const QString org() { return mOrg; }
-    void setOrg(QString o) { mOrg = o; }
+    const QString
+    org()
+    {
+        return mOrg;
+    }
+    void
+    setOrg(QString o)
+    {
+        mOrg = o;
+    }
 
-    const QString url() { return mUrl; }
-    void setUrl(QString u) { mUrl = u; }
+    const QString
+    url()
+    {
+        return mUrl;
+    }
+    void
+    setUrl(QString u)
+    {
+        mUrl = u;
+    }
 
     Stitch* findStitch(QString name);
 
@@ -97,10 +140,14 @@ public:
      * NOTE: this function doesn't delete the stitch.
      */
     void removeStitch(QString name);
-    
+
     int stitchCount() const;
 
-    QList<Stitch*> stitches() const { return mStitches; }
+    QList<Stitch*>
+    stitches() const
+    {
+        return mStitches;
+    }
     void clearStitches();
 
     /**
@@ -120,7 +167,11 @@ public:
      */
     QString stitchSetFolder();
 
-    void clearSelection() { mSelected.clear(); }
+    void
+    clearSelection()
+    {
+        mSelected.clear();
+    }
 
     /**
      * reset the master stitch set to the original state as defined by the software.
@@ -131,18 +182,18 @@ public:
      * reload the svgs from file -- update the colors used.
      */
     void reloadStitchIcons();
-    
+
 signals:
     void stitchNameChanged(QString setName, QString oldName, QString newName);
     void movedToOverlay(QString stitchName);
-    
+
 protected:
     void loadXmlStitchSet(QXmlStreamReader* stream, bool loadIcons = false);
     void saveXmlStitchSet(QXmlStreamWriter* stream, bool saveIcons = false);
 
     void saveIcons(QDataStream* out);
     void loadIcons(QDataStream* in);
-   
+
 private:
     /**
      * load the individual stitch. \param loadIcon tells the function to generate the complete
@@ -151,40 +202,36 @@ private:
      */
     void loadXmlStitch(QXmlStreamReader* stream, bool loadIcon = false);
 
-    bool removeDir(const QString &dirName);
+    bool removeDir(const QString& dirName);
 
     QList<Stitch*> mStitches;
-    
+
     /**
      * list of checked items
      */
     QList<Stitch*> mSelected;
-    
-    QString mName,
-            mAuthor,
-            mEmail,
-            mOrg,
-            mUrl;
-    
-/***************************************************************\
-|QAbstractItemModel
-\***************************************************************/
-public:
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &index) const;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    QString mName, mAuthor, mEmail, mOrg, mUrl;
+
+    /***************************************************************\
+    |QAbstractItemModel
+    \***************************************************************/
+public:
+    QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const;
+    QModelIndex parent(const QModelIndex& index) const;
+
+    Qt::ItemFlags flags(const QModelIndex& index) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-    
-/***************************************************************/
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+    bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+
+    /***************************************************************/
 private:
     qint32 mSaveFileVersion;
 };
 
-#endif //STITCHSET_H
+#endif  // STITCHSET_H

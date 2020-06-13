@@ -52,17 +52,29 @@ public:
     static StitchLibrary* inst();
     ~StitchLibrary();
 
-    //return the list of stitch sets.
-    QList<StitchSet*> stitchSets() { return mStitchSets; }
-    //return the master stitch set.
-    StitchSet* masterStitchSet() { return mMasterSet; }
-    StitchSet* overlay() { return mOverlay; }
-    
+    // return the list of stitch sets.
+    QList<StitchSet*>
+    stitchSets()
+    {
+        return mStitchSets;
+    }
+    // return the master stitch set.
+    StitchSet*
+    masterStitchSet()
+    {
+        return mMasterSet;
+    }
+    StitchSet*
+    overlay()
+    {
+        return mOverlay;
+    }
+
     /**
      * Load all known stitch sets.
      */
     void loadStitchSets();
-    
+
     /**
      * @brief findStitch - find a stitch from the library
      * @param name - stitch to find
@@ -73,69 +85,68 @@ public:
 
     StitchSet* findStitchSet(QString setName);
 
-    //fill in a dropdown list for selecting a stitch set.
+    // fill in a dropdown list for selecting a stitch set.
     QStringList stitchSetList();
-    //list all categories in all sets
+    // list all categories in all sets
     QStringList categoryList() const;
-    //list all stitches in the master set by default, optionally show all stitches in all sets.
+    // list all stitches in the master set by default, optionally show all stitches in all sets.
     QStringList stitchList(bool showAllSets = false) const;
 
-    //creates a new set to the collection, and returns a pointer to it.
+    // creates a new set to the collection, and returns a pointer to it.
     StitchSet* createStitchSet(QString setName);
-    //Remove and delete setName.
+    // Remove and delete setName.
     void removeSet(QString setName);
-    //remove a set like a save file set.
-    void removeSet(StitchSet *set);
+    // remove a set like a save file set.
+    void removeSet(StitchSet* set);
 
-    void removeMasterStitches(StitchSet *set);
+    void removeMasterStitches(StitchSet* set);
 
-    void addStitchSet(StitchSet *set);
+    void addStitchSet(StitchSet* set);
 
-    bool masterHasStitch(Stitch *s);
-    
-    void addStitchToMasterSet(StitchSet *set, Stitch *s);
+    bool masterHasStitch(Stitch* s);
+
+    void addStitchToMasterSet(StitchSet* set, Stitch* s);
     /**
      * This function removes a stitch from the master set.
      * It can be called on stitches that aren't in the master set
      * as it checks them before it removes them.
      */
-    void removeStitchFormMasterSet(Stitch *s);
+    void removeStitchFormMasterSet(Stitch* s);
 
     void resetMasterStitchSet();
 
-    //save all changes in the sets out to the xml files.
+    // save all changes in the sets out to the xml files.
     void saveAllSets();
 
     void reloadAllStitchIcons();
 
-    //find the name of a stitch set based on the storage location of the set.
+    // find the name of a stitch set based on the storage location of the set.
     QString findStitchSetName(QString folderName);
 
-    //generates the next file name that can be used for a stitch set.
+    // generates the next file name that can be used for a stitch set.
     QString nextSetSaveFile();
 
 signals:
     void stitchListChanged();
-    
+
 private slots:
     void changeStitchName(QString setName, QString oldName, QString newName);
     void moveStitchToOverlay(QString stitchName);
-    
+
 private:
     StitchLibrary();
 
-    //loads the list of stitches and where the stitches are being pulled from.
+    // loads the list of stitches and where the stitches are being pulled from.
     bool loadMasterList();
     void saveMasterList();
-    
-    static StitchLibrary *mInstance;
+
+    static StitchLibrary* mInstance;
 
     QList<StitchSet*> mStitchSets;
-    StitchSet *mMasterSet;
-    StitchSet *mOverlay;
+    StitchSet* mMasterSet;
+    StitchSet* mOverlay;
 
     QMap<QString, QString> mStitchList;
-
 };
 
-#endif //STITCHLIBRARY_H
+#endif  // STITCHLIBRARY_H

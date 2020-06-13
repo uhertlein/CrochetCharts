@@ -29,10 +29,11 @@ class StitchPaletteDelegate : public QStyledItemDelegate
 public:
     StitchPaletteDelegate(QWidget* parent = 0);
 
-    void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void paint(QPainter* painter,
+               const QStyleOptionViewItem& option,
+               const QModelIndex& index) const;
 
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
-
+    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
 };
 
-#endif //STITCHPALETTEDELEGATE_H
+#endif  // STITCHPALETTEDELEGATE_H

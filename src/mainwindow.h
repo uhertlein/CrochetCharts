@@ -45,8 +45,9 @@ class QPrinter;
 class QPainter;
 class QActionGroup;
 
-namespace Ui {
-    class MainWindow;
+namespace Ui
+{
+class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -56,12 +57,13 @@ class MainWindow : public QMainWindow
     friend class File;
     friend class File_v1;
     friend class File_v2;
+
 public:
     explicit MainWindow(QStringList fileNames = QStringList(), QWidget* parent = 0);
     ~MainWindow();
-	
-	void dropEvent(QDropEvent *e);
-	void dragEnterEvent(QDragEnterEvent *e);
+
+    void dropEvent(QDropEvent* e);
+    void dragEnterEvent(QDragEnterEvent* e);
 
     bool hasTab();
     void setupNewTabDialog();
@@ -69,15 +71,15 @@ public:
 protected:
     void closeEvent(QCloseEvent* event);
 
-    //generate the next "new chart" name ie: chart, chart1, chart2...
+    // generate the next "new chart" name ie: chart, chart1, chart2...
     QString nextChartName(QString baseName = tr("Chart"));
     bool docHasChartName(QString name);
 
     CrochetTab* createTab(Scene::ChartStyle style);
-    
-/**
- * The proxy icon for the titlebar on Mac OS X
- */
+
+    /**
+     * The proxy icon for the titlebar on Mac OS X
+     */
 private:
     QIcon fileIcon;
 
@@ -86,12 +88,12 @@ protected slots:
     void updatePatternColors();
 
     void tabChanged(int newTab);
-    
+
     void newChartUpdateStyle(QString style);
 
     void propertiesUpdate(QString property, QVariant newValue);
-    
-//menu functions/slots:
+
+    // menu functions/slots:
 private slots:
     void menuFileAboutToShow();
     void menuRecentFilesAboutToShow();
@@ -104,13 +106,13 @@ private slots:
     void filePrintPreview();
 
     void menuEditAboutToShow();
-    
-	void viewMakePropertiesVisible();
+
+    void viewMakePropertiesVisible();
     void menuViewAboutToShow();
     void viewShowStitches();
     void viewShowPatternColors();
     void viewShowPatternStitches();
-	void viewShowLayers();
+    void viewShowLayers();
     void viewShowUndoHistory();
     void viewShowMainToolbar();
     void viewShowEditModeToolbar();
@@ -121,20 +123,20 @@ private slots:
     void viewShowAlignDock();
     void viewShowMirrorDock();
     void viewShowProperties();
-	void viewShowResizeDock();
+    void viewShowResizeDock();
 
     void menuModesAboutToShow();
-    
+
     void documentNewChart();
     void newChart();
     void removeCurrentTab();
     void removeTab(int tabIndex);
-	
-	void addLayer();
-	void removeLayer();
-	void mergeLayer();
-	void selectLayer(const QModelIndex & index);
-	void layerModelChanged(const QModelIndex& index);
+
+    void addLayer();
+    void removeLayer();
+    void mergeLayer();
+    void selectLayer(const QModelIndex& index);
+    void layerModelChanged(const QModelIndex& index);
 
     void menuChartAboutToShow();
     void chartEditName();
@@ -149,12 +151,12 @@ private slots:
     void toolsOptions();
     void toolsStitchLibrary();
     void toolsCheckForUpdates();
-	
-	void changeSelectMode(QAction* action);
-	void nextSelectMode();
-	void setSelectedGridMode(QString mode);
-	void changeGridMode(QAction* action);
-	void nextGridMode();
+
+    void changeSelectMode(QAction* action);
+    void nextSelectMode();
+    void setSelectedGridMode(QString mode);
+    void changeGridMode(QAction* action);
+    void nextGridMode();
 
     void helpCrochetHelp();
     void helpAbout();
@@ -162,8 +164,8 @@ private slots:
     void copy();
     void cut();
     void paste();
-	
-	void insertImage();
+
+    void insertImage();
 
     void group();
     void ungroup();
@@ -188,21 +190,22 @@ private slots:
     void addColor(QColor color);
 
     void updateDefaultStitchColor(QColor originalColor, QColor newColor);
-	
-	void reloadLayerContent(QList<ChartLayer*>& layers, ChartLayer* selected);
+
+    void reloadLayerContent(QList<ChartLayer*>& layers, ChartLayer* selected);
 
 public slots:
     void loadFile(QString fileName);
+
 private:
     void loadFiles(QStringList fileNames);
-    
+
     void setupMenus();
     void setupRecentFiles();
     void updateMenuItems();
-    
-    QSortFilterProxyModel *mProxyModel;
+
+    QSortFilterProxyModel* mProxyModel;
     void setupStitchPalette();
-	void setupLayersDock();
+    void setupLayersDock();
     void setupDocks();
 
     /**
@@ -226,14 +229,22 @@ private:
     FileFactory* mFile;
     Updater* mUpdater;
 
-//for the savefile class:
+    // for the savefile class:
 protected:
-    QMap<QString, int> patternStitches() { return mPatternStitches; }
-    QMap<QString, QMap<QString, qint64> > patternColors() { return mPatternColors; }
+    QMap<QString, int>
+    patternStitches()
+    {
+        return mPatternStitches;
+    }
+    QMap<QString, QMap<QString, qint64> >
+    patternColors()
+    {
+        return mPatternColors;
+    }
     QTabWidget* tabWidget();
     void showFileError(int error);
 
-//Flash the new Document dialog when the user selects new doc or new chart.
+    // Flash the new Document dialog when the user selects new doc or new chart.
 private slots:
     void flashNewDocDialog();
 
@@ -241,45 +252,44 @@ private slots:
     void distributeSelection(int style);
     void arrangeGrid(QSize grid, QSize alignment, QSize spacing, bool useSelection);
 
-	void copy(int direction);
+    void copy(int direction);
     void mirror(int direction);
     void rotate(qreal degrees);
-	void resize(QRectF scenerect);
+    void resize(QRectF scenerect);
 
     void updateGuidelines(Guidelines guidelines);
-    
+
 private:
-    //Save the color of the widget when we flash the New Doc Dialog.
+    // Save the color of the widget when we flash the New Doc Dialog.
     QColor mNewDocWidgetColor;
-    
+
 private:
     QMap<QString, int> mPatternStitches;
     QMap<QString, QMap<QString, qint64> > mPatternColors;
 
     QActionGroup* mModeGroup;
-	QActionGroup* mSelectGroup;
-	QActionGroup* mGridGroup;
-    
-    QAction* mActionUndo,
-           * mActionRedo;
+    QActionGroup* mSelectGroup;
+    QActionGroup* mGridGroup;
+
+    QAction *mActionUndo, *mActionRedo;
 
     void addToRecentFiles(QString fileName);
     QList<QAction*> mRecentFilesActs;
-    
+
     QDockWidget* mUndoDock;
     UndoGroup mUndoGroup;
-	
-	ResizeUI* mResizeUI;
+
+    ResizeUI* mResizeUI;
     AlignDock* mAlignDock;
     RowsDock* mRowsDock;
     MirrorDock* mMirrorDock;
 
     PropertiesDock* mPropertiesDock;
-    
+
     int mEditMode;
     QString mStitch;
     QColor mFgColor;
     QColor mBgColor;
 };
 
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H

@@ -25,8 +25,9 @@
 
 class Scene;
 
-namespace Ui {
-    class StitchReplacerUi;
+namespace Ui
+{
+class StitchReplacerUi;
 }
 
 class StitchReplacerUi : public QDialog
@@ -34,7 +35,7 @@ class StitchReplacerUi : public QDialog
     Q_OBJECT
 
 public:
-    explicit StitchReplacerUi(QString stitch, QList<QString> patternStitches, QWidget *parent = 0);
+    explicit StitchReplacerUi(QString stitch, QList<QString> patternStitches, QWidget* parent = 0);
     ~StitchReplacerUi();
 
     QString original;
@@ -44,12 +45,11 @@ private slots:
     void updateStitches(QString newStitch);
 
 private:
-    //Hold the list of stitches used in this pattern.
+    // Hold the list of stitches used in this pattern.
     QList<QString> mOriginalStitchList;
-    Ui::StitchReplacerUi *ui;
+    Ui::StitchReplacerUi* ui;
 
     void populateStitchLists();
-
 };
 
-#endif // STITCHREPLACERUI_H
+#endif  // STITCHREPLACERUI_H

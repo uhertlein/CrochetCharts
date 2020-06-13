@@ -38,7 +38,8 @@
 #include "settings.h"
 
 Updater::Updater(QWidget* parent)
-    : QWidget(parent), mSilent(false)
+    : QWidget(parent)
+    , mSilent(false)
 {
     QString url = Settings::inst()->value("updatePage").toString();
 
@@ -58,10 +59,13 @@ Updater::Updater(QWidget* parent)
 #endif
 
     QString sn = Settings::inst()->value("serialNumber").toString();
-    //software, version, os, serial number, arch
-    mUrl = QUrl(QString(url).arg(AppInfo::inst()->appName.toLower())
-                            .arg(AppInfo::inst()->appVersion)
-                            .arg(os).arg(sn).arg(arch));
+    // software, version, os, serial number, arch
+    mUrl = QUrl(QString(url)
+                    .arg(AppInfo::inst()->appName.toLower())
+                    .arg(AppInfo::inst()->appVersion)
+                    .arg(os)
+                    .arg(sn)
+                    .arg(arch));
 
     mProgDialog = new QProgressDialog(this);
 }
@@ -70,59 +74,70 @@ Updater::~Updater()
 {
 }
 
-void Updater::checkForUpdates(bool silent)
+void
+Updater::checkForUpdates(bool silent)
 {
     mSilent = silent;
-       
+
     // schedule the request
     httpRequestAborted = false;
     startRequest();
-    
 }
 
-void Updater::startRequest()
+void
+Updater::startRequest()
 {
     reply = qnam.get(QNetworkRequest(mUrl));
     connect(reply, SIGNAL(finished()), this, SLOT(httpFinished()));
     connect(reply, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
 }
 
-void Updater::httpFinished()
+void
+Updater::httpFinished()
 {
-    if (httpRequestAborted) {
+    if (httpRequestAborted)
+    {
         reply->deleteLater();
         return;
     }
 
     QString data = QString(mData);
 
-    if (reply->error()) {
-        //TODO: add a warning.
+    if (reply->error())
+    {
+        // TODO: add a warning.
         qWarning() << "Failed to connect to server.";
-    } else {
-
+    }
+    else
+    {
         QStringList urls = data.split("::", QString::SkipEmptyParts);
-        if(urls.count() == 2) {
+        if (urls.count() == 2)
+        {
             QMessageBox msgbox(this);
             msgbox.setIcon(QMessageBox::Information);
             msgbox.setText(tr("There is a new version of %1.").arg(AppInfo::inst()->appName));
             msgbox.setInformativeText(tr("Would you like to download the new version?"));
             msgbox.setDetailedText(urls.last());
 
-            QPushButton *downloadNow = msgbox.addButton(tr("Download the new version"), QMessageBox::ActionRole);
-            QPushButton *remindLater = msgbox.addButton(tr("Remind me later"), QMessageBox::RejectRole);
+            QPushButton* downloadNow
+                = msgbox.addButton(tr("Download the new version"), QMessageBox::ActionRole);
+            QPushButton* remindLater
+                = msgbox.addButton(tr("Remind me later"), QMessageBox::RejectRole);
 
             msgbox.exec();
 
-            if(msgbox.clickedButton() == remindLater)
+            if (msgbox.clickedButton() == remindLater)
                 return;
 
-            if(msgbox.clickedButton() == downloadNow)
+            if (msgbox.clickedButton() == downloadNow)
                 downloadInstaller(QUrl(urls.first()));
-
-        } else if(!mSilent) {
+        }
+        else if (!mSilent)
+        {
             QMessageBox::information(this, tr("No updates available"),
-                            tr("There are no updates available for %1 at this time.").arg(AppInfo::inst()->appName), QMessageBox::Ok);
+                                     tr("There are no updates available for %1 at this time.")
+                                         .arg(AppInfo::inst()->appName),
+                                     QMessageBox::Ok);
         }
     }
 
@@ -130,55 +145,64 @@ void Updater::httpFinished()
     reply = 0;
 }
 
-void Updater::httpReadyRead()
+void
+Updater::httpReadyRead()
 {
     mData.append(reply->readAll());
 }
 
-void Updater::downloadInstaller(QUrl url)
+void
+Updater::downloadInstaller(QUrl url)
 {
     QString fName = url.path().split("/").last();
     QString path = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
     installer = new QFile(path + "/" + fName);
-    
-    if (!installer->open(QIODevice::WriteOnly)){
-        QMessageBox::information(this, tr("HTTP"), tr("Unable to save the file %1: %2.")
-        .arg(installer->fileName()).arg(installer->errorString()));
+
+    if (!installer->open(QIODevice::WriteOnly))
+    {
+        QMessageBox::information(this, tr("HTTP"),
+                                 tr("Unable to save the file %1: %2.")
+                                     .arg(installer->fileName())
+                                     .arg(installer->errorString()));
         delete installer;
         installer = 0;
         return;
     }
-    
+
     mProgDialog->setLabelText(tr("Downloading %1").arg(fName));
     connect(mProgDialog, SIGNAL(canceled()), this, SLOT(cancelDownload()));
     mProgDialog->show();
-    
+
     instReply = qnam.get(QNetworkRequest(url));
-    connect(instReply, SIGNAL(downloadProgress(qint64,qint64)),
-            this, SLOT(updateDataTransferProgress(qint64,qint64)));
+    connect(instReply, SIGNAL(downloadProgress(qint64, qint64)), this,
+            SLOT(updateDataTransferProgress(qint64, qint64)));
     connect(instReply, SIGNAL(finished()), this, SLOT(httpFinishedInstaller()));
     connect(instReply, SIGNAL(readyRead()), this, SLOT(httpReadyReadInstaller()));
-
 }
 
-void Updater::cancelDownload()
+void
+Updater::cancelDownload()
 {
     httpRequestAborted = true;
-    //FIXME:crash on cancel.
-    //TODO: add some error handeling so it doesn't just sit there when it's not working.
+    // FIXME:crash on cancel.
+    // TODO: add some error handeling so it doesn't just sit there when it's not working.
     instReply->abort();
 }
 
-void Updater::updateDataTransferProgress(qint64 readBytes, qint64 totalBytes)
+void
+Updater::updateDataTransferProgress(qint64 readBytes, qint64 totalBytes)
 {
     mProgDialog->setMaximum(totalBytes);
     mProgDialog->setValue(readBytes);
 }
 
-void Updater::httpFinishedInstaller()
+void
+Updater::httpFinishedInstaller()
 {
-    if (httpRequestAborted) {
-        if (installer) {
+    if (httpRequestAborted)
+    {
+        if (installer)
+        {
             installer->close();
             installer->remove();
             delete installer;
@@ -187,18 +211,22 @@ void Updater::httpFinishedInstaller()
         instReply->deleteLater();
         return;
     }
-    
-    if(installer->isOpen()) {
+
+    if (installer->isOpen())
+    {
         installer->flush();
         installer->close();
     }
 
     mProgDialog->hide();
-    if (instReply->error()) {
+    if (instReply->error())
+    {
         installer->remove();
-        //TODO: prompt user that the download failed.
+        // TODO: prompt user that the download failed.
         qWarning() << "failed to download the file.";
-    } else {
+    }
+    else
+    {
         launchInstaller();
     }
 
@@ -208,23 +236,26 @@ void Updater::httpFinishedInstaller()
     installer->deleteLater();
 }
 
-void Updater::httpReadyReadInstaller()
+void
+Updater::httpReadyReadInstaller()
 {
     if (installer)
         installer->write(instReply->readAll());
 }
 
-void Updater::launchInstaller()
+void
+Updater::launchInstaller()
 {
-
-    if(!installer) {
+    if (!installer)
+    {
         QMessageBox mbox;
-        mbox.setText("Could not load the installer. Please download it manually and run the update.");
+        mbox.setText(
+            "Could not load the installer. Please download it manually and run the update.");
         mbox.setIcon(QMessageBox::Warning);
         mbox.exec();
         return;
     }
-        
+
 #if defined(Q_OS_WIN32)
     QDesktopServices::openUrl(installer->fileName());
 
@@ -237,6 +268,6 @@ void Updater::launchInstaller()
     installProc->startDetached(program);
     installProc->waitForStarted();
 #endif
-    
+
     qApp->quit();
 }

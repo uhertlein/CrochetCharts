@@ -26,8 +26,9 @@
 #include "scene.h"
 #include "textview.h"
 
-namespace Ui {
-    class RowEditDialog;
+namespace Ui
+{
+class RowEditDialog;
 }
 
 class QListWidgetItem;
@@ -42,17 +43,17 @@ public:
     void updateRowList();
 
     void show();
-    
+
 signals:
     /**
      *Row is the grid row.
      */
     void displayRow(int row);
-    
+
 private slots:
     void addRow();
     void removeRow();
-    
+
     void moveUp();
     void moveDown();
 
@@ -61,16 +62,15 @@ private slots:
      */
     void listItemChanged(int listRow);
     void listItemClicked(QListWidgetItem* item);
-    
-    void updateRow();
-    
-private:
 
+    void updateRow();
+
+private:
     void removeEmptyRows();
-    
+
     Scene* mScene;
-    TextView *mTextView;
-    
+    TextView* mTextView;
+
     Ui::RowEditDialog* ui;
 };
-#endif //ROWEDITDIALOG_H
+#endif  // ROWEDITDIALOG_H

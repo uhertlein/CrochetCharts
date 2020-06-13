@@ -26,36 +26,37 @@
 #include <QGraphicsScene>
 #include <QMap>
 
-namespace Ui {
-    class ResizeDialog;
+namespace Ui
+{
+class ResizeDialog;
 }
 
 class ResizeUI : public QDockWidget
 {
-	Q_OBJECT
-	
+    Q_OBJECT
+
 public:
-	ResizeUI(QTabWidget* TabWidget, QWidget* parent = 0);
-	~ResizeUI();
+    ResizeUI(QTabWidget* TabWidget, QWidget* parent = 0);
+    ~ResizeUI();
 
 signals:
-	void resize(QRectF);
-	
+    void resize(QRectF);
+
 public slots:
-	void updateContent();
-	void updateContent(int index);
-	
+    void updateContent();
+    void updateContent(int index);
+
 private:
-	void setContent(qreal top, qreal bottom, qreal left, qreal right);
-	void sendResize();
-	
+    void setContent(qreal top, qreal bottom, qreal left, qreal right);
+    void sendResize();
+
 private slots:
-	void clampPressed();
-	void valueChanged(int value);
-	
+    void clampPressed();
+    void valueChanged(int value);
+
 private:
-	Ui::ResizeDialog* ui;
-	QTabWidget* mTabWidget;
+    Ui::ResizeDialog* ui;
+    QTabWidget* mTabWidget;
 };
 
-#endif // RESIZEUI_H
+#endif  // RESIZEUI_H

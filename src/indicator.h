@@ -36,38 +36,79 @@ class Indicator : public QGraphicsTextItem
 {
     Q_OBJECT
     friend class SaveFile;
+
 public:
-    enum {Type = UserType + 15 };
+    enum
+    {
+        Type = UserType + 15
+    };
 
     Indicator(QGraphicsItem* parent = 0, QGraphicsScene* scene = 0);
     ~Indicator();
 
     QRectF boundingRect() const;
-    int type() const { return Type; }
+    int
+    type() const
+    {
+        return Type;
+    }
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 
-	QString text();
-	void setText(QString t);
+    QString text();
+    void setText(QString t);
 
-    QColor bgColor() { return mBgColor; }
-    void setBgColor(QColor c) { mBgColor = c; }
+    QColor
+    bgColor()
+    {
+        return mBgColor;
+    }
+    void
+    setBgColor(QColor c)
+    {
+        mBgColor = c;
+    }
 
-    QColor textColor() { return mTextColor; }
-    void setTextColor(QColor c) { mTextColor = c; }
+    QColor
+    textColor()
+    {
+        return mTextColor;
+    }
+    void
+    setTextColor(QColor c)
+    {
+        mTextColor = c;
+    }
 
-    QString style() { return mStyle; }
-    void setStyle(QString style) { mStyle = style; update();}
+    QString
+    style()
+    {
+        return mStyle;
+    }
+    void
+    setStyle(QString style)
+    {
+        mStyle = style;
+        update();
+    }
 
     QPainterPath shape() const;
 
     bool highlight;
-	
-	unsigned int layer() { return mLayer; }
-	void setLayer(unsigned int layer) { mLayer = layer; }
+
+    unsigned int
+    layer()
+    {
+        return mLayer;
+    }
+    void
+    setLayer(unsigned int layer)
+    {
+        mLayer = layer;
+    }
 
 signals:
-    void lostFocus(Indicator *item);
-    void gotFocus(Indicator *item);
+    void lostFocus(Indicator* item);
+    void gotFocus(Indicator* item);
 
 protected:
     void focusInEvent(QFocusEvent* event);
@@ -76,14 +117,13 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
 private:
-	//the layer of the indicator
-	unsigned int mLayer;
-	
+    // the layer of the indicator
+    unsigned int mLayer;
+
     QColor mBgColor;
-    QColor mTextColor;	
+    QColor mTextColor;
 
     QString mStyle;
-	QString oldText;
-
+    QString oldText;
 };
-#endif //INDICATOR_H
+#endif  // INDICATOR_H

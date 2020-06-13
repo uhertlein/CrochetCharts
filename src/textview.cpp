@@ -27,7 +27,8 @@
 #include <math.h>
 
 TextView::TextView(QWidget* parent, Scene* scene)
-    : QObject(parent), mScene(scene)
+    : QObject(parent)
+    , mScene(scene)
 {
 }
 
@@ -35,9 +36,9 @@ TextView::~TextView()
 {
 }
 
-QString TextView::generateTextRow(int row, bool cleanOutput, bool useRepeats)
+QString
+TextView::generateTextRow(int row, bool cleanOutput, bool useRepeats)
 {
-
     QString rowText = "";
     QString curStitch;
 
@@ -45,27 +46,31 @@ QString TextView::generateTextRow(int row, bool cleanOutput, bool useRepeats)
 
     int cols = mScene->columnCount(row);
 
-    //create a list of stitches
-    for(int c = 0; c < cols; ++c) {
-		qDebug() << "row iteration!";
+    // create a list of stitches
+    for (int c = 0; c < cols; ++c)
+    {
+        qDebug() << "row iteration!";
         Cell* cell = mScene->grid[row][c];
-        if(!cell)
+        if (!cell)
             continue;
 
         curStitch = cell->name();
-        if(cleanOutput) {
-            //TODO: any special preprocessing that needs to be done.
+        if (cleanOutput)
+        {
+            // TODO: any special preprocessing that needs to be done.
         }
         rowList.append(curStitch);
         curStitch = "";
     }
     rowText = generateText(rowList, useRepeats);
 
-    if(cleanOutput) {
-        //capitalize the first letter.
-        for(int i = 0; i < rowText.count(); ++i) {
-
-            if(rowText.at(i).isLetter()) {
+    if (cleanOutput)
+    {
+        // capitalize the first letter.
+        for (int i = 0; i < rowText.count(); ++i)
+        {
+            if (rowText.at(i).isLetter())
+            {
                 rowText[i] = rowText.at(i).toUpper();
                 break;
             }
@@ -77,7 +82,8 @@ QString TextView::generateTextRow(int row, bool cleanOutput, bool useRepeats)
     return rowText;
 }
 
-QString TextView::generateText(QStringList row, bool useRepeats)
+QString
+TextView::generateText(QStringList row, bool useRepeats)
 {
     QString text;
     QString curStitch, previousStitch;
@@ -94,24 +100,32 @@ QString TextView::generateText(QStringList row, bool useRepeats)
     }*/
 
     previousStitch = "";
-    for(int i = 0; i < row.count(); ++i) {
+    for (int i = 0; i < row.count(); ++i)
+    {
         curStitch = row.value(i);
 
-        if(curStitch != previousStitch) {
-            if(!firstPass) text += ", ";
+        if (curStitch != previousStitch)
+        {
+            if (!firstPass)
+                text += ", ";
 
-            if(curStitch.startsWith(prefix)) {
+            if (curStitch.startsWith(prefix))
+            {
                 text += "[" + generateText(data.value(curStitch)) + "]";
-            } else
+            }
+            else
                 text += curStitch;
         }
 
-        if(curStitch == previousStitch) {
+        if (curStitch == previousStitch)
+        {
             count++;
-        } else {
+        }
+        else
+        {
             text += " " + QString::number(count);
             count = 1;
-            if(curStitch.startsWith(prefix))
+            if (curStitch.startsWith(prefix))
                 text += " times";
         }
 
@@ -122,49 +136,55 @@ QString TextView::generateText(QStringList row, bool useRepeats)
     return text;
 }
 
-QMap< QString, QStringList > TextView::generateRepeats(QStringList stitches, QString prefix)
+QMap<QString, QStringList>
+TextView::generateRepeats(QStringList stitches, QString prefix)
 {
     QMap<QString, QStringList> data;
     QStringList row;
     int count = stitches.count();
     bool repeat = true;
 
-    //loop through each stitch in the row to find matches.
-    for(int i = 0; i < count; ++i) {
+    // loop through each stitch in the row to find matches.
+    for (int i = 0; i < count; ++i)
+    {
         QStringList stRepeat;
 
-        int match = stitches.indexOf(stitches[i], i+1);
+        int match = stitches.indexOf(stitches[i], i + 1);
 
-        //no match for this stitch
-        if(match == -1) {
+        // no match for this stitch
+        if (match == -1)
+        {
             continue;
         }
 
         int diff = match - i;
-        //don't try to match beyond the end of the array.
+        // don't try to match beyond the end of the array.
         int endDiff = stitches.count() - match;
-        if(endDiff < diff)
+        if (endDiff < diff)
             diff = endDiff;
 
-        //walk through the match and see if it is a repeat.
-        for(int j = i; j < match; j++) {
+        // walk through the match and see if it is a repeat.
+        for (int j = i; j < match; j++)
+        {
             qDebug() << j << stitches[j] << j + diff << stitches[j + diff];
-            if(stitches[j] != stitches[j + diff])
+            if (stitches[j] != stitches[j + diff])
                 repeat = false;
-            else {
+            else
+            {
                 stRepeat.append(stitches[j]);
             }
         }
 
-        if(!repeat) {
-            if(stRepeat.count() <= 1) {
+        if (!repeat)
+        {
+            if (stRepeat.count() <= 1)
+            {
                 stRepeat.clear();
                 repeat = true;
             }
         }
 
         data.insert(prefix + QString::number(i), stRepeat);
-
     }
 
     data.insert("row", row);
@@ -173,48 +193,52 @@ QMap< QString, QStringList > TextView::generateRepeats(QStringList stitches, QSt
     return data;
 }
 
-int TextView::matchCount(QStringList stitches, int startPos, int length)
+int
+TextView::matchCount(QStringList stitches, int startPos, int length)
 {
     QStringList sub;
     int count = 0;
 
-    for(int i = 0; i < length; ++i)
+    for (int i = 0; i < length; ++i)
         sub.append(stitches.value(startPos + i));
 
-    for(int i = startPos; i < stitches.count(); ++i) {
-
-        if(sub.value(i%length) != stitches.value(i))
+    for (int i = startPos; i < stitches.count(); ++i)
+    {
+        if (sub.value(i % length) != stitches.value(i))
             break;
-        count = floor(double(i + 1 - startPos)/length);
+        count = floor(double(i + 1 - startPos) / length);
     }
 
     return count;
 }
 
-QString TextView::cleanToken(QString token)
+QString
+TextView::cleanToken(QString token)
 {
     token = token.simplified().toLower();
-    if(token.startsWith("["))
+    if (token.startsWith("["))
         token.replace("[", "");
 
-    if(token.contains(QRegExp("\\].{,}$")))
+    if (token.contains(QRegExp("\\].{,}$")))
         token.replace(QRegExp("\\].{,}"), "");
 
-    if(token.startsWith("*"))
+    if (token.startsWith("*"))
         token.replace("*", "");
-    if(token.contains(QRegExp(";.{,}$")))
+    if (token.contains(QRegExp(";.{,}$")))
         token.replace(QRegExp(";.{,}"), "");
 
     return token;
 }
 
-QString TextView::copyInstructions()
+QString
+TextView::copyInstructions()
 {
     QStringList rowText;
     QString text;
 
     int rows = mScene->rowCount();
-    for(int r = 0; r < rows; ++r) {
+    for (int r = 0; r < rows; ++r)
+    {
         rowText << generateTextRow(r, true, true);
     }
 
@@ -222,55 +246,66 @@ QString TextView::copyInstructions()
     QString prefix = ".sws_rows_";
 
     data = generateRepeatRows(rowText, prefix);
-    
-    for(int i = 0; i < rowText.count(); ++i) {
+
+    for (int i = 0; i < rowText.count(); ++i)
+    {
         QString row = rowText[i];
-        //don't match rows that are already repeats.
-        if(row.startsWith(tr("Repeat row")))
+        // don't match rows that are already repeats.
+        if (row.startsWith(tr("Repeat row")))
             continue;
 
-        if(rowText.count(row) > 1) {
-            for(int j = i + 1; j < rowText.count(); ++j) {
-                if(rowText[j] == row)
-                    rowText[j] = tr("Repeat row %1.").arg(i+1);
+        if (rowText.count(row) > 1)
+        {
+            for (int j = i + 1; j < rowText.count(); ++j)
+            {
+                if (rowText[j] == row)
+                    rowText[j] = tr("Repeat row %1.").arg(i + 1);
             }
         }
     }
 
-    for(int i = 0; i < rowText.count(); ++i)
-        text += tr("Row %1: %2\n").arg(i+1).arg(rowText[i]);
+    for (int i = 0; i < rowText.count(); ++i)
+        text += tr("Row %1: %2\n").arg(i + 1).arg(rowText[i]);
 
-    if(text == "")
-        text = "There are no rows on this chart, to create rows please goto the \"Modes\" menu and select \"Row Edit\"";
+    if (text == "")
+        text
+            = "There are no rows on this chart, to create rows please goto the \"Modes\" menu and "
+              "select \"Row Edit\"";
     qDebug() << text;
     return text;
-
 }
 
-QMap< QString, QStringList > TextView::generateRepeatRows(QStringList rows, QString prefix)
+QMap<QString, QStringList>
+TextView::generateRepeatRows(QStringList rows, QString prefix)
 {
     QMap<QString, QStringList> data;
     QStringList newRows;
     int count = rows.count();
 
-    for(int i = 0; i < count; ++i) {
+    for (int i = 0; i < count; ++i)
+    {
         QString value = rows.value(i);
-        for(int j = i + 1; j < count; ++j) {
-            if(rows.value(i) == rows.value(j)) {
+        for (int j = i + 1; j < count; ++j)
+        {
+            if (rows.value(i) == rows.value(j))
+            {
                 int diff = j - i;
                 int diffSts = false;
-                for(int l = 0; l <= diff; ++l) {
-                    if(rows.value(i + l) != rows.value(i))
+                for (int l = 0; l <= diff; ++l)
+                {
+                    if (rows.value(i + l) != rows.value(i))
                         diffSts = true;
                 }
-                if(!diffSts)
+                if (!diffSts)
                     continue;
 
                 int count = matchCount(rows, i, diff);
-                
-                if(count > 1) {
+
+                if (count > 1)
+                {
                     QStringList sub;
-                    for(int k = 0; k < diff; ++k) {
+                    for (int k = 0; k < diff; ++k)
+                    {
                         sub.append(rows.value(k));
                         newRows.append(prefix + QString::number(i));
                     }
@@ -280,7 +315,7 @@ QMap< QString, QStringList > TextView::generateRepeatRows(QStringList rows, QStr
                 }
             }
         }
-        if(i < count)
+        if (i < count)
             newRows.append(value);
     }
 

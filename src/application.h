@@ -30,19 +30,19 @@ class Application : public QApplication
 {
     Q_OBJECT
 public:
-    Application(int &argc, char **argv);
+    Application(int& argc, char** argv);
 
-    static void resendFileOpenEvents(QObject *receiver);
+    static void resendFileOpenEvents(QObject* receiver);
 
-    void setMainWindow(MainWindow *window);
+    void setMainWindow(MainWindow* window);
 
 protected:
-    bool event(QEvent *event);
+    bool event(QEvent* event);
 
 private:
-    void loadFile(const QString &fileName);
+    void loadFile(const QString& fileName);
     static QStringList mFileOpenEventList;
-    MainWindow *mW;
+    MainWindow* mW;
 };
 
-#endif //APPLICATION_H
+#endif  // APPLICATION_H

@@ -30,16 +30,23 @@
 class SetIndicatorText : public QUndoCommand
 {
 public:
-    enum { Id = 1100 };
-    
-    SetIndicatorText(Indicator *i, QString otext, QString ntext, QUndoCommand *parent = 0);
+    enum
+    {
+        Id = 1100
+    };
+
+    SetIndicatorText(Indicator* i, QString otext, QString ntext, QUndoCommand* parent = 0);
 
     void undo();
     void redo();
 
-    int id() const { return Id; }
-    
-    static void setText(Indicator *i, QString text);
+    int
+    id() const
+    {
+        return Id;
+    }
+
+    static void setText(Indicator* i, QString text);
 
 private:
     QString oldText;
@@ -50,127 +57,169 @@ private:
 class SetCellStitch : public QUndoCommand
 {
 public:
-    enum { Id = 1110 };
-    
-    SetCellStitch(Cell *cell, QString newSt, QUndoCommand *parent = 0);
+    enum
+    {
+        Id = 1110
+    };
+
+    SetCellStitch(Cell* cell, QString newSt, QUndoCommand* parent = 0);
 
     void undo();
     void redo();
 
-    int id() const { return Id; }
-    
-    static void setStitch(Cell *cell, QString stitch);
+    int
+    id() const
+    {
+        return Id;
+    }
+
+    static void setStitch(Cell* cell, QString stitch);
 
 private:
     QString oldStitch;
     QString newStitch;
-    Cell *c;
+    Cell* c;
 };
 
 class SetChartZLayer : public QUndoCommand
 {
 public:
-    enum { Id = 1120 };
-	SetChartZLayer(ChartImage* ci, const QString& zlayer, QUndoCommand *parent = 0);
-	
-	void undo();
+    enum
+    {
+        Id = 1120
+    };
+    SetChartZLayer(ChartImage* ci, const QString& zlayer, QUndoCommand* parent = 0);
+
+    void undo();
     void redo();
 
-    int id() const { return Id; }
-    
-    static void setZLayer(ChartImage *ci, const QString& layer);
-	
+    int
+    id() const
+    {
+        return Id;
+    }
+
+    static void setZLayer(ChartImage* ci, const QString& layer);
+
 private:
-	QString newLayer;
-	QString oldLayer;
-	ChartImage* ci;
+    QString newLayer;
+    QString oldLayer;
+    ChartImage* ci;
 };
 
 class SetChartImagePath : public QUndoCommand
 {
 public:
-    enum { Id = 1130 };
-	SetChartImagePath(ChartImage* ci, const QString& path, QUndoCommand *parent = 0);
-	
-	void undo();
+    enum
+    {
+        Id = 1130
+    };
+    SetChartImagePath(ChartImage* ci, const QString& path, QUndoCommand* parent = 0);
+
+    void undo();
     void redo();
 
-    int id() const { return Id; }
-    
-    static void setPath(ChartImage *ci, const QString& path);
-	
+    int
+    id() const
+    {
+        return Id;
+    }
+
+    static void setPath(ChartImage* ci, const QString& path);
+
 private:
-	QString newPath;
-	QString oldPath;
-	ChartImage* ci;
+    QString newPath;
+    QString oldPath;
+    ChartImage* ci;
 };
 
 class SetCellBgColor : public QUndoCommand
 {
 public:
-    enum { Id = 1140 };
-    
-    SetCellBgColor(Cell *cell, QColor newCl, QUndoCommand *parent = 0);
-    
+    enum
+    {
+        Id = 1140
+    };
+
+    SetCellBgColor(Cell* cell, QColor newCl, QUndoCommand* parent = 0);
+
     void undo();
     void redo();
 
-    int id() const { return Id; }
-    
-    static void setBgColor(Cell *cell, QColor color);
+    int
+    id() const
+    {
+        return Id;
+    }
+
+    static void setBgColor(Cell* cell, QColor color);
 
 private:
     QColor oldColor;
     QColor newColor;
-    Cell *c;
+    Cell* c;
 };
 
 class SetCellColor : public QUndoCommand
 {
 public:
-    enum { Id = 1150 };
+    enum
+    {
+        Id = 1150
+    };
 
-    SetCellColor(Cell *cell, QColor newCl, QUndoCommand *parent = 0);
+    SetCellColor(Cell* cell, QColor newCl, QUndoCommand* parent = 0);
 
     void undo();
     void redo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
-    static void setColor(Cell *cell, QColor color);
+    static void setColor(Cell* cell, QColor color);
 
 private:
     QColor oldColor;
     QColor newColor;
-    Cell *c;
+    Cell* c;
 };
 
 class SetItemRotation : public QUndoCommand
 {
 public:
-    enum { Id = 1160 };
+    enum
+    {
+        Id = 1160
+    };
 
-    SetItemRotation(QGraphicsItem *item, qreal oldAngl, QPointF pivotPt, QUndoCommand *parent = 0);
+    SetItemRotation(QGraphicsItem* item, qreal oldAngl, QPointF pivotPt, QUndoCommand* parent = 0);
 
     void undo();
     void redo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
-    static void setRotation(QGraphicsItem *item, qreal angle, QPointF pivot);
+    static void setRotation(QGraphicsItem* item, qreal angle, QPointF pivot);
 
 private:
-    QGraphicsItem *i;
+    QGraphicsItem* i;
     qreal oldAngle;
     qreal newAngle;
     QPointF pvtPt;
-
 };
 
 /**
  * No matter what the angle is convert it to a number between 0, and 360 degrees.
  */
-static void qNormalizeAngle(qreal &angle)
+static void
+qNormalizeAngle(qreal& angle)
 {
     while (angle < 0.0)
         angle += 360.0;
@@ -181,269 +230,382 @@ static void qNormalizeAngle(qreal &angle)
 class SetSelectionRotation : public QUndoCommand
 {
 public:
-    enum { Id = 1170 };
+    enum
+    {
+        Id = 1170
+    };
 
-    SetSelectionRotation(Scene *scene, QList<QGraphicsItem*> itms, qreal degrees, QUndoCommand *parent = 0);
+    SetSelectionRotation(Scene* scene,
+                         QList<QGraphicsItem*> itms,
+                         qreal degrees,
+                         QUndoCommand* parent = 0);
 
     void undo();
     void redo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
-    static void rotate(Scene *scene, qreal degrees, QList<QGraphicsItem*> items, QPointF pivotPoint);
+    static void rotate(Scene* scene,
+                       qreal degrees,
+                       QList<QGraphicsItem*> items,
+                       QPointF pivotPoint);
 
 private:
     QList<QGraphicsItem*> items;
     qreal newAngle;
 
     QPointF pivotPoint;
-    Scene *s;
+    Scene* s;
 };
 
 class SetItemCoordinates : public QUndoCommand
 {
 public:
-    enum { Id = 1180 };
+    enum
+    {
+        Id = 1180
+    };
 
-    SetItemCoordinates(QGraphicsItem *item, QPointF oldPos, QUndoCommand *parent = 0);
+    SetItemCoordinates(QGraphicsItem* item, QPointF oldPos, QUndoCommand* parent = 0);
 
     void undo();
     void redo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
-    static void setPosition(QGraphicsItem *item, QPointF position);
+    static void setPosition(QGraphicsItem* item, QPointF position);
 
 private:
     QPointF oldCoord;
     QPointF newCoord;
-    QGraphicsItem *i;
+    QGraphicsItem* i;
 };
 
 class SetItemScale : public QUndoCommand
 {
 public:
-    enum { Id = 1190 };
+    enum
+    {
+        Id = 1190
+    };
 
-    SetItemScale(QGraphicsItem *item, QPointF oldScle, QPointF pivotPt, QUndoCommand *parent = 0);
+    SetItemScale(QGraphicsItem* item, QPointF oldScle, QPointF pivotPt, QUndoCommand* parent = 0);
 
     void undo();
     void redo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
-    static void setScale(QGraphicsItem *item, QPointF scale, QPointF pivot);
+    static void setScale(QGraphicsItem* item, QPointF scale, QPointF pivot);
 
 private:
     QPointF oldScale;
     QPointF newScale;
-	QPointF mPivot;
+    QPointF mPivot;
 
-    QGraphicsItem *i;
-
+    QGraphicsItem* i;
 };
 
 class AddItem : public QUndoCommand
 {
 public:
-    enum { Id = 1200 };
+    enum
+    {
+        Id = 1200
+    };
 
-    AddItem(Scene *scene, QGraphicsItem *item, QUndoCommand *parent = 0);
-	~AddItem();
+    AddItem(Scene* scene, QGraphicsItem* item, QUndoCommand* parent = 0);
+    ~AddItem();
     void redo();
     void undo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
-    static void add(Scene *scene, QGraphicsItem *item);
+    static void add(Scene* scene, QGraphicsItem* item);
 
 private:
-    QGraphicsItem *i;
-    Scene *s;
+    QGraphicsItem* i;
+    Scene* s;
 };
 
 class RemoveItem : public QUndoCommand
 {
 public:
-    enum { Id = 1210 };
+    enum
+    {
+        Id = 1210
+    };
 
-    RemoveItem(Scene *scene, QGraphicsItem *item, QUndoCommand *parent = 0);
+    RemoveItem(Scene* scene, QGraphicsItem* item, QUndoCommand* parent = 0);
 
     void redo();
     void undo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
-    static void remove(Scene *scene, QGraphicsItem *item);
+    static void remove(Scene* scene, QGraphicsItem* item);
 
 private:
-    QGraphicsItem *i;
+    QGraphicsItem* i;
     QPointF position;
 
-    Scene *s;
+    Scene* s;
 };
 
 class RemoveItems : public QUndoCommand
 {
 public:
-    enum { Id = 1220 };
+    enum
+    {
+        Id = 1220
+    };
 
-    RemoveItems(Scene *scene, QList<QGraphicsItem*> items, QUndoCommand *parent = 0);
-	~RemoveItems();
-	
+    RemoveItems(Scene* scene, QList<QGraphicsItem*> items, QUndoCommand* parent = 0);
+    ~RemoveItems();
+
     void redo();
     void undo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
 private:
     QList<QGraphicsItem*> items;
-	QGraphicsItemGroup* removegroup;
+    QGraphicsItemGroup* removegroup;
 
-    Scene *s;
+    Scene* s;
 };
 
 class GroupItems : public QUndoCommand
 {
 public:
-    enum { Id = 1230 };
+    enum
+    {
+        Id = 1230
+    };
 
-    GroupItems(Scene *scene, QList<QGraphicsItem*> itemList, QUndoCommand *parent = 0);
+    GroupItems(Scene* scene, QList<QGraphicsItem*> itemList, QUndoCommand* parent = 0);
 
     void undo();
     void redo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
-    ItemGroup* group() { return g; }
+    ItemGroup*
+    group()
+    {
+        return g;
+    }
 
 private:
     QList<QGraphicsItem*> items;
-    ItemGroup *g;
-    Scene *s;
+    ItemGroup* g;
+    Scene* s;
 };
 
 class UngroupItems : public QUndoCommand
 {
 public:
-    enum { Id = 1240 };
+    enum
+    {
+        Id = 1240
+    };
 
-    UngroupItems(Scene *scene, ItemGroup *group, QUndoCommand *parent = 0);
+    UngroupItems(Scene* scene, ItemGroup* group, QUndoCommand* parent = 0);
 
     void undo();
     void redo();
 
-    int id() const { return Id; }
+    int
+    id() const
+    {
+        return Id;
+    }
 
 private:
     QList<QGraphicsItem*> items;
-    ItemGroup *g;
-    Scene *s;
+    ItemGroup* g;
+    Scene* s;
 };
 
 class AddLayer : public QUndoCommand
 {
 public:
-    enum { Id = 1250 };
-	
-	AddLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent = 0);
-	~AddLayer();
-	
-	void undo();
-	void redo();
-	
-	int id() const { return Id; }
+    enum
+    {
+        Id = 1250
+    };
+
+    AddLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent = 0);
+    ~AddLayer();
+
+    void undo();
+    void redo();
+
+    int
+    id() const
+    {
+        return Id;
+    }
+
 private:
-	ChartLayer* mLayer;
-	Scene* s;
+    ChartLayer* mLayer;
+    Scene* s;
 };
 
 class RemoveLayer : public QUndoCommand
 {
 public:
-    enum { Id = 1260 };
-	
-	RemoveLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent = 0);
-	
-	void undo();
-	void redo();
-	
-	int id() const { return Id; }
+    enum
+    {
+        Id = 1260
+    };
+
+    RemoveLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent = 0);
+
+    void undo();
+    void redo();
+
+    int
+    id() const
+    {
+        return Id;
+    }
+
 private:
-	ChartLayer* mLayer;
-	Scene* s;
+    ChartLayer* mLayer;
+    Scene* s;
 };
 
 class SetLayerStitch : public QUndoCommand
 {
 public:
-    enum { Id = 1270 };
-	
-	SetLayerStitch(Scene* scene, Cell* c, unsigned int layer, QUndoCommand* parent = 0);
-	
-	void undo();
-	void redo();
-	
-	int id() const { return Id; }
+    enum
+    {
+        Id = 1270
+    };
+
+    SetLayerStitch(Scene* scene, Cell* c, unsigned int layer, QUndoCommand* parent = 0);
+
+    void undo();
+    void redo();
+
+    int
+    id() const
+    {
+        return Id;
+    }
+
 private:
-	Scene* s;
-	Cell* c;
-	unsigned int mNew;
-	unsigned int mOld;
+    Scene* s;
+    Cell* c;
+    unsigned int mNew;
+    unsigned int mOld;
 };
 
 class SetLayerIndicator : public QUndoCommand
 {
 public:
-    enum { Id = 1280 };
-	
-	SetLayerIndicator(Scene* scene, Indicator* c, unsigned int layer, QUndoCommand* parent = 0);
-	
-	void undo();
-	void redo();
-	
-	int id() const { return Id; }
+    enum
+    {
+        Id = 1280
+    };
+
+    SetLayerIndicator(Scene* scene, Indicator* c, unsigned int layer, QUndoCommand* parent = 0);
+
+    void undo();
+    void redo();
+
+    int
+    id() const
+    {
+        return Id;
+    }
+
 private:
-	Scene* s;
-	Indicator* c;
-	unsigned int mNew;
-	unsigned int mOld;
+    Scene* s;
+    Indicator* c;
+    unsigned int mNew;
+    unsigned int mOld;
 };
 
 class SetLayerGroup : public QUndoCommand
 {
 public:
-    enum { Id = 1290 };
-	
-	SetLayerGroup(Scene* scene, ItemGroup* c, unsigned int layer, QUndoCommand* parent = 0);
-	
-	void undo();
-	void redo();
-	
-	int id() const { return Id; }
+    enum
+    {
+        Id = 1290
+    };
+
+    SetLayerGroup(Scene* scene, ItemGroup* c, unsigned int layer, QUndoCommand* parent = 0);
+
+    void undo();
+    void redo();
+
+    int
+    id() const
+    {
+        return Id;
+    }
+
 private:
-	Scene* s;
-	ItemGroup* c;
-	unsigned int mNew;
-	unsigned int mOld;
+    Scene* s;
+    ItemGroup* c;
+    unsigned int mNew;
+    unsigned int mOld;
 };
 
 class SetLayerImage : public QUndoCommand
 {
 public:
-    enum { Id = 1300 };
-	
-	SetLayerImage(Scene* scene, ChartImage* c, unsigned int layer, QUndoCommand* parent = 0);
-	
-	void undo();
-	void redo();
-	
-	int id() const { return Id; }
+    enum
+    {
+        Id = 1300
+    };
+
+    SetLayerImage(Scene* scene, ChartImage* c, unsigned int layer, QUndoCommand* parent = 0);
+
+    void undo();
+    void redo();
+
+    int
+    id() const
+    {
+        return Id;
+    }
+
 private:
-	Scene* s;
-	ChartImage* c;
-	unsigned int mNew;
-	unsigned int mOld;
+    Scene* s;
+    ChartImage* c;
+    unsigned int mNew;
+    unsigned int mOld;
 };
 
-#endif //CROCHETCHARTCOMMANDS_H
+#endif  // CROCHETCHARTCOMMANDS_H

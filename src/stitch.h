@@ -35,23 +35,45 @@ class Stitch : public QObject
     friend class StitchSet;
     friend class StitchLibrary;
     friend class TestStitch;
-public:
 
-    enum StitchParts { Name = 0,
-                       Icon = 1,
-                       Description = 2,
-                       Category = 3,
-                       WrongSide = 4
-                     };
-    
-    Stitch(QObject *parent = 0);
+public:
+    enum StitchParts
+    {
+        Name = 0,
+        Icon = 1,
+        Description = 2,
+        Category = 3,
+        WrongSide = 4
+    };
+
+    Stitch(QObject* parent = 0);
     ~Stitch();
 
-    QString name() const { return mName; }
-    QString file() const { return mFile; }
-    QString description() const { return mDescription; }
-    QString category() const { return mCategory; }
-    QString wrongSide() const { return mWrongSide; }
+    QString
+    name() const
+    {
+        return mName;
+    }
+    QString
+    file() const
+    {
+        return mFile;
+    }
+    QString
+    description() const
+    {
+        return mDescription;
+    }
+    QString
+    category() const
+    {
+        return mCategory;
+    }
+    QString
+    wrongSide() const
+    {
+        return mWrongSide;
+    }
 
     qreal width();
     qreal height();
@@ -61,7 +83,7 @@ public:
     QPixmap* renderPixmap();
     QSvgRenderer* renderSvg(QColor color = QColor(Qt::black));
 
-    //reload the svg with new colors.
+    // reload the svg with new colors.
     void reloadIcon();
 
     /**
@@ -70,11 +92,27 @@ public:
     bool isBuiltIn;
 
 protected:
-    void setName(QString n) { mName = n; }
+    void
+    setName(QString n)
+    {
+        mName = n;
+    }
     void setFile(QString f);
-    void setDescription(QString desc) { mDescription = desc; }
-    void setCategory(QString cat) { mCategory = cat; }
-    void setWrongSide(QString ws) { mWrongSide = ws; }
+    void
+    setDescription(QString desc)
+    {
+        mDescription = desc;
+    }
+    void
+    setCategory(QString cat)
+    {
+        mCategory = cat;
+    }
+    void
+    setWrongSide(QString ws)
+    {
+        mWrongSide = ws;
+    }
 
     void addStitchColor(QString color);
 
@@ -93,4 +131,4 @@ private:
     QPixmap* mPixmap;
 };
 
-#endif //STITCH_H
+#endif  // STITCH_H

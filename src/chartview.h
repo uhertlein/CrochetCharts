@@ -31,10 +31,11 @@ class ChartView : public QGraphicsView
     Q_OBJECT
 
 public:
-	enum SnapToGridType {
-		Rows,
-		Rounds
-	};
+    enum SnapToGridType
+    {
+        Rows,
+        Rounds
+    };
 
 public:
     ChartView(QWidget* parent = 0);
@@ -42,7 +43,7 @@ public:
 
     void zoomIn();
     void zoomOut();
-    //zoom takes the mouseDelta which is usually +/- 120;
+    // zoom takes the mouseDelta which is usually +/- 120;
     void zoom(int mouseDelta);
     void zoomLevel(int percent);
 
@@ -55,9 +56,8 @@ protected:
     void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void wheelEvent(QWheelEvent* event);
-    
-private:
 
+private:
 };
 
-#endif //CHARTVIEW_H
+#endif  // CHARTVIEW_H

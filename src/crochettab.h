@@ -35,8 +35,9 @@ class QGraphicsView;
 class TextView;
 class QUndoStack;
 
-namespace Ui {
-    class OptionsBar;
+namespace Ui
+{
+class OptionsBar;
 }
 
 class CrochetTab : public QWidget
@@ -46,27 +47,40 @@ class CrochetTab : public QWidget
     friend class File_v1;
     friend class File_v2;
     friend class ExportUi;
-	friend class ResizeUI;
+    friend class ResizeUI;
     friend class PropertiesDock;
+
 public:
-
-    explicit CrochetTab(Scene::ChartStyle style, int defEditMode, QString defStitch, QColor defFgColor, QColor defBgColor, QWidget* parent = 0);
+    explicit CrochetTab(Scene::ChartStyle style,
+                        int defEditMode,
+                        QString defStitch,
+                        QColor defFgColor,
+                        QColor defBgColor,
+                        QWidget* parent = 0);
     ~CrochetTab();
-	
+
     void renderChart(QPainter* painter, QRectF rect = QRectF());
-	void renderChartSelected(QPainter* painter, QRectF rect = QRectF());
+    void renderChartSelected(QPainter* painter, QRectF rect = QRectF());
 
-    void setPatternStitches(QMap<QString, int>* stitches) { mPatternStitches = stitches; }
-    void setPatternColors(QMap<QString, QMap<QString, qint64> >* colors) { mPatternColors = colors; }
+    void
+    setPatternStitches(QMap<QString, int>* stitches)
+    {
+        mPatternStitches = stitches;
+    }
+    void
+    setPatternColors(QMap<QString, QMap<QString, qint64> >* colors)
+    {
+        mPatternColors = colors;
+    }
 
-    //list of modes available from this tab.
+    // list of modes available from this tab.
     QStringList editModes();
 
     void setEditMode(int mode);
     int editMode() const;
-	
-	void setSelectMode(Scene::SelectMode mode);
-	Scene::SelectMode selectMode() const;
+
+    void setSelectMode(Scene::SelectMode mode);
+    Scene::SelectMode selectMode() const;
 
     void setEditFgColor(QColor color);
     void setEditBgColor(QColor color);
@@ -81,21 +95,21 @@ public:
     void distributeSelection(int distributionStyle);
     void arrangeGrid(QSize grid, QSize alignment, QSize spacing, bool useSelection);
 
-	void addLayer(const QString& layer);
-	void addLayer(const QString& layer, unsigned int uid);
-	void removeSelectedLayer();
-	void mergeLayer(unsigned int from, unsigned int to);
-	void selectLayer(unsigned int uid);
-	void editedLayer(ChartLayer* layer);
+    void addLayer(const QString& layer);
+    void addLayer(const QString& layer, unsigned int uid);
+    void removeSelectedLayer();
+    void mergeLayer(unsigned int from, unsigned int to);
+    void selectLayer(unsigned int uid);
+    void editedLayer(ChartLayer* layer);
 
     void copy(int direction);
     void mirror(int direction);
     void rotate(qreal degrees);
-	void resizeScene(QRectF rectangle);
+    void resizeScene(QRectF rectangle);
     void copy();
     void cut();
     void paste();
-	void insertImage(const QString& filename, QPointF pos = QPointF(0, 0));
+    void insertImage(const QString& filename, QPointF pos = QPointF(0, 0));
 
     void group();
     void ungroup();
@@ -105,7 +119,7 @@ public:
 
     void setGuidelinesType(QString guides);
     bool hasGuidelines();
-    
+
     void propertiesUpdate(QString property, QVariant newValue);
 
     void updateDefaultStitchColor(QColor originalColor, QColor newColor);
@@ -113,14 +127,17 @@ public:
     QList<QGraphicsItem*> selectedItems();
 
 signals:
-	void layersChanged(QList<ChartLayer*>& layers, ChartLayer* selected);
+    void layersChanged(QList<ChartLayer*>& layers, ChartLayer* selected);
     void chartStitchChanged();
     void chartColorChanged();
     void tabModified(bool state);
-    
+
     void guidelinesUpdated(Guidelines guidelines);
+
 public:
-    void updateGuidelines(Guidelines guidelines) {
+    void
+    updateGuidelines(Guidelines guidelines)
+    {
         emit guidelinesUpdated(guidelines);
     }
 
@@ -130,11 +147,16 @@ public slots:
 
     void stitchChanged(QString oldSt, QString newSt);
     void colorChanged(QString oldColor, QString newColor);
-	void layersChangedSlot(QList<ChartLayer*>& layers, ChartLayer* selected);
+    void layersChangedSlot(QList<ChartLayer*>& layers, ChartLayer* selected);
 
     QUndoStack* undoStack();
 
-    void createChart(Scene::ChartStyle style, int rows, int cols, QString defStitch, QSizeF rowSize, int increaseBy);
+    void createChart(Scene::ChartStyle style,
+                     int rows,
+                     int cols,
+                     QString defStitch,
+                     QSizeF rowSize,
+                     int increaseBy);
 
     void copyInstructions();
 
@@ -147,35 +169,46 @@ public slots:
 
     void replaceStitches(QString original, QString replacement);
     void replaceColor(QColor original, QColor replacement, int selection);
-    
+
 protected:
-    QMap<QString, int>* patternStitches() { return mPatternStitches; }
-    
+    QMap<QString, int>*
+    patternStitches()
+    {
+        return mPatternStitches;
+    }
+
 private slots:
     void zoomChanged(int value);
     void updateZoomLevel(int percent);
 
     void setShowChartCenter(bool state);
-    
+
 public:
-    Scene* scene() { return mScene; }
-    ChartView* view() { return mView; }
-    
-private:    
+    Scene*
+    scene()
+    {
+        return mScene;
+    }
+    ChartView*
+    view()
+    {
+        return mView;
+    }
+
+private:
     QPointer<ChartView> mView;
     Scene* mScene;
     TextView* mTextView;
 
     QMap<QString, int>* mPatternStitches;
     QMap<QString, QMap<QString, qint64> >* mPatternColors;
-    
+
     QString mName;
 
     Ui::OptionsBar* ui;
     RowEditDialog* mRowEditDialog;
-    
 
     Scene::ChartStyle mChartStyle;
 };
 
-#endif // CROCHETTAB_H
+#endif  // CROCHETTAB_H

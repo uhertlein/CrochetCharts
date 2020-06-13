@@ -37,13 +37,13 @@
 
 #include "crochettab.h"
 
-File_v2::File_v2(MainWindow *mw, FileFactory *parent)
+File_v2::File_v2(MainWindow* mw, FileFactory* parent)
     : File(mw, parent)
 {
-
 }
 
-FileFactory::FileError File_v2::load(QDataStream *stream)
+FileFactory::FileError
+File_v2::load(QDataStream* stream)
 {
     mInternalStitchSet = new StitchSet();
     mInternalStitchSet->isTemporary = true;
@@ -60,24 +60,29 @@ FileFactory::FileError File_v2::load(QDataStream *stream)
 
     QXmlStreamReader xmlStream(docData);
 
-    if(xmlStream.hasError()) {
+    if (xmlStream.hasError())
+    {
         qWarning() << "Error loading saved file: " << xmlStream.errorString();
         return FileFactory::Err_GettingFileContents;
     }
 
-    while (!xmlStream.atEnd() && !xmlStream.hasError()) {
-
+    while (!xmlStream.atEnd() && !xmlStream.hasError())
+    {
         xmlStream.readNext();
-        if (xmlStream.isStartElement()) {
+        if (xmlStream.isStartElement())
+        {
             QString name = xmlStream.name().toString();
 
-            if(name == "colors") {
+            if (name == "colors")
+            {
                 loadColors(&xmlStream);
-
-            } else if(name == "chart") {
+            }
+            else if (name == "chart")
+            {
                 loadChart(&xmlStream);
-
-            } else if(name == "stitch_set") {
+            }
+            else if (name == "stitch_set")
+            {
                 mInternalStitchSet->loadXmlStitchSet(&xmlStream, true);
                 StitchLibrary::inst()->addStitchSet(mInternalStitchSet);
             }
@@ -87,34 +92,35 @@ FileFactory::FileError File_v2::load(QDataStream *stream)
     return FileFactory::No_Error;
 }
 
-FileFactory::FileError File_v2::save(QDataStream *stream)
+FileFactory::FileError
+File_v2::save(QDataStream* stream)
 {
-
     *stream << (qint32)FileFactory::Version_1_2;
     stream->setVersion(QDataStream::Qt_4_7);
 
-    if(!mInternalStitchSet) {
-
+    if (!mInternalStitchSet)
+    {
         mInternalStitchSet = new StitchSet();
         mInternalStitchSet->isTemporary = true;
         mInternalStitchSet->stitchSetFileName = StitchLibrary::inst()->nextSetSaveFile();
         StitchLibrary::inst()->addStitchSet(mInternalStitchSet);
-
-    } else {
+    }
+    else
+    {
         mInternalStitchSet->clearStitches();
     }
 
-    //start xml save...
-    QString *data = new QString();
+    // start xml save...
+    QString* data = new QString();
     QXmlStreamWriter xmlStream(data);
     xmlStream.setAutoFormatting(true);
     xmlStream.writeStartDocument();
 
-    xmlStream.writeStartElement("pattern"); //start pattern
-    //TODO: dont need to set the version when saving into a binary file.
+    xmlStream.writeStartElement("pattern");  // start pattern
+    // TODO: dont need to set the version when saving into a binary file.
     xmlStream.writeAttribute("version", QString::number(FileFactory::Version_1_2));
 
-    //create the StitchSet then save the icons.
+    // create the StitchSet then save the icons.
     saveCustomStitches(&xmlStream);
     mInternalStitchSet->saveIcons(stream);
 
@@ -125,60 +131,69 @@ FileFactory::FileError File_v2::save(QDataStream *stream)
 
     xmlStream.writeEndDocument();
 
-    //put xml into binary file.
+    // put xml into binary file.
     *stream << data->toUtf8();
 
     delete data;
     data = 0;
-	
-	return FileFactory::No_Error;
+
+    return FileFactory::No_Error;
 }
 
-void File_v2::loadColors(QXmlStreamReader *stream)
+void
+File_v2::loadColors(QXmlStreamReader* stream)
 {
-
-    MainWindow *mw = mMainWindow;
+    MainWindow* mw = mMainWindow;
 
     mw->patternColors().clear();
 
-    while(!(stream->isEndElement() && stream->name() == "colors")) {
+    while (!(stream->isEndElement() && stream->name() == "colors"))
+    {
         stream->readNext();
         QString tag = stream->name().toString();
 
-        if (tag == "color") {
+        if (tag == "color")
+        {
             QMap<QString, qint64> properties;
-            properties.insert("count", 0); //count = 0 because we haven't added any cells yet.
-            properties.insert("added", (qint64) stream->attributes().value("added").toString().toLongLong());
-            mw->mPatternColors.insert(stream->readElementText(),properties);
+            properties.insert("count", 0);  // count = 0 because we haven't added any cells yet.
+            properties.insert("added",
+                              (qint64)stream->attributes().value("added").toString().toLongLong());
+            mw->mPatternColors.insert(stream->readElementText(), properties);
         }
     }
-
 }
 
-void File_v2::loadChart(QXmlStreamReader *stream)
+void
+File_v2::loadChart(QXmlStreamReader* stream)
 {
-    MainWindow *mw = mMainWindow;
-    CrochetTab *tab = 0;
+    MainWindow* mw = mMainWindow;
+    CrochetTab* tab = 0;
     QString tabName = "", defaultSt = "";
 
-    while(!(stream->isEndElement() && stream->name() == "chart")) {
+    while (!(stream->isEndElement() && stream->name() == "chart"))
+    {
         stream->readNext();
         QString tag = stream->name().toString();
 
-        if(tag == "name") {
+        if (tag == "name")
+        {
             tabName = stream->readElementText();
-
-        } else if(tag == "style") {
+        }
+        else if (tag == "style")
+        {
             int style = stream->readElementText().toInt();
             tab = mw->createTab((Scene::ChartStyle)style);
 
             mParent->mTabWidget->addTab(tab, "");
             mParent->mTabWidget->widget(mParent->mTabWidget->indexOf(tab))->hide();
-        } else if(tag == "defaultSt") {
+        }
+        else if (tag == "defaultSt")
+        {
             defaultSt = stream->readElementText();
             tab->scene()->mDefaultStitch = defaultSt;
-
-        } else if(tag == "chartCenter") {
+        }
+        else if (tag == "chartCenter")
+        {
             qreal x = stream->attributes().value("x").toString().toDouble();
             qreal y = stream->attributes().value("y").toString().toDouble();
 
@@ -187,33 +202,41 @@ void File_v2::loadChart(QXmlStreamReader *stream)
             tab->setShowChartCenter(true);
             tab->scene()->mCenterSymbol->setPos(x, y);
             tab->blockSignals(false);
-
-        } else if(tag == "grid") {
+        }
+        else if (tag == "grid")
+        {
             loadGrid(stream, tab->scene());
-
-        } else if(tag == "rowSpacing") {
+        }
+        else if (tag == "rowSpacing")
+        {
             qreal width = stream->attributes().value("width").toString().toDouble();
             qreal height = stream->attributes().value("height").toString().toDouble();
             tab->scene()->mDefaultSize.setHeight(height);
             tab->scene()->mDefaultSize.setWidth(width);
 
-            stream->readElementText(); //move to the next tag.
-        } else if(tag == "cell") {
+            stream->readElementText();  // move to the next tag.
+        }
+        else if (tag == "cell")
+        {
             loadCell(tab, stream);
-
-        } else if(tag == "indicator") {
+        }
+        else if (tag == "indicator")
+        {
             loadIndicator(tab, stream);
-		
-        } else if(tag == "chartimage") {
+        }
+        else if (tag == "chartimage")
+        {
             loadChartImage(tab, stream);
-		
-        } else if(tag == "group") {
+        }
+        else if (tag == "group")
+        {
             stream->readElementText().toInt();
-            //create an empty group for future use.
+            // create an empty group for future use.
             QList<QGraphicsItem*> items;
             tab->scene()->group(items);
-
-        } else if(tag == "guidelines") {
+        }
+        else if (tag == "guidelines")
+        {
             QString type = stream->attributes().value("type").toString();
             int rows = stream->attributes().value("rows").toString().toInt();
             int columns = stream->attributes().value("columns").toString().toInt();
@@ -226,58 +249,70 @@ void File_v2::loadChart(QXmlStreamReader *stream)
             tab->scene()->mGuidelines.setCellWidth(cellWidth);
             tab->scene()->mGuidelines.setCellHeight(cellHeight);
 
-            stream->readElementText(); //move to the next tag
+            stream->readElementText();  // move to the next tag
             tab->scene()->updateGuidelines();
             emit tab->updateGuidelines(tab->scene()->guidelines());
+        }
+        else if (tag == "chartLayer")
+        {
+            QString name = stream->attributes().value("name").toString();
+            unsigned int uid = stream->attributes().value("uid").toString().toUInt();
+            bool visible = stream->attributes().value("visible").toString().toInt();
+            tab->scene()->addLayer(name, uid);
+            tab->scene()->getLayer(uid)->setVisible(visible);
+            tab->scene()->selectLayer(uid);
+            stream->readElementText();  // move to the next tag.
+        }
+        else if (tag == "size")
+        {
+            qreal x = stream->attributes().value("x").toString().toDouble();
+            qreal y = stream->attributes().value("y").toString().toDouble();
+            qreal width = stream->attributes().value("width").toString().toDouble();
+            qreal height = stream->attributes().value("height").toString().toDouble();
 
-        } else if (tag == "chartLayer") {
-			QString name = stream->attributes().value("name").toString();
-			unsigned int uid = stream->attributes().value("uid").toString().toUInt();
-			bool visible = stream->attributes().value("visible").toString().toInt();
-			tab->scene()->addLayer(name, uid);
-			tab->scene()->getLayer(uid)->setVisible(visible);
-			tab->scene()->selectLayer(uid);
-            stream->readElementText(); //move to the next tag.
-		} else if (tag == "size") {
-			qreal x = stream->attributes().value("x").toString().toDouble();
-			qreal y = stream->attributes().value("y").toString().toDouble();
-			qreal width = stream->attributes().value("width").toString().toDouble();
-			qreal height = stream->attributes().value("height").toString().toDouble();
-			
-			QRectF size = QRectF(x, y, width, height);
-			tab->scene()->setSceneRect(size);
-			
-			stream->readElementText();
-		} else {
+            QRectF size = QRectF(x, y, width, height);
+            tab->scene()->setSceneRect(size);
+
+            stream->readElementText();
+        }
+        else
+        {
             qWarning() << "loadChart Unknown tag:" << tag;
         }
     }
-	
-	//refresh the layers so the visibility and selectability of items is correct
-	tab->scene()->refreshLayers();
-		
+
+    // refresh the layers so the visibility and selectability of items is correct
+    tab->scene()->refreshLayers();
+
     tab->updateRows();
     int index = mParent->mTabWidget->indexOf(tab);
     mParent->mTabWidget->setTabText(index, tabName);
     mParent->mTabWidget->widget(mParent->mTabWidget->indexOf(tab))->show();
     tab->scene()->updateSceneRect();
-    if(tab->scene()->hasChartCenter()) {
+    if (tab->scene()->hasChartCenter())
+    {
         tab->view()->centerOn(tab->scene()->mCenterSymbol->sceneBoundingRect().center());
-    } else {
+    }
+    else
+    {
         tab->view()->centerOn(tab->scene()->itemsBoundingRect().center());
     }
 }
 
-void File_v2::loadGrid(QXmlStreamReader *stream, Scene *scene)
+void
+File_v2::loadGrid(QXmlStreamReader* stream, Scene* scene)
 {
-    while(!(stream->isEndElement() && stream->name() == "grid")) {
+    while (!(stream->isEndElement() && stream->name() == "grid"))
+    {
         stream->readNext();
         QString tag = stream->name().toString();
 
-        if(tag == "row") {
+        if (tag == "row")
+        {
             int cols = stream->readElementText().toInt();
             QList<Cell*> row;
-            for(int i = 0; i < cols; ++i) {
+            for (int i = 0; i < cols; ++i)
+            {
                 row.append(0);
             }
             scene->grid.append(row);
@@ -285,71 +320,93 @@ void File_v2::loadGrid(QXmlStreamReader *stream, Scene *scene)
     }
 }
 
-void File_v2::loadIndicator(CrochetTab *tab, QXmlStreamReader *stream)
+void
+File_v2::loadIndicator(CrochetTab* tab, QXmlStreamReader* stream)
 {
-    Indicator *i = new Indicator();
+    Indicator* i = new Indicator();
 
     qreal x = 0, y = 0;
-	bool fontused = false;
-	int fontsize;
+    bool fontused = false;
+    int fontsize;
     QString textColor, bgColor, fontname;
     QString text, style;
-	QPointF pivotScale, pivotRotation;
-	QTransform transform;
-    qreal   m11 = 1, m12 = 0, m13 = 0,
-            m21 = 0, m22 = 1, m23 = 0,
-            m31 = 0, m32 = 0, m33 = 1;
-			
-	qreal rotation = 0, scaleX = 1, scaleY = 1;
+    QPointF pivotScale, pivotRotation;
+    QTransform transform;
+    qreal m11 = 1, m12 = 0, m13 = 0, m21 = 0, m22 = 1, m23 = 0, m31 = 0, m32 = 0, m33 = 1;
+
+    qreal rotation = 0, scaleX = 1, scaleY = 1;
     int group = -1;
-	unsigned int layer = 0;
-    while(!(stream->isEndElement() && stream->name() == "indicator")) {
+    unsigned int layer = 0;
+    while (!(stream->isEndElement() && stream->name() == "indicator"))
+    {
         stream->readNext();
         QString tag = stream->name().toString();
 
-        if(tag == "x") {
+        if (tag == "x")
+        {
             x = stream->readElementText().toDouble();
-        } else if(tag == "y") {
+        }
+        else if (tag == "y")
+        {
             y = stream->readElementText().toDouble();
-        } else if(tag == "text") {
+        }
+        else if (tag == "text")
+        {
             text = stream->readElementText();
-			//the text might be html formatted in old saves, so we need to strip it. A regex could work,
-			//but is hard to make performant with inline css, and wouldn't work well with text that has
-			//brackets in it.
-			QTextDocument doc;
-			doc.setHtml( text );
-			text = doc.toPlainText();
-        } else if(tag == "textColor") {
+            // the text might be html formatted in old saves, so we need to strip it. A regex could
+            // work, but is hard to make performant with inline css, and wouldn't work well with text
+            // that has brackets in it.
+            QTextDocument doc;
+            doc.setHtml(text);
+            text = doc.toPlainText();
+        }
+        else if (tag == "textColor")
+        {
             textColor = stream->readElementText();
-        } else if(tag == "bgColor") {
+        }
+        else if (tag == "bgColor")
+        {
             bgColor = stream->readElementText();
-        } else if(tag == "style") {
+        }
+        else if (tag == "style")
+        {
             style = stream->readElementText();
-        } else if(tag == "group") {
+        }
+        else if (tag == "group")
+        {
             group = stream->readElementText().toInt();
-        } else if (tag == "fontname") {
-			fontname = stream->readElementText();
-			fontused = true;
-		} else if (tag == "fontsize") {
-			fontsize = stream->readElementText().toInt();
-			fontused = true;
-		} else if (tag == "layer") {
-			layer = stream->readElementText().toUInt();
-			
-		} else if (tag == "newscale") {
-			scaleX = stream->attributes().value("scaleX").toString().toDouble();
-			scaleY = stream->attributes().value("scaleY").toString().toDouble();
-			pivotScale.rx() = stream->attributes().value("pivotX").toString().toDouble();
-			pivotScale.ry() = stream->attributes().value("pivotY").toString().toDouble();
-			stream->readElementText();
-			
-		} else if (tag == "rotation") {
-			rotation = stream->attributes().value("rotation").toString().toDouble();
-			pivotRotation.rx() = stream->attributes().value("pivotX").toString().toDouble();
-			pivotRotation.ry() = stream->attributes().value("pivotY").toString().toDouble();
-			stream->readElementText();
-			
-		}  else if(tag == "transformation") {
+        }
+        else if (tag == "fontname")
+        {
+            fontname = stream->readElementText();
+            fontused = true;
+        }
+        else if (tag == "fontsize")
+        {
+            fontsize = stream->readElementText().toInt();
+            fontused = true;
+        }
+        else if (tag == "layer")
+        {
+            layer = stream->readElementText().toUInt();
+        }
+        else if (tag == "newscale")
+        {
+            scaleX = stream->attributes().value("scaleX").toString().toDouble();
+            scaleY = stream->attributes().value("scaleY").toString().toDouble();
+            pivotScale.rx() = stream->attributes().value("pivotX").toString().toDouble();
+            pivotScale.ry() = stream->attributes().value("pivotY").toString().toDouble();
+            stream->readElementText();
+        }
+        else if (tag == "rotation")
+        {
+            rotation = stream->attributes().value("rotation").toString().toDouble();
+            pivotRotation.rx() = stream->attributes().value("pivotX").toString().toDouble();
+            pivotRotation.ry() = stream->attributes().value("pivotY").toString().toDouble();
+            stream->readElementText();
+        }
+        else if (tag == "transformation")
+        {
             m11 = stream->attributes().value("m11").toString().toDouble();
             m12 = stream->attributes().value("m12").toString().toDouble();
             m13 = stream->attributes().value("m13").toString().toDouble();
@@ -360,100 +417,113 @@ void File_v2::loadIndicator(CrochetTab *tab, QXmlStreamReader *stream)
             m32 = stream->attributes().value("m32").toString().toDouble();
             m33 = stream->attributes().value("m33").toString().toDouble();
             stream->readElementText();
-        } 
+        }
     }
-	DEBUG("Style is: ");
-	DEBUG(style);
-	transform.setMatrix(m11, m12, m13, m21, m22, m23, m31, m32, m33);
+    DEBUG("Style is: ");
+    DEBUG(style);
+    transform.setMatrix(m11, m12, m13, m21, m22, m23, m31, m32, m33);
     tab->scene()->addItem(i);
     i->setTransform(transform);
-	ChartItemTools::setRotation(i, rotation);
-	ChartItemTools::setScaleX(i, scaleX);
-	ChartItemTools::setScaleY(i, scaleY);
-	ChartItemTools::setRotationPivot(i, pivotRotation, false);
-	ChartItemTools::setScalePivot(i, pivotScale, false);
-    i->setPos(x,y);
-	i->setText(text);
-	qDebug() << "loading text " << text;
+    ChartItemTools::setRotation(i, rotation);
+    ChartItemTools::setScaleX(i, scaleX);
+    ChartItemTools::setScaleY(i, scaleY);
+    ChartItemTools::setRotationPivot(i, pivotRotation, false);
+    ChartItemTools::setScalePivot(i, pivotScale, false);
+    i->setPos(x, y);
+    i->setText(text);
+    qDebug() << "loading text " << text;
     i->setTextColor(textColor);
     i->setBgColor(bgColor);
-	i->setLayer(layer);
-	if (fontused)
-		i->setFont(QFont(fontname, fontsize));
-	
-	ChartItemTools::recalculateTransformations(i);
-	
-    //i->setTextInteractionFlags(Qt::TextEditorInteraction);
+    i->setLayer(layer);
+    if (fontused)
+        i->setFont(QFont(fontname, fontsize));
 
-    if(style.isEmpty())
+    ChartItemTools::recalculateTransformations(i);
+
+    // i->setTextInteractionFlags(Qt::TextEditorInteraction);
+
+    if (style.isEmpty())
         style = Settings::inst()->value("chartRowIndicator").toString();
     i->setStyle(style);
 
-    if(group != -1) {
+    if (group != -1)
+    {
         tab->scene()->addToGroup(group, i);
-		tab->scene()->getGroup(group)->setLayer(layer);
-	}
+        tab->scene()->getGroup(group)->setLayer(layer);
+    }
 }
 
-void File_v2::loadChartImage(CrochetTab* tab, QXmlStreamReader* stream)
+void
+File_v2::loadChartImage(CrochetTab* tab, QXmlStreamReader* stream)
 {
     int group = -1;
-    QPointF position(0.0,0.0);
+    QPointF position(0.0, 0.0);
     QPointF pivotPoint;
-	QPointF pivotScale, pivotRotation;
-	qreal rotation = 0, scaleX = 1, scaleY = 1;
-	 QPointF scale = QPointF(1.0,1.0);
-	unsigned int layer = 0;
+    QPointF pivotScale, pivotRotation;
+    qreal rotation = 0, scaleX = 1, scaleY = 1;
+    QPointF scale = QPointF(1.0, 1.0);
+    unsigned int layer = 0;
     QTransform transform;
-	qreal angle = 0.0;
-    qreal   m11 = 1, m12 = 0, m13 = 0,
-            m21 = 0, m22 = 1, m23 = 0,
-            m31 = 0, m32 = 0, m33 = 1;
-	QString filename;
+    qreal angle = 0.0;
+    qreal m11 = 1, m12 = 0, m13 = 0, m21 = 0, m22 = 1, m23 = 0, m31 = 0, m32 = 0, m33 = 1;
+    QString filename;
 
-    while(!(stream->isEndElement() && stream->name() == "chartimage")) {
+    while (!(stream->isEndElement() && stream->name() == "chartimage"))
+    {
         stream->readNext();
         QString tag = stream->name().toString();
-		
-		if(tag == "position") {
+
+        if (tag == "position")
+        {
             position.rx() = stream->attributes().value("x").toString().toDouble();
             position.ry() = stream->attributes().value("y").toString().toDouble();
             stream->readElementText();
-
-        } else if(tag == "angle") {
+        }
+        else if (tag == "angle")
+        {
             angle = stream->readElementText().toDouble();
-			
-		} else if(tag == "scale") {
+        }
+        else if (tag == "scale")
+        {
             scale.rx() = stream->attributes().value("x").toString().toDouble();
             scale.ry() = stream->attributes().value("y").toString().toDouble();
             stream->readElementText();
-			
-        } else if (tag == "newscale") {
-			scaleX = stream->attributes().value("scaleX").toString().toDouble();
-			scaleY = stream->attributes().value("scaleY").toString().toDouble();
-			pivotScale.rx() = stream->attributes().value("pivotX").toString().toDouble();
-			pivotScale.ry() = stream->attributes().value("pivotY").toString().toDouble();
-			stream->readElementText();
-			
-		} else if (tag == "rotation") {
-			rotation = stream->attributes().value("rotation").toString().toDouble();
-			pivotRotation.rx() = stream->attributes().value("pivotX").toString().toDouble();
-			pivotRotation.ry() = stream->attributes().value("pivotY").toString().toDouble();
-			stream->readElementText();
-			
-		} else if(tag == "pivotPoint") {
+        }
+        else if (tag == "newscale")
+        {
+            scaleX = stream->attributes().value("scaleX").toString().toDouble();
+            scaleY = stream->attributes().value("scaleY").toString().toDouble();
+            pivotScale.rx() = stream->attributes().value("pivotX").toString().toDouble();
+            pivotScale.ry() = stream->attributes().value("pivotY").toString().toDouble();
+            stream->readElementText();
+        }
+        else if (tag == "rotation")
+        {
+            rotation = stream->attributes().value("rotation").toString().toDouble();
+            pivotRotation.rx() = stream->attributes().value("pivotX").toString().toDouble();
+            pivotRotation.ry() = stream->attributes().value("pivotY").toString().toDouble();
+            stream->readElementText();
+        }
+        else if (tag == "pivotPoint")
+        {
             pivotPoint.rx() = stream->attributes().value("x").toString().toDouble();
             pivotPoint.ry() = stream->attributes().value("y").toString().toDouble();
             stream->readElementText();
-
-        } else if(tag == "group") {
+        }
+        else if (tag == "group")
+        {
             group = stream->readElementText().toInt();
-
-        } else if (tag == "layer") {
-			layer = stream->readElementText().toUInt();
-		} else if (tag == "filename") {
-			filename = stream->readElementText();
-		}  else if(tag == "transformation") {
+        }
+        else if (tag == "layer")
+        {
+            layer = stream->readElementText().toUInt();
+        }
+        else if (tag == "filename")
+        {
+            filename = stream->readElementText();
+        }
+        else if (tag == "transformation")
+        {
             m11 = stream->attributes().value("m11").toString().toDouble();
             m12 = stream->attributes().value("m12").toString().toDouble();
             m13 = stream->attributes().value("m13").toString().toDouble();
@@ -464,113 +534,126 @@ void File_v2::loadChartImage(CrochetTab* tab, QXmlStreamReader* stream)
             m32 = stream->attributes().value("m32").toString().toDouble();
             m33 = stream->attributes().value("m33").toString().toDouble();
             stream->readElementText();
-		}
+        }
     }
-    ChartImage *c = new ChartImage(filename);
-	
+    ChartImage* c = new ChartImage(filename);
 
     tab->scene()->addItem(c);
 
-	transform.setMatrix(m11, m12, m13, m21, m22, m23, m31, m32, m33);
-	c->setTransform(transform);
-	c->setLayer(layer);
+    transform.setMatrix(m11, m12, m13, m21, m22, m23, m31, m32, m33);
+    c->setTransform(transform);
+    c->setLayer(layer);
     c->setZValue(10);
-	c->setPos(position);
+    c->setPos(position);
     c->setTransformOriginPoint(pivotPoint);
     c->setRotation(angle);
-	
-	ChartItemTools::setRotation(c, rotation);
-	ChartItemTools::setScaleX(c, scaleX);
-	ChartItemTools::setScaleY(c, scaleY);
-	ChartItemTools::setRotationPivot(c, pivotRotation, false);
-	ChartItemTools::setScalePivot(c, pivotScale, false);
-	ChartItemTools::recalculateTransformations(c);
-    if(group != -1) {
+
+    ChartItemTools::setRotation(c, rotation);
+    ChartItemTools::setScaleX(c, scaleX);
+    ChartItemTools::setScaleY(c, scaleY);
+    ChartItemTools::setRotationPivot(c, pivotRotation, false);
+    ChartItemTools::setScalePivot(c, pivotScale, false);
+    ChartItemTools::recalculateTransformations(c);
+    if (group != -1)
+    {
         tab->scene()->addToGroup(group, c);
-		tab->scene()->getGroup(group)->setLayer(layer);
-	}
+        tab->scene()->getGroup(group)->setLayer(layer);
+    }
 }
 
-void File_v2::loadCell(CrochetTab *tab, QXmlStreamReader *stream)
+void
+File_v2::loadCell(CrochetTab* tab, QXmlStreamReader* stream)
 {
-
-    Cell *c = new Cell();
-    Stitch *s = 0;
+    Cell* c = new Cell();
+    Stitch* s = 0;
     int row = -1, column = -1;
     int group = -1;
     QString bgColor, color;
-    QPointF position(0.0,0.0);
+    QPointF position(0.0, 0.0);
     QPointF pivotPoint;
-	unsigned int layer = 0;
-	QPointF pivotScale, pivotRotation;
-	qreal rotation = 0, scaleX = 1, scaleY = 1;
-	qreal angle = 0.0;
-    QPointF scale = QPointF(1.0,1.0);
+    unsigned int layer = 0;
+    QPointF pivotScale, pivotRotation;
+    qreal rotation = 0, scaleX = 1, scaleY = 1;
+    qreal angle = 0.0;
+    QPointF scale = QPointF(1.0, 1.0);
     QTransform transform;
-    qreal   m11 = 1, m12 = 0, m13 = 0,
-            m21 = 0, m22 = 1, m23 = 0,
-            m31 = 0, m32 = 0, m33 = 1;
-			
-    while(!(stream->isEndElement() && stream->name() == "cell")) {
+    qreal m11 = 1, m12 = 0, m13 = 0, m21 = 0, m22 = 1, m23 = 0, m31 = 0, m32 = 0, m33 = 1;
+
+    while (!(stream->isEndElement() && stream->name() == "cell"))
+    {
         stream->readNext();
         QString tag = stream->name().toString();
 
-        if(tag == "stitch") {
+        if (tag == "stitch")
+        {
             QString st = stream->readElementText();
             s = StitchLibrary::inst()->findStitch(st, true);
-
-        } else if(tag == "grid") {
+        }
+        else if (tag == "grid")
+        {
             row = stream->attributes().value("row").toString().toDouble();
             column = stream->attributes().value("column").toString().toDouble();
             stream->readElementText();
-
-        } else if(tag == "color") {
+        }
+        else if (tag == "color")
+        {
             color = stream->readElementText();
-
-        } else if(tag == "bgColor") {
+        }
+        else if (tag == "bgColor")
+        {
             bgColor = stream->readElementText();
-
-        } else if(tag == "position") {
+        }
+        else if (tag == "position")
+        {
             position.rx() = stream->attributes().value("x").toString().toDouble();
             position.ry() = stream->attributes().value("y").toString().toDouble();
             stream->readElementText();
-
-		} else if(tag == "angle") {
+        }
+        else if (tag == "angle")
+        {
             angle = stream->readElementText().toDouble();
-
-        } else if(tag == "scale") {
+        }
+        else if (tag == "scale")
+        {
             scale.rx() = stream->attributes().value("x").toString().toDouble();
             scale.ry() = stream->attributes().value("y").toString().toDouble();
             stream->readElementText();
-
-
-        } else if(tag == "pivotPoint") {
+        }
+        else if (tag == "pivotPoint")
+        {
             pivotPoint.rx() = stream->attributes().value("x").toString().toDouble();
             pivotPoint.ry() = stream->attributes().value("y").toString().toDouble();
             stream->readElementText();
-
-        } else if(tag == "group") {
+        }
+        else if (tag == "group")
+        {
             group = stream->readElementText().toInt();
-
-        } else if (tag == "layer") {
-			layer = stream->readElementText().toUInt();
-			
-		} else if(tag == "group") {
+        }
+        else if (tag == "layer")
+        {
+            layer = stream->readElementText().toUInt();
+        }
+        else if (tag == "group")
+        {
             group = stream->readElementText().toInt();
-
-        } else if (tag == "newscale") {
-			scaleX = stream->attributes().value("scaleX").toString().toDouble();
-			scaleY = stream->attributes().value("scaleY").toString().toDouble();
-			pivotScale.rx() = stream->attributes().value("pivotX").toString().toDouble();
-			pivotScale.ry() = stream->attributes().value("pivotY").toString().toDouble();
-			stream->readElementText();
-			
-		} else if (tag == "rotation") {
-			rotation = stream->attributes().value("rotation").toString().toDouble();
-			pivotRotation.rx() = stream->attributes().value("pivotX").toString().toDouble();
-			pivotRotation.ry() = stream->attributes().value("pivotY").toString().toDouble();
-			stream->readElementText();
-		} else if(tag == "transformation") {
+        }
+        else if (tag == "newscale")
+        {
+            scaleX = stream->attributes().value("scaleX").toString().toDouble();
+            scaleY = stream->attributes().value("scaleY").toString().toDouble();
+            pivotScale.rx() = stream->attributes().value("pivotX").toString().toDouble();
+            pivotScale.ry() = stream->attributes().value("pivotY").toString().toDouble();
+            stream->readElementText();
+        }
+        else if (tag == "rotation")
+        {
+            rotation = stream->attributes().value("rotation").toString().toDouble();
+            pivotRotation.rx() = stream->attributes().value("pivotX").toString().toDouble();
+            pivotRotation.ry() = stream->attributes().value("pivotY").toString().toDouble();
+            stream->readElementText();
+        }
+        else if (tag == "transformation")
+        {
             m11 = stream->attributes().value("m11").toString().toDouble();
             m12 = stream->attributes().value("m12").toString().toDouble();
             m13 = stream->attributes().value("m13").toString().toDouble();
@@ -581,19 +664,22 @@ void File_v2::loadCell(CrochetTab *tab, QXmlStreamReader *stream)
             m32 = stream->attributes().value("m32").toString().toDouble();
             m33 = stream->attributes().value("m33").toString().toDouble();
             stream->readElementText();
-        } 
+        }
     }
-	
-	transform.setMatrix(m11, m12, m13, m21, m22, m23, m31, m32, m33);
-	c->setLayer(layer);
+
+    transform.setMatrix(m11, m12, m13, m21, m22, m23, m31, m32, m33);
+    c->setLayer(layer);
 
     tab->scene()->addItem(c);
 
-    if(row > -1 && column > -1) {
+    if (row > -1 && column > -1)
+    {
         c->setStitch(s);
         tab->scene()->grid[row].replace(column, c);
         c->setZValue(100);
-    } else {
+    }
+    else
+    {
         c->setStitch(s);
         c->setZValue(10);
     }
@@ -604,75 +690,82 @@ void File_v2::loadCell(CrochetTab *tab, QXmlStreamReader *stream)
     c->setBgColor(QColor(bgColor));
     c->setColor(QColor(color));
     c->setTransformOriginPoint(pivotPoint);
-	
-	ChartItemTools::setRotation(c, rotation);
-	ChartItemTools::setScaleX(c, scaleX);
-	ChartItemTools::setScaleY(c, scaleY);
-	ChartItemTools::setRotationPivot(c, pivotRotation, false);
-	ChartItemTools::setScalePivot(c, pivotScale, false);
-	ChartItemTools::recalculateTransformations(c);
-    if(group != -1) {
-        tab->scene()->addToGroup(group, c);
-		tab->scene()->getGroup(group)->setLayer(layer);
-	}
-}
-			
-void File_v2::saveCustomStitches(QXmlStreamWriter *stream)
-{
-    CrochetTab *tab = qobject_cast<CrochetTab*>(mTabWidget->widget(0));
 
-    //FIXME: fileName includes the whole path.
+    ChartItemTools::setRotation(c, rotation);
+    ChartItemTools::setScaleX(c, scaleX);
+    ChartItemTools::setScaleY(c, scaleY);
+    ChartItemTools::setRotationPivot(c, pivotRotation, false);
+    ChartItemTools::setScalePivot(c, pivotScale, false);
+    ChartItemTools::recalculateTransformations(c);
+    if (group != -1)
+    {
+        tab->scene()->addToGroup(group, c);
+        tab->scene()->getGroup(group)->setLayer(layer);
+    }
+}
+
+void
+File_v2::saveCustomStitches(QXmlStreamWriter* stream)
+{
+    CrochetTab* tab = qobject_cast<CrochetTab*>(mTabWidget->widget(0));
+
+    // FIXME: fileName includes the whole path.
     mInternalStitchSet->setName(QString("[%1]").arg(QFileInfo(mParent->fileName).fileName()));
     QStringList stitches = tab->patternStitches()->keys();
 
-    foreach(QString st, stitches) {
-        Stitch *s = StitchLibrary::inst()->findStitch(st);
-        if(s)
+    foreach (QString st, stitches)
+    {
+        Stitch* s = StitchLibrary::inst()->findStitch(st);
+        if (s)
             mInternalStitchSet->addStitch(s);
     }
 
     mInternalStitchSet->saveXmlStitchSet(stream, true);
 }
 
-bool File_v2::saveCharts(QXmlStreamWriter *stream)
+bool
+File_v2::saveCharts(QXmlStreamWriter* stream)
 {
     int tabCount = mTabWidget->count();
 
-    for(int i = 0; i < tabCount; ++i) {
-        CrochetTab *tab = qobject_cast<CrochetTab*>(mTabWidget->widget(i));
-        if(!tab)
+    for (int i = 0; i < tabCount; ++i)
+    {
+        CrochetTab* tab = qobject_cast<CrochetTab*>(mTabWidget->widget(i));
+        if (!tab)
             continue;
 
-	
-		//first, block al qt signals for performance
-		tab->scene()->blockSignals(true);
-	
-        stream->writeStartElement("chart"); //start chart
+        // first, block al qt signals for performance
+        tab->scene()->blockSignals(true);
+
+        stream->writeStartElement("chart");  // start chart
 
         stream->writeTextElement("name", mTabWidget->tabText(i));
 
         stream->writeTextElement("style", QString::number(tab->mChartStyle));
         stream->writeTextElement("defaultSt", tab->scene()->mDefaultStitch);
 
-		//write the chart size 
-		stream->writeStartElement("size");
-		stream->writeAttribute("x", QString::number(tab->scene()->sceneRect().x()));
-		stream->writeAttribute("y", QString::number(tab->scene()->sceneRect().y()));
-		stream->writeAttribute("width", QString::number(tab->scene()->sceneRect().width()));
-		stream->writeAttribute("height", QString::number(tab->scene()->sceneRect().height()));
-		stream->writeEndElement();
-	
-        bool showCenter = tab->scene()->showChartCenter();
-        if(showCenter) {
-            stream->writeStartElement("chartCenter");
-            stream->writeAttribute("x", QString::number(tab->scene()->mCenterSymbol->scenePos().x()));
-            stream->writeAttribute("y", QString::number(tab->scene()->mCenterSymbol->scenePos().y()));
-            stream->writeEndElement(); //end chart center
+        // write the chart size
+        stream->writeStartElement("size");
+        stream->writeAttribute("x", QString::number(tab->scene()->sceneRect().x()));
+        stream->writeAttribute("y", QString::number(tab->scene()->sceneRect().y()));
+        stream->writeAttribute("width", QString::number(tab->scene()->sceneRect().width()));
+        stream->writeAttribute("height", QString::number(tab->scene()->sceneRect().height()));
+        stream->writeEndElement();
 
+        bool showCenter = tab->scene()->showChartCenter();
+        if (showCenter)
+        {
+            stream->writeStartElement("chartCenter");
+            stream->writeAttribute("x",
+                                   QString::number(tab->scene()->mCenterSymbol->scenePos().x()));
+            stream->writeAttribute("y",
+                                   QString::number(tab->scene()->mCenterSymbol->scenePos().y()));
+            stream->writeEndElement();  // end chart center
         }
 
         Guidelines guidelines = tab->scene()->guidelines();
-        if(guidelines.type() != "None") {
+        if (guidelines.type() != "None")
+        {
             stream->writeStartElement("guidelines");
             stream->writeAttribute("type", guidelines.type());
 
@@ -686,101 +779,112 @@ bool File_v2::saveCharts(QXmlStreamWriter *stream)
         stream->writeStartElement("rowSpacing");
         stream->writeAttribute("width", QString::number(tab->scene()->mDefaultSize.width()));
         stream->writeAttribute("height", QString::number(tab->scene()->mDefaultSize.height()));
-        stream->writeEndElement(); //row spacing
+        stream->writeEndElement();  // row spacing
 
-        if(tab->scene()->rowCount() >= 1 && tab->scene()->maxColumnCount() >= 1) {
+        if (tab->scene()->rowCount() >= 1 && tab->scene()->maxColumnCount() >= 1)
+        {
             stream->writeStartElement("grid");
             int rowCount = tab->scene()->rowCount();
-            for(int i = 0; i < rowCount; ++i) {
+            for (int i = 0; i < rowCount; ++i)
+            {
                 int colCount = tab->scene()->columnCount(i);
-                stream->writeTextElement("row", QString::number(colCount)); //row, columns.
+                stream->writeTextElement("row", QString::number(colCount));  // row, columns.
             }
-            stream->writeEndElement(); //end grid.
+            stream->writeEndElement();  // end grid.
         }
-		
-		foreach(ChartLayer* l, tab->scene()->layers()) {
-			stream->writeStartElement("chartLayer");
-			stream->writeAttribute("name", l->name());
-			stream->writeAttribute("uid", QString::number(l->uid()));
-			stream->writeAttribute("visible", QString::number(l->visible()));
-			
-			stream->writeEndElement();
-		}
 
-        foreach(ItemGroup *g, tab->scene()->mGroups) {
+        foreach (ChartLayer* l, tab->scene()->layers())
+        {
+            stream->writeStartElement("chartLayer");
+            stream->writeAttribute("name", l->name());
+            stream->writeAttribute("uid", QString::number(l->uid()));
+            stream->writeAttribute("visible", QString::number(l->visible()));
+
+            stream->writeEndElement();
+        }
+
+        foreach (ItemGroup* g, tab->scene()->mGroups)
+        {
             stream->writeTextElement("group", QString::number(tab->scene()->mGroups.indexOf(g)));
         }
 
-        foreach(QGraphicsItem *item, tab->scene()->items()) {
-
-            Cell *c = qgraphicsitem_cast<Cell*>(item);
-            if(!c)
+        foreach (QGraphicsItem* item, tab->scene()->items())
+        {
+            Cell* c = qgraphicsitem_cast<Cell*>(item);
+            if (!c)
                 continue;
 
-            stream->writeStartElement("cell"); //start cell
+            stream->writeStartElement("cell");  // start cell
             stream->writeTextElement("stitch", c->stitch()->name());
-			stream->writeTextElement("layer", QString::number(c->layer()));
+            stream->writeTextElement("layer", QString::number(c->layer()));
 
-            //if the stitch is on the grid save the grid position.
+            // if the stitch is on the grid save the grid position.
             QPoint pt = tab->scene()->indexOf(c);
-            if(pt != QPoint(-1, -1)) {
+            if (pt != QPoint(-1, -1))
+            {
                 stream->writeStartElement("grid");
                 stream->writeAttribute("row", QString::number(pt.y()));
                 stream->writeAttribute("column", QString::number(pt.x()));
-                stream->writeEndElement(); //grid
+                stream->writeEndElement();  // grid
             }
 
             bool isGrouped = c->parentItem() ? true : false;
-            ItemGroup *g = 0;
-			QList<QGraphicsItem*> ungroupstack;
-			
-            if(isGrouped) {
+            ItemGroup* g = 0;
+            QList<QGraphicsItem*> ungroupstack;
+
+            if (isGrouped)
+            {
                 g = qgraphicsitem_cast<ItemGroup*>(c->parentItem());
                 int groupNum = tab->scene()->mGroups.indexOf(g);
                 stream->writeTextElement("group", QString::number(groupNum));
 
-				//ungroup this and all possible childs
-				ungroupstack.append(c);
-				while (ungroupstack.last()->parentItem()
-					&& ungroupstack.last()->parentItem()->type() == ItemGroup::Type) {
-					ungroupstack.append(ungroupstack.last()->parentItem());
-				}
-				
-                //ungroup the items so that we can
-                //take an acurate position of each stitch.
-				//TODO this destroys all groups 
-				for (int i = ungroupstack.count() - 1 ; i >= 2 ; i--) {
-					ItemGroup* ig = qgraphicsitem_cast<ItemGroup*>(ungroupstack[i]);
-					tab->scene()->ungroup(ig);
-				}
+                // ungroup this and all possible childs
+                ungroupstack.append(c);
+                while (ungroupstack.last()->parentItem()
+                       && ungroupstack.last()->parentItem()->type() == ItemGroup::Type)
+                {
+                    ungroupstack.append(ungroupstack.last()->parentItem());
+                }
 
-				g->removeFromGroup(c);
-				ChartItemTools::recalculateTransformations(c);
+                // ungroup the items so that we can
+                // take an acurate position of each stitch.
+                // TODO this destroys all groups
+                for (int i = ungroupstack.count() - 1; i >= 2; i--)
+                {
+                    ItemGroup* ig = qgraphicsitem_cast<ItemGroup*>(ungroupstack[i]);
+                    tab->scene()->ungroup(ig);
+                }
+
+                g->removeFromGroup(c);
+                ChartItemTools::recalculateTransformations(c);
             }
 
             stream->writeStartElement("position");
             stream->writeAttribute("x", QString::number(c->pos().x()));
             stream->writeAttribute("y", QString::number(c->pos().y()));
-            stream->writeEndElement(); //position
+            stream->writeEndElement();  // position
 
-			stream->writeStartElement("newscale");
-			stream->writeAttribute("scaleX", QString::number(ChartItemTools::getScaleX(c)));
-			stream->writeAttribute("scaleY", QString::number(ChartItemTools::getScaleY(c)));
-			stream->writeAttribute("pivotX", QString::number(ChartItemTools::getScalePivot(c).x()));
-			stream->writeAttribute("pivotY", QString::number(ChartItemTools::getScalePivot(c).y()));
-			stream->writeEndElement();
-			
-			stream->writeStartElement("rotation");
-			stream->writeAttribute("rotation", QString::number(ChartItemTools::getRotation(c)));
-			stream->writeAttribute("pivotX", QString::number(ChartItemTools::getRotationPivot(c).x()));
-			stream->writeAttribute("pivotY", QString::number(ChartItemTools::getRotationPivot(c).y()));
-			stream->writeEndElement();
- 
-            //in case we haven't closed the
-            //application we need to regroup the items.
-            if(isGrouped) {
-				g->addToGroup(c);
-			}
+            stream->writeStartElement("newscale");
+            stream->writeAttribute("scaleX", QString::number(ChartItemTools::getScaleX(c)));
+            stream->writeAttribute("scaleY", QString::number(ChartItemTools::getScaleY(c)));
+            stream->writeAttribute("pivotX", QString::number(ChartItemTools::getScalePivot(c).x()));
+            stream->writeAttribute("pivotY", QString::number(ChartItemTools::getScalePivot(c).y()));
+            stream->writeEndElement();
+
+            stream->writeStartElement("rotation");
+            stream->writeAttribute("rotation", QString::number(ChartItemTools::getRotation(c)));
+            stream->writeAttribute("pivotX",
+                                   QString::number(ChartItemTools::getRotationPivot(c).x()));
+            stream->writeAttribute("pivotY",
+                                   QString::number(ChartItemTools::getRotationPivot(c).y()));
+            stream->writeEndElement();
+
+            // in case we haven't closed the
+            // application we need to regroup the items.
+            if (isGrouped)
+            {
+                g->addToGroup(c);
+            }
 
             stream->writeTextElement("color", c->color().name());
             stream->writeTextElement("bgColor", c->bgColor().name());
@@ -788,134 +892,145 @@ bool File_v2::saveCharts(QXmlStreamWriter *stream)
             stream->writeStartElement("pivotPoint");
             stream->writeAttribute("x", QString::number(c->transformOriginPoint().x()));
             stream->writeAttribute("y", QString::number(c->transformOriginPoint().y()));
-            stream->writeEndElement(); //end pivotPoint
+            stream->writeEndElement();  // end pivotPoint
 
-            stream->writeEndElement(); //end cell
+            stream->writeEndElement();  // end cell
         }
-		foreach(QGraphicsItem *item, tab->scene()->items()) {
-				ChartImage* c = qgraphicsitem_cast<ChartImage*>(item);
-				if (!c)
-					continue;
-				
-				stream->writeStartElement("chartimage"); //start cell
-				stream->writeTextElement("layer", QString::number(c->layer()));
-				stream->writeTextElement("filename", c->filename());
-				bool isGrouped = c->parentItem() ? true : false;
-				ItemGroup *g = 0;
-				if(isGrouped) {
-					g = qgraphicsitem_cast<ItemGroup*>(c->parentItem());
-					int groupNum = tab->scene()->mGroups.indexOf(g);
-					stream->writeTextElement("group", QString::number(groupNum));
+        foreach (QGraphicsItem* item, tab->scene()->items())
+        {
+            ChartImage* c = qgraphicsitem_cast<ChartImage*>(item);
+            if (!c)
+                continue;
 
-					//ungroup the items so that we can
-					//take an acurate position of each stitch.
-					g->removeFromGroup(c);
-				}
-				
-				stream->writeStartElement("position");
-				stream->writeAttribute("x", QString::number(c->pos().x()));
-				stream->writeAttribute("y", QString::number(c->pos().y()));
-				stream->writeEndElement(); //position
+            stream->writeStartElement("chartimage");  // start cell
+            stream->writeTextElement("layer", QString::number(c->layer()));
+            stream->writeTextElement("filename", c->filename());
+            bool isGrouped = c->parentItem() ? true : false;
+            ItemGroup* g = 0;
+            if (isGrouped)
+            {
+                g = qgraphicsitem_cast<ItemGroup*>(c->parentItem());
+                int groupNum = tab->scene()->mGroups.indexOf(g);
+                stream->writeTextElement("group", QString::number(groupNum));
 
-				stream->writeStartElement("newscale");
-				stream->writeAttribute("scaleX", QString::number(ChartItemTools::getScaleX(c)));
-				stream->writeAttribute("scaleY", QString::number(ChartItemTools::getScaleY(c)));
-				stream->writeAttribute("pivotX", QString::number(ChartItemTools::getScalePivot(c).x()));
-				stream->writeAttribute("pivotY", QString::number(ChartItemTools::getScalePivot(c).y()));
-				stream->writeEndElement();
-				
-				stream->writeStartElement("rotation");
-				stream->writeAttribute("rotation", QString::number(ChartItemTools::getRotation(c)));
-				stream->writeAttribute("pivotX", QString::number(ChartItemTools::getRotationPivot(c).x()));
-				stream->writeAttribute("pivotY", QString::number(ChartItemTools::getRotationPivot(c).y()));
-				stream->writeEndElement();
+                // ungroup the items so that we can
+                // take an acurate position of each stitch.
+                g->removeFromGroup(c);
+            }
 
-				//in case we haven't closed the
-				//application we need to regroup the items.
-				if(isGrouped)
-					g->addToGroup(c);
-				
-				stream->writeStartElement("pivotPoint");
-				stream->writeAttribute("x", QString::number(c->transformOriginPoint().x()));
-				stream->writeAttribute("y", QString::number(c->transformOriginPoint().y()));
-				stream->writeEndElement(); //end pivotPoint
+            stream->writeStartElement("position");
+            stream->writeAttribute("x", QString::number(c->pos().x()));
+            stream->writeAttribute("y", QString::number(c->pos().y()));
+            stream->writeEndElement();  // position
 
-				stream->writeEndElement(); //end indicator
-		}
-        foreach(Indicator *i, tab->scene()->indicators()) {
+            stream->writeStartElement("newscale");
+            stream->writeAttribute("scaleX", QString::number(ChartItemTools::getScaleX(c)));
+            stream->writeAttribute("scaleY", QString::number(ChartItemTools::getScaleY(c)));
+            stream->writeAttribute("pivotX", QString::number(ChartItemTools::getScalePivot(c).x()));
+            stream->writeAttribute("pivotY", QString::number(ChartItemTools::getScalePivot(c).y()));
+            stream->writeEndElement();
+
+            stream->writeStartElement("rotation");
+            stream->writeAttribute("rotation", QString::number(ChartItemTools::getRotation(c)));
+            stream->writeAttribute("pivotX",
+                                   QString::number(ChartItemTools::getRotationPivot(c).x()));
+            stream->writeAttribute("pivotY",
+                                   QString::number(ChartItemTools::getRotationPivot(c).y()));
+            stream->writeEndElement();
+
+            // in case we haven't closed the
+            // application we need to regroup the items.
+            if (isGrouped)
+                g->addToGroup(c);
+
+            stream->writeStartElement("pivotPoint");
+            stream->writeAttribute("x", QString::number(c->transformOriginPoint().x()));
+            stream->writeAttribute("y", QString::number(c->transformOriginPoint().y()));
+            stream->writeEndElement();  // end pivotPoint
+
+            stream->writeEndElement();  // end indicator
+        }
+        foreach (Indicator* i, tab->scene()->indicators())
+        {
             stream->writeStartElement("indicator");
 
-                stream->writeTextElement("x", QString::number(i->scenePos().x()));
-                stream->writeTextElement("y", QString::number(i->scenePos().y()));
-                stream->writeTextElement("text", i->text());
-                stream->writeTextElement("textColor", i->textColor().name());
-                stream->writeTextElement("bgColor", i->bgColor().name());
-                stream->writeTextElement("style", i->style());
-				stream->writeTextElement("fontname", i->font().toString());
-				stream->writeTextElement("fontsize", QString::number(i->font().pointSize()));
-				stream->writeTextElement("layer", QString::number(i->layer()));
-                bool isGrouped = i->parentItem() ? true : false;
-                ItemGroup *g = 0;
-                if(isGrouped) {
-                    g = qgraphicsitem_cast<ItemGroup*>(i->parentItem());
-                    int groupNum = tab->scene()->mGroups.indexOf(g);
-                    stream->writeTextElement("group", QString::number(groupNum));
+            stream->writeTextElement("x", QString::number(i->scenePos().x()));
+            stream->writeTextElement("y", QString::number(i->scenePos().y()));
+            stream->writeTextElement("text", i->text());
+            stream->writeTextElement("textColor", i->textColor().name());
+            stream->writeTextElement("bgColor", i->bgColor().name());
+            stream->writeTextElement("style", i->style());
+            stream->writeTextElement("fontname", i->font().toString());
+            stream->writeTextElement("fontsize", QString::number(i->font().pointSize()));
+            stream->writeTextElement("layer", QString::number(i->layer()));
+            bool isGrouped = i->parentItem() ? true : false;
+            ItemGroup* g = 0;
+            if (isGrouped)
+            {
+                g = qgraphicsitem_cast<ItemGroup*>(i->parentItem());
+                int groupNum = tab->scene()->mGroups.indexOf(g);
+                stream->writeTextElement("group", QString::number(groupNum));
 
-                    //ungroup the items so that we can
-                    //take an acurate position of each stitch.
-                    g->removeFromGroup(i);
-                }
-				
-				stream->writeStartElement("newscale");
-				stream->writeAttribute("scaleX", QString::number(ChartItemTools::getScaleX(i)));
-				stream->writeAttribute("scaleY", QString::number(ChartItemTools::getScaleY(i)));
-				stream->writeAttribute("pivotX", QString::number(ChartItemTools::getScalePivot(i).x()));
-				stream->writeAttribute("pivotY", QString::number(ChartItemTools::getScalePivot(i).y()));
-				stream->writeEndElement();
-				
-				stream->writeStartElement("rotation");
-				stream->writeAttribute("rotation", QString::number(ChartItemTools::getRotation(i)));
-				stream->writeAttribute("pivotX", QString::number(ChartItemTools::getRotationPivot(i).x()));
-				stream->writeAttribute("pivotY", QString::number(ChartItemTools::getRotationPivot(i).y()));
-				stream->writeEndElement();
-				
-                //in case we haven't closed the
-                //application we need to regroup the items.
-                if(isGrouped)
-                    g->addToGroup(i);
-                
-            stream->writeEndElement(); //end indicator
+                // ungroup the items so that we can
+                // take an acurate position of each stitch.
+                g->removeFromGroup(i);
+            }
+
+            stream->writeStartElement("newscale");
+            stream->writeAttribute("scaleX", QString::number(ChartItemTools::getScaleX(i)));
+            stream->writeAttribute("scaleY", QString::number(ChartItemTools::getScaleY(i)));
+            stream->writeAttribute("pivotX", QString::number(ChartItemTools::getScalePivot(i).x()));
+            stream->writeAttribute("pivotY", QString::number(ChartItemTools::getScalePivot(i).y()));
+            stream->writeEndElement();
+
+            stream->writeStartElement("rotation");
+            stream->writeAttribute("rotation", QString::number(ChartItemTools::getRotation(i)));
+            stream->writeAttribute("pivotX",
+                                   QString::number(ChartItemTools::getRotationPivot(i).x()));
+            stream->writeAttribute("pivotY",
+                                   QString::number(ChartItemTools::getRotationPivot(i).y()));
+            stream->writeEndElement();
+
+            // in case we haven't closed the
+            // application we need to regroup the items.
+            if (isGrouped)
+                g->addToGroup(i);
+
+            stream->writeEndElement();  // end indicator
         }
 
-        stream->writeEndElement(); // end chart
-		
-		//and resume signals
-		tab->scene()->blockSignals(false);
+        stream->writeEndElement();  // end chart
+
+        // and resume signals
+        tab->scene()->blockSignals(false);
     }
 
     return true;
 }
 
-void File_v2::saveColors(QXmlStreamWriter *stream)
+void
+File_v2::saveColors(QXmlStreamWriter* stream)
 {
-    stream->writeStartElement("colors"); //start colors
-    MainWindow *mw = static_cast<MainWindow*>(mParent->mParent);
+    stream->writeStartElement("colors");  // start colors
+    MainWindow* mw = static_cast<MainWindow*>(mParent->mParent);
 
     QStringList keys = mw->patternColors().keys();
 
-    foreach(QString key, keys) {
+    foreach (QString key, keys)
+    {
         stream->writeStartElement("color");
-        stream->writeAttribute("added", QString::number(mw->patternColors().value(key).value("added")));
+        stream->writeAttribute("added",
+                               QString::number(mw->patternColors().value(key).value("added")));
         stream->writeCharacters(key);
-        stream->writeEndElement(); //end color
+        stream->writeEndElement();  // end color
     }
 
-    stream->writeEndElement(); // end colors
+    stream->writeEndElement();  // end colors
 }
 
-
-void File_v2::cleanUp()
+void
+File_v2::cleanUp()
 {
-    if(mInternalStitchSet)
+    if (mInternalStitchSet)
         StitchLibrary::inst()->removeSet(mInternalStitchSet);
 }

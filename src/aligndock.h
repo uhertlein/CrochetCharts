@@ -23,8 +23,9 @@
 
 #include <QDockWidget>
 
-namespace Ui {
-    class AlignDock;
+namespace Ui
+{
+class AlignDock;
 }
 
 class AlignDock : public QDockWidget
@@ -32,7 +33,7 @@ class AlignDock : public QDockWidget
     Q_OBJECT
 
 public:
-    explicit AlignDock(QWidget *parent = 0);
+    explicit AlignDock(QWidget* parent = 0);
     ~AlignDock();
 
 signals:
@@ -53,11 +54,9 @@ signals:
 private slots:
     void generateAlignment();
     void generateDistribution();
-    
-private:
-    Ui::AlignDock *ui;
 
-    
+private:
+    Ui::AlignDock* ui;
 };
 
-#endif // ALIGNDOCK_H
+#endif  // ALIGNDOCK_H

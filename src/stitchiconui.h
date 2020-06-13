@@ -26,8 +26,9 @@
 
 #include <QDebug>
 
-namespace Ui {
-    class StitchIconDialog;
+namespace Ui
+{
+class StitchIconDialog;
 }
 
 class StitchIconUi : public QDialog
@@ -44,14 +45,13 @@ private slots:
     void updateIconList(QString fileName);
 
     void updateIconSelection();
-    
+
 signals:
     void newIconAdded(QString fileName);
 
 private:
     void loadIcons();
-    
+
     Ui::StitchIconDialog* ui;
-    
 };
-#endif //STITCHICONUI_H
+#endif  // STITCHICONUI_H

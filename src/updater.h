@@ -38,12 +38,13 @@ public:
     ~Updater();
 
     void checkForUpdates(bool silent = false);
+
 private:
     bool mSilent;
 
 public:
     void downloadInstaller(QUrl url);
-    
+
 private slots:
     void startRequest();
     void httpFinished();
@@ -55,19 +56,18 @@ private slots:
 
     void cancelDownload();
     void updateDataTransferProgress(qint64 readBytes, qint64 totalBytes);
-    
+
 private:
     QUrl mUrl;
     QNetworkAccessManager qnam;
-    QNetworkReply* reply,
-                 * instReply;
+    QNetworkReply *reply, *instReply;
 
     QProgressDialog* mProgDialog;
-    
+
     QByteArray mData;
     QFile* installer;
-    
+
     int httpGetId;
     bool httpRequestAborted;
 };
-#endif //UPDATER_H
+#endif  // UPDATER_H

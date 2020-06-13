@@ -25,27 +25,41 @@
 
 class ItemGroup : public QGraphicsItemGroup
 {
-
 public:
+    enum
+    {
+        Type = UserType + 10
+    };
 
-    enum { Type = UserType + 10 };
-
-    ItemGroup(QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+    ItemGroup(QGraphicsItem* parent = 0, QGraphicsScene* scene = 0);
     ~ItemGroup();
 
-    int type () const { return ItemGroup::Type; }
+    int
+    type() const
+    {
+        return ItemGroup::Type;
+    }
     QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
 
     bool isGrouped();
 
-    void addToGroup(QGraphicsItem *item);
-	
-	unsigned int layer() { return mLayer; }
-	void setLayer(unsigned int layer) { mLayer = layer; }
+    void addToGroup(QGraphicsItem* item);
+
+    unsigned int
+    layer()
+    {
+        return mLayer;
+    }
+    void
+    setLayer(unsigned int layer)
+    {
+        mLayer = layer;
+    }
+
 private:
-	//the layer of the group
-	unsigned int mLayer;
+    // the layer of the group
+    unsigned int mLayer;
     QPointF mScale;
 };
-#endif //ITEMGROUP_H
+#endif  // ITEMGROUP_H

@@ -26,15 +26,14 @@
 #include "debug.h"
 #include <QMessageBox>
 
-
 RowEditDialog::RowEditDialog(Scene* scene, TextView* textView, QWidget* parent)
-    : QWidget(parent),
-    mScene(scene),
-    mTextView(textView),
-    ui(new Ui::RowEditDialog)
+    : QWidget(parent)
+    , mScene(scene)
+    , mTextView(textView)
+    , ui(new Ui::RowEditDialog)
 {
     ui->setupUi(this);
-    
+
     connect(ui->addRow, SIGNAL(clicked(bool)), SLOT(addRow()));
     connect(ui->removeRow, SIGNAL(clicked(bool)), SLOT(removeRow()));
 
@@ -42,25 +41,29 @@ RowEditDialog::RowEditDialog(Scene* scene, TextView* textView, QWidget* parent)
     connect(ui->moveDown, SIGNAL(clicked(bool)), SLOT(moveDown()));
 
     connect(ui->rowList, SIGNAL(currentRowChanged(int)), SLOT(listItemChanged(int)));
-    connect(ui->rowList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(listItemClicked(QListWidgetItem*)));
-    
+    connect(ui->rowList, SIGNAL(itemClicked(QListWidgetItem*)),
+            SLOT(listItemClicked(QListWidgetItem*)));
+
     connect(ui->updateRow, SIGNAL(clicked(bool)), SLOT(updateRow()));
 }
 
 RowEditDialog::~RowEditDialog()
 {
-	delete ui;
+    delete ui;
 }
 
-void RowEditDialog::show()
+void
+RowEditDialog::show()
 {
     QWidget::show();
     updateRowList();
 }
 
-void RowEditDialog::addRow()
+void
+RowEditDialog::addRow()
 {
-    if(mScene->selectedItems().count() <= 0) {
+    if (mScene->selectedItems().count() <= 0)
+    {
         QMessageBox msgbox;
         msgbox.setText(tr("Please select the stitches you would like to create a row from."));
         msgbox.setIcon(QMessageBox::Information);
@@ -72,131 +75,135 @@ void RowEditDialog::addRow()
     mScene->createRow();
 
     updateRowList();
-
 }
 
-void RowEditDialog::removeRow()
+void
+RowEditDialog::removeRow()
 {
-
     int curRow = ui->rowList->currentRow();
-    if(curRow < 0)
+    if (curRow < 0)
         return;
-    
+
     ui->rowList->reset();
     ui->rowList->takeItem(curRow);
-    
+
     mScene->removeRow(curRow);
     updateRowList();
 
-    //select the next item in the list.
+    // select the next item in the list.
     QListWidgetItem* item;
-    if(ui->rowList->count() > curRow)
+    if (ui->rowList->count() > curRow)
         item = ui->rowList->item(curRow);
-    else {
+    else
+    {
         curRow = ui->rowList->count() - 1;
-        if(curRow < 0)
+        if (curRow < 0)
             return;
         item = ui->rowList->item(curRow);
     }
-    if(item)
+    if (item)
         ui->rowList->setCurrentItem(item);
 }
 
-void RowEditDialog::moveUp()
+void
+RowEditDialog::moveUp()
 {
-
     int curRow = ui->rowList->currentRow();
-    if(curRow <= 0 || curRow >= ui->rowList->count())
+    if (curRow <= 0 || curRow >= ui->rowList->count())
         return;
-    
+
     mScene->moveRowUp(curRow);
     updateRowList();
-
 }
 
-void RowEditDialog::moveDown()
+void
+RowEditDialog::moveDown()
 {
-
     int curRow = ui->rowList->currentRow();
 
-    if(curRow + 1 >= ui->rowList->count() || curRow < 0)
+    if (curRow + 1 >= ui->rowList->count() || curRow < 0)
         return;
 
     mScene->moveRowDown(curRow);
     updateRowList();
 }
 
-void RowEditDialog::listItemChanged(int listRow)
+void
+RowEditDialog::listItemChanged(int listRow)
 {
     listItemClicked(ui->rowList->item(listRow));
 }
 
-void RowEditDialog::listItemClicked(QListWidgetItem* item)
+void
+RowEditDialog::listItemClicked(QListWidgetItem* item)
 {
     int r = item->text().toInt() - 1;
     mScene->highlightRow(r);
 
-    QString rowText = mTextView->generateTextRow(r, true,true);
+    QString rowText = mTextView->generateTextRow(r, true, true);
     ui->rowView->setText(rowText);
 
     mScene->drawRowLines(r);
 }
 
-void RowEditDialog::updateRowList()
+void
+RowEditDialog::updateRowList()
 {
-
     ui->rowList->reset();
     ui->rowList->clear();
 
     removeEmptyRows();
-    
+
     int rows = mScene->grid.count();
 
-    for(int i = 0; i < rows; ++i) {
-        //using this slightly more complicated addItem() allows the sorting to work correctly for numbers.
+    for (int i = 0; i < rows; ++i)
+    {
+        // using this slightly more complicated addItem() allows the sorting to work correctly for
+        // numbers.
         QListWidgetItem* item = new QListWidgetItem();
         item->setData(Qt::DisplayRole, i + 1);
         ui->rowList->addItem(item);
     }
-
 }
 
-void RowEditDialog::removeEmptyRows()
+void
+RowEditDialog::removeEmptyRows()
 {
     int rows = mScene->grid.count();
-    
-    for(int i = rows - 1 ; i >= 0; i--) {
+
+    for (int i = rows - 1; i >= 0; i--)
+    {
         int cols = mScene->grid.at(i).count();
-        for(int j = cols - 1; j >= 0; j--) {
-            if(mScene->grid[i][j] == 0)
+        for (int j = cols - 1; j >= 0; j--)
+        {
+            if (mScene->grid[i][j] == 0)
                 mScene->grid[i].removeAt(j);
         }
-        if(mScene->grid[i].count() == 0)
+        if (mScene->grid[i].count() == 0)
             mScene->grid.removeAt(i);
     }
-    
 }
 
-void RowEditDialog::updateRow()
+void
+RowEditDialog::updateRow()
 {
-    //if there aren't items selected on scene don't continue
-    if(mScene->selectedItems().count() <= 0)
+    // if there aren't items selected on scene don't continue
+    if (mScene->selectedItems().count() <= 0)
         return;
 
-    //if there isn't a selected row to update don't continue
-    if(ui->rowList->selectedItems().count() <= 0)
+    // if there isn't a selected row to update don't continue
+    if (ui->rowList->selectedItems().count() <= 0)
         return;
-    
-    //adjust the value of the selected row to match the zero-index
-    //of the row in the scene/grid.
+
+    // adjust the value of the selected row to match the zero-index
+    // of the row in the scene/grid.
     int r = ui->rowList->currentItem()->text().toInt();
-    if(r <= 0)
+    if (r <= 0)
         return;
     r--;
 
     mScene->updateRow(r);
 
-    QString rowText = mTextView->generateTextRow(r, true,true);
+    QString rowText = mTextView->generateTextRow(r, true, true);
     ui->rowView->setText(rowText);
-    
 }

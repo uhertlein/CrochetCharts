@@ -27,37 +27,36 @@
 #include <QMap>
 #include "legends.h"
 
-namespace Ui {
-    class ExportDialog;
+namespace Ui
+{
+class ExportDialog;
 }
 
 class ExportUi : public QDialog
 {
     Q_OBJECT
 public:
-    ExportUi(QTabWidget* tabWidget, QMap<QString, int>* stitches,
-             QMap<QString, QMap<QString, qint64> >* colors, QWidget* parent = 0);
-	
-	~ExportUi();
+    ExportUi(QTabWidget* tabWidget,
+             QMap<QString, int>* stitches,
+             QMap<QString, QMap<QString, qint64> >* colors,
+             QWidget* parent = 0);
 
-    QString exportType,
-            selection,
-            fileName;
-    int resolution,
-        width,
-        height;
+    ~ExportUi();
+
+    QString exportType, selection, fileName;
+    int resolution, width, height;
     bool pageToChartSize;
-	bool selectionOnly;
-	bool includeHeaderFooter;
+    bool selectionOnly;
+    bool includeHeaderFooter;
     QGraphicsScene* scene;
-    
+
 public slots:
     int exec();
-    
+
 private slots:
     void exportData();
-    
-	void headerFooterToggled(bool status);
+
+    void headerFooterToggled(bool status);
     void updateExportOptions(QString expType);
     void setSelection(QString selection);
 
@@ -73,7 +72,7 @@ private:
     void setupColorLegendOptions();
     void setupStitchLegendOptions();
     void setupChartOptions();
-    
+
     void exportLegendPdf();
     void exportLegendSvg();
     void exportLegendImg();
@@ -81,11 +80,11 @@ private:
     void exportPdf();
     void exportSvg();
     void exportImg();
-    
-	//returns the height of the rendered text
-	int renderFooter(QPainter &painter, QString text);
-	int renderHeader(QPainter &painter, QString text);
-	
+
+    // returns the height of the rendered text
+    int renderFooter(QPainter& painter, QString text);
+    int renderHeader(QPainter& painter, QString text);
+
     void updateChartSizeRatio(QString selection);
     qreal sceneRatio(QRectF rect);
 
@@ -94,11 +93,9 @@ private:
 
     StitchLegend* sl;
     ColorLegend* cl;
-    
+
     QMap<QString, int>* mStitches;
     QMap<QString, QMap<QString, qint64> >* mColors;
-
 };
 
-#endif //EXPORTUI_H
-
+#endif  // EXPORTUI_H

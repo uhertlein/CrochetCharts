@@ -26,15 +26,16 @@
 class QAbstractButton;
 class QPixmap;
 
-namespace Ui {
-    class SettingsDialog;
+namespace Ui
+{
+class SettingsDialog;
 }
 
 class SettingsUi : public QDialog
 {
     Q_OBJECT
 public:
-    SettingsUi(QWidget *parent);
+    SettingsUi(QWidget* parent);
     ~SettingsUi();
 
     int exec();
@@ -50,28 +51,27 @@ private slots:
     void setColor();
 
     void buttonClicked(QAbstractButton* button);
-private:
 
-    //TODO: Using the same code in MainWindow
+private:
+    // TODO: Using the same code in MainWindow
     QPixmap drawColorBox(QColor color, QSize size);
 
     void setupDialogWidgets();
     void resetDialogWidgets();
     void saveDialogWidgets();
 
-    void load(QObject *w);
-    void loadDefualt(QObject *w);
-    void save(QObject *w);
+    void load(QObject* w);
+    void loadDefualt(QObject* w);
+    void save(QObject* w);
 
-    bool isSettingsWidget(QObject *obj);
+    bool isSettingsWidget(QObject* obj);
 
-    Ui::SettingsDialog *ui;
+    Ui::SettingsDialog* ui;
 
     QColor mPrimaryColor;
     QColor mAlternateColor;
     QColor mDotColor;
     QColor mKeywordColor;
-
 };
 
-#endif //SETTINGSUI_H
+#endif  // SETTINGSUI_H

@@ -29,26 +29,28 @@
 
 #include "settings.h"
 
-Stitch::Stitch(QObject *parent) :
-    QObject(parent),
-    isBuiltIn(false),
-    mIsSvg(false),
-    mPixmap(0)
+Stitch::Stitch(QObject* parent)
+    : QObject(parent)
+    , isBuiltIn(false)
+    , mIsSvg(false)
+    , mPixmap(0)
 {
 }
 
 Stitch::~Stitch()
 {
-    foreach(QString key, mRenderers.keys())
+    foreach (QString key, mRenderers.keys())
         mRenderers.value(key)->deleteLater();
 
     delete mPixmap;
     mPixmap = 0;
 }
 
-void Stitch::setFile ( QString f )
+void
+Stitch::setFile(QString f)
 {
-    if(mFile != f) {
+    if (mFile != f)
+    {
         mFile = f;
 
         delete mPixmap;
@@ -56,16 +58,19 @@ void Stitch::setFile ( QString f )
 
         setupSvgFiles();
 
-        if(!isSvg()) {
+        if (!isSvg())
+        {
             mPixmap = new QPixmap(mFile);
         }
     }
 }
 
-bool Stitch::setupSvgFiles()
+bool
+Stitch::setupSvgFiles()
 {
     QFile file(mFile);
-    if(!file.open(QIODevice::ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly))
+    {
         WARN("cannot open file for svg setup");
         return false;
     }
@@ -81,23 +86,25 @@ bool Stitch::setupSvgFiles()
     priData = data;
     secData = data;
 
-    //Don't parse the color if we're using black
-    if(pri != black)
+    // Don't parse the color if we're using black
+    if (pri != black)
         priData = priData.replace(QByteArray(black.toLatin1()), QByteArray(pri.toLatin1()));
 
-    QSvgRenderer *svgR = new QSvgRenderer();
-    if(!svgR->load(priData)) {
+    QSvgRenderer* svgR = new QSvgRenderer();
+    if (!svgR->load(priData))
+    {
         mIsSvg = false;
         return false;
     }
 
     mRenderers.insert(pri, svgR);
 
-    if(sec != black)
+    if (sec != black)
         secData = data.replace(QByteArray(black.toLatin1()), QByteArray(sec.toLatin1()));
 
     svgR = new QSvgRenderer();
-    if(!svgR->load(secData)) {
+    if (!svgR->load(secData))
+    {
         mIsSvg = false;
         return false;
     }
@@ -108,15 +115,16 @@ bool Stitch::setupSvgFiles()
     return true;
 }
 
-void Stitch::addStitchColor(QString color)
+void
+Stitch::addStitchColor(QString color)
 {
-
-    //don't add colors already in the list.
-    if(mRenderers.contains(color))
+    // don't add colors already in the list.
+    if (mRenderers.contains(color))
         return;
 
     QFile file(mFile);
-    if(!file.open(QIODevice::ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly))
+    {
         WARN("cannot open file for svg setup");
         return;
     }
@@ -125,25 +133,25 @@ void Stitch::addStitchColor(QString color)
 
     QString black = "#000000";
 
-    //Don't parse the color if we're using black
-    if(color != black)
+    // Don't parse the color if we're using black
+    if (color != black)
         data = data.replace(QByteArray(black.toLatin1()), QByteArray(color.toLatin1()));
 
-    QSvgRenderer *svgR = new QSvgRenderer();
+    QSvgRenderer* svgR = new QSvgRenderer();
     svgR->load(data);
     mRenderers.insert(color, svgR);
 }
 
-bool Stitch::isSvg()
+bool
+Stitch::isSvg()
 {
-
     return mIsSvg;
 }
 
-QPixmap* Stitch::renderPixmap()
+QPixmap*
+Stitch::renderPixmap()
 {
-
-    if(mPixmap && !mPixmap->isNull())
+    if (mPixmap && !mPixmap->isNull())
         return mPixmap;
 
     mPixmap = new QPixmap(mFile);
@@ -151,55 +159,63 @@ QPixmap* Stitch::renderPixmap()
     return mPixmap;
 }
 
-QSvgRenderer* Stitch::renderSvg(QColor color)
+QSvgRenderer*
+Stitch::renderSvg(QColor color)
 {
-
-    if(!isSvg())
+    if (!isSvg())
         return 0;
 
-    if(!mRenderers.contains(color.name())) {
+    if (!mRenderers.contains(color.name()))
+    {
         addStitchColor(color.name());
     }
 
-    if(!mRenderers.value(color.name())->isValid())
+    if (!mRenderers.value(color.name())->isValid())
         return 0;
 
     return mRenderers.value(color.name());
-
 }
 
-void Stitch::reloadIcon()
+void
+Stitch::reloadIcon()
 {
     setupSvgFiles();
 }
 
-qreal Stitch::width()
+qreal
+Stitch::width()
 {
     qreal w = 32.0;
-    if(isSvg()) {
-        QSvgRenderer *r = mRenderers.value("#000000");
-        if(!r)
+    if (isSvg())
+    {
+        QSvgRenderer* r = mRenderers.value("#000000");
+        if (!r)
             return w;
         w = r->viewBoxF().width();
-    } else {
-        if(mPixmap)
+    }
+    else
+    {
+        if (mPixmap)
             w = mPixmap->width();
     }
 
     return w;
 }
 
-
-qreal Stitch::height()
+qreal
+Stitch::height()
 {
     qreal h = 32.0;
-    if(isSvg()) {
+    if (isSvg())
+    {
         QSvgRenderer* r = mRenderers.value("#000000");
-        if(!r)
+        if (!r)
             return h;
         h = r->viewBoxF().height();
-    } else {
-        if(mPixmap)
+    }
+    else
+    {
+        if (mPixmap)
             h = mPixmap->height();
     }
     return h;

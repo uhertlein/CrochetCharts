@@ -29,16 +29,16 @@
 class File
 {
 public:
-    File(MainWindow *mw, FileFactory *parent);
+    File(MainWindow* mw, FileFactory* parent);
 
-    virtual FileFactory::FileError load(QDataStream *stream) = 0;
-    virtual FileFactory::FileError save(QDataStream *stream) = 0;
+    virtual FileFactory::FileError load(QDataStream* stream) = 0;
+    virtual FileFactory::FileError save(QDataStream* stream) = 0;
 
 protected:
-    MainWindow *mMainWindow;
-    FileFactory *mParent;
-    QTabWidget *mTabWidget;
-    StitchSet *mInternalStitchSet;
+    MainWindow* mMainWindow;
+    FileFactory* mParent;
+    QTabWidget* mTabWidget;
+    StitchSet* mInternalStitchSet;
 };
 
-#endif // FILE_H
+#endif  // FILE_H

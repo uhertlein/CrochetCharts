@@ -23,95 +23,106 @@
 #include "crochettab.h"
 
 ResizeUI::ResizeUI(QTabWidget* tabWidget, QWidget* parent)
-	: QDockWidget(parent),
-	mTabWidget(tabWidget),
-	ui(new Ui::ResizeDialog)
+    : QDockWidget(parent)
+    , mTabWidget(tabWidget)
+    , ui(new Ui::ResizeDialog)
 {
     ui->setupUi(this);
     setVisible(false);
     setFloating(true);
-	
-	connect(this, SIGNAL(visibilityChanged(bool)), SLOT(updateContent()));	
-	connect(ui->topBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
-	connect(ui->bottomBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
-	connect(ui->leftBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
-	connect(ui->rightBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
-	connect(ui->clampButton, SIGNAL(pressed()), this, SLOT(clampPressed()));
+
+    connect(this, SIGNAL(visibilityChanged(bool)), SLOT(updateContent()));
+    connect(ui->topBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    connect(ui->bottomBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    connect(ui->leftBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    connect(ui->rightBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    connect(ui->clampButton, SIGNAL(pressed()), this, SLOT(clampPressed()));
 }
 
 ResizeUI::~ResizeUI()
 {
-	delete ui;
+    delete ui;
 }
 
-void ResizeUI::updateContent()
+void
+ResizeUI::updateContent()
 {
-	CrochetTab* currentTab = qobject_cast<CrochetTab*>(mTabWidget->currentWidget());
-	if (currentTab != NULL)
-	{
-		QRectF sceneRect = currentTab->scene()->sceneRect();
-		setContent(-sceneRect.y(), sceneRect.height() + sceneRect.y(), -sceneRect.x(), sceneRect.width() + sceneRect.x());
-	}
+    CrochetTab* currentTab = qobject_cast<CrochetTab*>(mTabWidget->currentWidget());
+    if (currentTab != NULL)
+    {
+        QRectF sceneRect = currentTab->scene()->sceneRect();
+        setContent(-sceneRect.y(), sceneRect.height() + sceneRect.y(), -sceneRect.x(),
+                   sceneRect.width() + sceneRect.x());
+    }
 }
 
-void ResizeUI::updateContent(int index)
+void
+ResizeUI::updateContent(int index)
 {
-	CrochetTab* currentTab = qobject_cast<CrochetTab*>(mTabWidget->widget(index));
-	if (currentTab != NULL)
-	{
-		QRectF sceneRect = currentTab->scene()->sceneRect();
-		setContent(-sceneRect.y(), sceneRect.height() + sceneRect.y(), -sceneRect.x(), sceneRect.width() + sceneRect.x());
-	}
+    CrochetTab* currentTab = qobject_cast<CrochetTab*>(mTabWidget->widget(index));
+    if (currentTab != NULL)
+    {
+        QRectF sceneRect = currentTab->scene()->sceneRect();
+        setContent(-sceneRect.y(), sceneRect.height() + sceneRect.y(), -sceneRect.x(),
+                   sceneRect.width() + sceneRect.x());
+    }
 }
 
-void ResizeUI::setContent(qreal top, qreal bottom, qreal left, qreal right)
+void
+ResizeUI::setContent(qreal top, qreal bottom, qreal left, qreal right)
 {
-	disconnect(ui->topBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
-	disconnect(ui->bottomBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
-	disconnect(ui->leftBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
-	disconnect(ui->rightBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
-	ui->topBox->setValue(top);
-	ui->bottomBox->setValue(bottom);
-	ui->leftBox->setValue(left);
-	ui->rightBox->setValue(right);
-	connect(ui->topBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
-	connect(ui->bottomBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
-	connect(ui->leftBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
-	connect(ui->rightBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    disconnect(ui->topBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    disconnect(ui->bottomBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    disconnect(ui->leftBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    disconnect(ui->rightBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    ui->topBox->setValue(top);
+    ui->bottomBox->setValue(bottom);
+    ui->leftBox->setValue(left);
+    ui->rightBox->setValue(right);
+    connect(ui->topBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    connect(ui->bottomBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    connect(ui->leftBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    connect(ui->rightBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
 }
 
-void ResizeUI::valueChanged(int value)
+void
+ResizeUI::valueChanged(int value)
 {
-	Q_UNUSED(value);
-	sendResize();
+    Q_UNUSED(value);
+    sendResize();
 }
 
-void ResizeUI::clampPressed()
-{	
-	CrochetTab* currentTab = qobject_cast<CrochetTab*>(mTabWidget->currentWidget());
-	if (currentTab != NULL)
-	{
-		QList<QGraphicsItem*> selection = currentTab->scene()->items();
-		if (selection.length() == 0)
-			return;
-			
-		QRectF ibr = ibr = selection.first()->sceneBoundingRect();
-		foreach (QGraphicsItem* i, selection) {
-			if (i->isVisible() && i->isEnabled())
-				ibr = ibr.united(i->sceneBoundingRect());
-		}
-
-		ibr.setTop(ibr.top() - SCENE_CLAMP_BORDER_SIZE - 10);
-		ibr.setBottom(ibr.bottom() + SCENE_CLAMP_BORDER_SIZE + 10);
-		ibr.setLeft(ibr.left() - SCENE_CLAMP_BORDER_SIZE - 10);
-		ibr.setRight(ibr.right() + SCENE_CLAMP_BORDER_SIZE + 10);
-		
-		emit resize(ibr);
-		updateContent();
-	}
-}
-
-void ResizeUI::sendResize()
+void
+ResizeUI::clampPressed()
 {
-	emit resize(QRectF(-ui->leftBox->value(), -ui->topBox->value(),ui->rightBox->value() + ui->leftBox->value(), ui->topBox->value() + ui->bottomBox->value()));
+    CrochetTab* currentTab = qobject_cast<CrochetTab*>(mTabWidget->currentWidget());
+    if (currentTab != NULL)
+    {
+        QList<QGraphicsItem*> selection = currentTab->scene()->items();
+        if (selection.length() == 0)
+            return;
+
+        QRectF ibr = ibr = selection.first()->sceneBoundingRect();
+        foreach (QGraphicsItem* i, selection)
+        {
+            if (i->isVisible() && i->isEnabled())
+                ibr = ibr.united(i->sceneBoundingRect());
+        }
+
+        ibr.setTop(ibr.top() - SCENE_CLAMP_BORDER_SIZE - 10);
+        ibr.setBottom(ibr.bottom() + SCENE_CLAMP_BORDER_SIZE + 10);
+        ibr.setLeft(ibr.left() - SCENE_CLAMP_BORDER_SIZE - 10);
+        ibr.setRight(ibr.right() + SCENE_CLAMP_BORDER_SIZE + 10);
+
+        emit resize(ibr);
+        updateContent();
+    }
+}
+
+void
+ResizeUI::sendResize()
+{
+    emit resize(QRectF(-ui->leftBox->value(), -ui->topBox->value(),
+                       ui->rightBox->value() + ui->leftBox->value(),
+                       ui->topBox->value() + ui->bottomBox->value()));
 }

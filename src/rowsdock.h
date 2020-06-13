@@ -24,8 +24,9 @@
 #include <QDockWidget>
 #include <QButtonGroup>
 
-namespace Ui {
-    class RowsDock;
+namespace Ui
+{
+class RowsDock;
 }
 
 class RowsDock : public QDockWidget
@@ -33,20 +34,19 @@ class RowsDock : public QDockWidget
     Q_OBJECT
 
 public:
-    explicit RowsDock(QWidget *parent = 0);
+    explicit RowsDock(QWidget* parent = 0);
     ~RowsDock();
 
 signals:
     void arrangeGrid(QSize grid, QSize alignment, QSize spacing, bool useSelection);
-    
+
 private slots:
     void generateArrangement();
 
 private:
-    Ui::RowsDock *ui;
+    Ui::RowsDock* ui;
 
-    QButtonGroup horizonalGroup,
-                 verticalGroup;
+    QButtonGroup horizonalGroup, verticalGroup;
 };
 
-#endif // ROWSDOCK_H
+#endif  // ROWSDOCK_H

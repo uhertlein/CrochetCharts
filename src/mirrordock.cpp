@@ -21,9 +21,9 @@
 #include "mirrordock.h"
 #include "ui_mirrordock.h"
 
-MirrorDock::MirrorDock(QWidget *parent) :
-    QDockWidget(parent),
-    ui(new Ui::MirrorDock)
+MirrorDock::MirrorDock(QWidget* parent)
+    : QDockWidget(parent)
+    , ui(new Ui::MirrorDock)
 {
     ui->setupUi(this);
     setVisible(false);
@@ -36,11 +36,11 @@ MirrorDock::MirrorDock(QWidget *parent) :
     connect(ui->mirrorRight, SIGNAL(clicked()), SLOT(genMirror()));
     connect(ui->mirrorUp, SIGNAL(clicked()), SLOT(genMirror()));
     connect(ui->mirrorDown, SIGNAL(clicked()), SLOT(genMirror()));
-	
-	connect(ui->copyLeft, SIGNAL(clicked()), SLOT(genCopy()));
-	connect(ui->copyRight, SIGNAL(clicked()), SLOT(genCopy()));
-	connect(ui->copyUp, SIGNAL(clicked()), SLOT(genCopy()));
-	connect(ui->copyDown, SIGNAL(clicked()), SLOT(genCopy()));
+
+    connect(ui->copyLeft, SIGNAL(clicked()), SLOT(genCopy()));
+    connect(ui->copyRight, SIGNAL(clicked()), SLOT(genCopy()));
+    connect(ui->copyUp, SIGNAL(clicked()), SLOT(genCopy()));
+    connect(ui->copyDown, SIGNAL(clicked()), SLOT(genCopy()));
 
     connect(ui->rotate90, SIGNAL(clicked()), SLOT(genRotate()));
     connect(ui->rotate180, SIGNAL(clicked()), SLOT(genRotate()));
@@ -56,57 +56,64 @@ MirrorDock::~MirrorDock()
     delete ui;
 }
 
-void MirrorDock::genCopy()
+void
+MirrorDock::genCopy()
 {
     int direction = 1;
-    if(sender() == ui->copyLeft)
+    if (sender() == ui->copyLeft)
         direction = 1;
-    else if(sender() == ui->copyRight)
+    else if (sender() == ui->copyRight)
         direction = 2;
-    else if(sender() == ui->copyUp)
+    else if (sender() == ui->copyUp)
         direction = 3;
-    else if(sender() == ui->copyDown)
+    else if (sender() == ui->copyDown)
         direction = 4;
 
     emit copy(direction);
 }
 
-void MirrorDock::genMirror()
+void
+MirrorDock::genMirror()
 {
     int direction = 1;
-    if(sender() == ui->mirrorLeft)
+    if (sender() == ui->mirrorLeft)
         direction = 1;
-    else if(sender() == ui->mirrorRight)
+    else if (sender() == ui->mirrorRight)
         direction = 2;
-    else if(sender() == ui->mirrorUp)
+    else if (sender() == ui->mirrorUp)
         direction = 3;
-    else if(sender() == ui->mirrorDown)
+    else if (sender() == ui->mirrorDown)
         direction = 4;
 
     emit mirror(direction);
 }
 
-void MirrorDock::genRotate()
+void
+MirrorDock::genRotate()
 {
     qreal degrees = 0;
 
-    if(sender() == ui->rotate90)
+    if (sender() == ui->rotate90)
         degrees = 90;
-    else if(sender() == ui->rotate180)
+    else if (sender() == ui->rotate180)
         degrees = 180;
-    else if(sender() == ui->rotate270)
+    else if (sender() == ui->rotate270)
         degrees = 270;
-    else if(sender() == ui->rotateBttn)
+    else if (sender() == ui->rotateBttn)
         degrees = ui->degrees->value();
 
     emit rotate(degrees);
 }
 
-void MirrorDock::rotateCustom()
+void
+MirrorDock::rotateCustom()
 {
-    if(ui->rotateCustomWidgets->isVisible()) {
+    if (ui->rotateCustomWidgets->isVisible())
+    {
         ui->rotateCustomWidgets->setVisible(false);
-    } else {
+    }
+    else
+    {
         ui->rotateCustomWidgets->show();
     }
 }

@@ -30,13 +30,12 @@ public:
     SplashScreen();
 
 public slots:
-    void showMessage (const QString &message);
-
+    void showMessage(const QString& message);
 
 protected:
-    void drawContents (QPainter* painter);
+    void drawContents(QPainter* painter);
 
 private:
     QString mMessage;
 };
-#endif //SPLASHSCREEN_H
+#endif  // SPLASHSCREEN_H

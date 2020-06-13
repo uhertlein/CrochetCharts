@@ -33,40 +33,40 @@ along with Crochet Charts. If not, see <http://www.gnu.org/licenses/>.
 class AppInfo
 {
 public:
-    static AppInfo* inst()
+    static AppInfo*
+    inst()
     {
-        if (!mInstance)   // Only allow one instance of the settings.
-      mInstance = new AppInfo();
-      return mInstance;
+        if (!mInstance)  // Only allow one instance of the settings.
+            mInstance = new AppInfo();
+        return mInstance;
     }
-    
+
     const QString appName;
     const QString appOrg;
-    
+
     const QString appOrgDomain;
     const QString appOrgContact;
-    
+
     const QString appVersion;
     const QString appVersionShort;
     const QString appBuildInfo;
-    
+
     const QRegExp emailRegExp;
-    
+
     const QString liveUpdatePage;
     const QString liveUpdatePageVals;
 
     const QString demoString;
-    
+
     const QString projectLife;
 
     const quint32 magicNumber;
     const quint32 magicNumberSet;
-    
+
 private:
     static AppInfo* mInstance;
-    
+
     AppInfo();
-    
 };
 
-#endif // APPINFO_H
+#endif  // APPINFO_H

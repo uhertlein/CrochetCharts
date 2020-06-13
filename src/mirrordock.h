@@ -23,8 +23,9 @@
 
 #include <QDockWidget>
 
-namespace Ui {
-    class MirrorDock;
+namespace Ui
+{
+class MirrorDock;
 }
 
 class MirrorDock : public QDockWidget
@@ -32,23 +33,23 @@ class MirrorDock : public QDockWidget
     Q_OBJECT
 
 public:
-    explicit MirrorDock(QWidget *parent = 0);
+    explicit MirrorDock(QWidget* parent = 0);
     ~MirrorDock();
 
 signals:
     void mirror(int direction);
     void rotate(qreal degrees);
-	void copy(int direction);
+    void copy(int direction);
 
 private slots:
     void rotateCustom();
 
     void genRotate();
     void genMirror();
-	void genCopy();
+    void genCopy();
 
 private:
-    Ui::MirrorDock *ui;
+    Ui::MirrorDock* ui;
 };
 
-#endif // MIRRORDOCK_H
+#endif  // MIRRORDOCK_H

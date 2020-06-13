@@ -37,14 +37,14 @@
 #include "ChartItemTools.h"
 
 Indicator::Indicator(QGraphicsItem* parent, QGraphicsScene* scene)
-    : QGraphicsTextItem(parent),
-      highlight(false)
+    : QGraphicsTextItem(parent)
+    , highlight(false)
 {
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemIsSelectable);
     setFlag(QGraphicsItem::ItemIsFocusable);
     setZValue(150);
-	
+
     mStyle = Settings::inst()->value("chartRowIndicator").toString();
 }
 
@@ -52,98 +52,113 @@ Indicator::~Indicator()
 {
 }
 
-QRectF Indicator::boundingRect() const
+QRectF
+Indicator::boundingRect() const
 {
     QRectF rect = QGraphicsTextItem::boundingRect();
     return rect;
 }
 
-QPainterPath Indicator::shape() const
+QPainterPath
+Indicator::shape() const
 {
     QPainterPath path = QGraphicsTextItem::shape();
     return path;
 }
 
-QString Indicator::text() {
-	return toPlainText();
+QString
+Indicator::text()
+{
+    return toPlainText();
 }
 
-void Indicator::setText(QString t)
+void
+Indicator::setText(QString t)
 {
-	setPlainText(t);
+    setPlainText(t);
 }
 
-void Indicator::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void
+Indicator::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
-
     QString color = Settings::inst()->value("chartIndicatorColor").toString();
 
-    if(option->state & QStyle::State_HasFocus) {
+    if (option->state & QStyle::State_HasFocus)
+    {
         QGraphicsTextItem::paint(painter, option, widget);
-    } else {
-
+    }
+    else
+    {
         document()->setDocumentMargin(10);
 
-        if(mStyle == "Dots" || mStyle == "Dots and Text") {
+        if (mStyle == "Dots" || mStyle == "Dots and Text")
+        {
             painter->setRenderHint(QPainter::Antialiasing);
             painter->setPen(QColor(color));
             painter->setBackgroundMode(Qt::OpaqueMode);
             painter->setBrush(QBrush(QColor(color)));
-            painter->drawEllipse(0,0, 10,10);
+            painter->drawEllipse(0, 0, 10, 10);
             painter->setBackgroundMode(Qt::TransparentMode);
         }
 
-        if(mStyle == "Dots" && (option->state & (QStyle::State_Selected | QStyle::State_HasFocus))) {
+        if (mStyle == "Dots" && (option->state & (QStyle::State_Selected | QStyle::State_HasFocus)))
+        {
             QPen pen = QPen(QColor(Qt::black));
             pen.setStyle(Qt::DashLine);
             painter->setPen(pen);
             QRect r = option->rect;
-            r.setBottomRight(QPoint(10,10));
+            r.setBottomRight(QPoint(10, 10));
             painter->drawRect(r);
         }
 
-        if(mStyle == "Text" || mStyle == "Dots and Text") {
-			painter->setFont(font());
+        if (mStyle == "Text" || mStyle == "Dots and Text")
+        {
+            painter->setFont(font());
             QGraphicsTextItem::paint(painter, option, widget);
         }
     }
 }
 
-void Indicator::focusInEvent(QFocusEvent* event)
+void
+Indicator::focusInEvent(QFocusEvent* event)
 {
-	oldText = this->text();
+    oldText = this->text();
     QGraphicsTextItem::focusInEvent(event);
     emit gotFocus(this);
 }
 
-void Indicator::focusOutEvent(QFocusEvent* event)
+void
+Indicator::focusOutEvent(QFocusEvent* event)
 {
     QGraphicsTextItem::focusOutEvent(event);
     setTextInteractionFlags(Qt::NoTextInteraction);
-	
-	//if the old text is different from the current text, add it to the undo stack
-	if (oldText.compare(text()) != 0) {
-		Scene* s =  dynamic_cast<Scene*>(scene());
-		if (s) {
-			s->undoStack()->push(new SetIndicatorText(this, oldText, text()));
-		}
-	}
-	
+
+    // if the old text is different from the current text, add it to the undo stack
+    if (oldText.compare(text()) != 0)
+    {
+        Scene* s = dynamic_cast<Scene*>(scene());
+        if (s)
+        {
+            s->undoStack()->push(new SetIndicatorText(this, oldText, text()));
+        }
+    }
+
     emit lostFocus(this);
 }
 
-void Indicator::keyReleaseEvent(QKeyEvent *event)
+void
+Indicator::keyReleaseEvent(QKeyEvent* event)
 {
-    if(event->key() == Qt::Key_Escape)
+    if (event->key() == Qt::Key_Escape)
         setTextInteractionFlags(Qt::NoTextInteraction);
 
-    //eat delete and other keys so they don't delete this object by mistake.
+    // eat delete and other keys so they don't delete this object by mistake.
     event->accept();
     QGraphicsTextItem::keyReleaseEvent(event);
 }
 
-void Indicator::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+void
+Indicator::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-
     QGraphicsTextItem::mouseReleaseEvent(event);
 }

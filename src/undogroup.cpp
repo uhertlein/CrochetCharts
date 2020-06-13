@@ -27,27 +27,29 @@ UndoGroup::UndoGroup(QObject* parent)
     : QUndoGroup(parent)
 {
     connect(this, SIGNAL(cleanChanged(bool)), this, SLOT(checkAllCleanStates()));
-    
 }
 
-void UndoGroup::addStack(QUndoStack* stack)
+void
+UndoGroup::addStack(QUndoStack* stack)
 {
-
     connect(stack, SIGNAL(canUndoChanged(bool)), SLOT(checkAllCleanStates()));
     QUndoGroup::addStack(stack);
 }
 
-void UndoGroup::checkAllCleanStates()
+void
+UndoGroup::checkAllCleanStates()
 {
     bool clean = true;
-    
-    foreach(QUndoStack* stack, stacks()) {
-        if(!stack->isClean()) {
+
+    foreach (QUndoStack* stack, stacks())
+    {
+        if (!stack->isClean())
+        {
             clean = false;
             break;
         }
     }
 
-    //TODO: don't emit on every entry only when the state changes.
+    // TODO: don't emit on every entry only when the state changes.
     emit isModified(!clean);
 }
