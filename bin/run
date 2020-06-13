@@ -1,11 +1,22 @@
 #!/bin/bash
 #
-#
-###
-
 
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
-$PROJECT_DIR/build/src/CrochetCharts 2> $PROJECT_DIR/build/output.log
+BUILD_DIR="${PROJECT_DIR}/build_release"
+if [ ! -d "${BUILD_DIR}" ]; then
+    echo "Build directory '${BUILD_DIR}' does not exist."
+    exit 1
+fi
+EXEC="${BUILD_DIR}/src/CrochetCharts"
+if [ ! -x "${EXEC}" ]; then
+    echo "Executable '${EXEC}' does not exist."
+    exit 1
+fi
 
-$PROJECT_DIR/bin/asan_symbolize.py / < $PROJECT_DIR/build/output.log | `which c++filt`
+OUTPUT_LOG="${BUILD_DIR}/output.log"
+${BUILD_DIR}/src/CrochetCharts 2> ${OUTPUT_LOG}
+
+if [ -f "${OUTPUT_LOG}" ]; then
+    ${PROJECT_DIR}/bin/asan_symbolize.py / < ${OUTPUT_LOG} | `which c++filt`
+fi

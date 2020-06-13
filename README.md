@@ -12,7 +12,7 @@ You will need to install the following software:
 
 All Platforms
 --------------
-+ Qt4.8
++ Qt5.x
 + cmake
 + docbook
 + docbook-xsl-ns
@@ -36,8 +36,10 @@ Linux
 + build-essential
 + gcc and/or clang
 + doxygen
++ qt5-default, libqt5svg5-dev
++ fop, xsltproc
 
-For ease of use there are some scripts in the bin folder that can help with the development process.
+For ease of use there are some scripts in the `bin` folder that can help with the development process.
 
 - build   - compile the software based on the selected options, ( -h for a list of options )
 - tests   - run the unit tests and report the results in an easy to read format ( first you must build them ).
