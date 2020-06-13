@@ -24,7 +24,7 @@
 #include "ChartItemTools.h"
 #include "debug.h"
 
-ItemGroup::ItemGroup(QGraphicsItem* parent, QGraphicsScene* scene)
+ItemGroup::ItemGroup(QGraphicsItem* parent, QGraphicsScene* /*scene*/)
     : QGraphicsItemGroup(parent)
     , mScale(QPointF(1.0, 1.0))
 {

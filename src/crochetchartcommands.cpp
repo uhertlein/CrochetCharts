@@ -526,6 +526,7 @@ UngroupItems::undo()
 | AddLayer                                        |
 \*************************************************/
 AddLayer::AddLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent)
+    : QUndoCommand(parent)
 {
     s = scene;
     mLayer = layer;
@@ -553,6 +554,7 @@ AddLayer::redo()
 | RemoveLayer                                     |
 \*************************************************/
 RemoveLayer::RemoveLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent)
+    : QUndoCommand(parent)
 {
     s = scene;
     mLayer = layer;
@@ -576,6 +578,7 @@ RemoveLayer::redo()
 | SetLayerStitch                                  |
 \*************************************************/
 SetLayerStitch::SetLayerStitch(Scene* scene, Cell* c, unsigned int layer, QUndoCommand* parent)
+    : QUndoCommand(parent)
 {
     s = scene;
     this->c = c;
@@ -603,6 +606,7 @@ SetLayerIndicator::SetLayerIndicator(Scene* scene,
                                      Indicator* c,
                                      unsigned int layer,
                                      QUndoCommand* parent)
+    : QUndoCommand(parent)
 {
     s = scene;
     this->c = c;
@@ -627,6 +631,7 @@ SetLayerIndicator::redo()
 | SetLayerGroup                                   |
 \*************************************************/
 SetLayerGroup::SetLayerGroup(Scene* scene, ItemGroup* c, unsigned int layer, QUndoCommand* parent)
+    : QUndoCommand(parent)
 {
     s = scene;
     this->c = c;
@@ -651,6 +656,7 @@ SetLayerGroup::redo()
 | SetLayerimage                                |
 \*************************************************/
 SetLayerImage::SetLayerImage(Scene* scene, ChartImage* c, unsigned int layer, QUndoCommand* parent)
+    : QUndoCommand(parent)
 {
     s = scene;
     this->c = c;

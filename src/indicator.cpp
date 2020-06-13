@@ -36,7 +36,7 @@
 #include "crochetchartcommands.h"
 #include "ChartItemTools.h"
 
-Indicator::Indicator(QGraphicsItem* parent, QGraphicsScene* scene)
+Indicator::Indicator(QGraphicsItem* parent, QGraphicsScene* /*scene*/)
     : QGraphicsTextItem(parent)
     , highlight(false)
 {

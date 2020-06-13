@@ -22,7 +22,7 @@
 #define ERRORHANDLER_H
 
 void
-errorHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+errorHandler(QtMsgType type, const QMessageLogContext& /*context*/, const QString& msg)
 {
     switch (type)
     {

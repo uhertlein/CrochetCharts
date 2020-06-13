@@ -75,7 +75,7 @@ RubberBand::path()
 }
 
 void
-RubberBand::paintEvent(QPaintEvent* event)
+RubberBand::paintEvent(QPaintEvent* /*event*/)
 {
     QPainter painter(this);
     setDefaultStyle(painter);
@@ -154,7 +154,7 @@ LassoBand::path()
 }
 
 void
-LassoBand::paintEvent(QPaintEvent* event)
+LassoBand::paintEvent(QPaintEvent* /*event*/)
 {
     QPainter painter(this);
     setDefaultStyle(painter);
@@ -246,7 +246,7 @@ LineBand::path()
 }
 
 void
-LineBand::paintEvent(QPaintEvent* event)
+LineBand::paintEvent(QPaintEvent* /*event*/)
 {
     QPainter painter(this);
     setDefaultStyle(painter);

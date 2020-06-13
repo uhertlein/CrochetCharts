@@ -58,7 +58,7 @@ ChartImage::boundingRect() const
 }
 
 void
-ChartImage::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+ChartImage::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* /*widget*/)
 {
     if (mPixmap)
     {

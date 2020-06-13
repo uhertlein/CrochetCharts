@@ -102,7 +102,7 @@ ResizeUI::clampPressed()
         if (selection.length() == 0)
             return;
 
-        QRectF ibr = ibr = selection.first()->sceneBoundingRect();
+        QRectF ibr = selection.first()->sceneBoundingRect();
         foreach (QGraphicsItem* i, selection)
         {
             if (i->isVisible() && i->isEnabled())

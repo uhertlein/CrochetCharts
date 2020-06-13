@@ -1321,7 +1321,7 @@ Scene::scaleModeMouseMove(QGraphicsSceneMouseEvent* e)
     }
 
     QPointF delta = e->scenePos() - e->buttonDownScenePos(Qt::LeftButton);
-    QPointF scenePivot = ChartItemTools::getScalePivot(mCurItem) + mCurItem->pos();
+    // TODO QPointF scenePivot = ChartItemTools::getScalePivot(mCurItem) + mCurItem->pos();
     QSizeF originalSize = mCurItem->boundingRect().size();
 
     QSizeF currentSize
@@ -1980,8 +1980,6 @@ Scene::updateGuidelines()
     int spacingW = mGuidelines.cellWidth();
     int spacingH = mGuidelines.cellHeight();
 
-    QGraphicsItem* i = 0;
-
     if (mGuidelinesLines.count() > 0)
     {
         foreach (QGraphicsItem* item, mGuidelinesLines)
@@ -2044,7 +2042,7 @@ Scene::generateGuidelinesRows(int spacingW, int spacingH, int columns, int rows,
 }
 
 void
-Scene::generateGuidelinesRounds(int spacingW, int spacingH, int columns, int rows, QPointF center)
+Scene::generateGuidelinesRounds(int /*spacingW*/, int spacingH, int columns, int rows, QPointF center)
 {
     QGraphicsItem* i = 0;
 

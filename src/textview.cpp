@@ -83,7 +83,7 @@ TextView::generateTextRow(int row, bool cleanOutput, bool useRepeats)
 }
 
 QString
-TextView::generateText(QStringList row, bool useRepeats)
+TextView::generateText(QStringList row, bool /*useRepeats*/)
 {
     QString text;
     QString curStitch, previousStitch;
@@ -91,7 +91,7 @@ TextView::generateText(QStringList row, bool useRepeats)
     int count = 1;
     bool firstPass = true;
 
-    bool genRepeats = Settings::inst()->value("generateTextRepeats").toBool();
+    // TODO bool genRepeats = Settings::inst()->value("generateTextRepeats").toBool();
     QString prefix = ".sws_";
 
     /*if(genRepeats && useRepeats) {
