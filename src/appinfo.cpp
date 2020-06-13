@@ -20,7 +20,7 @@
  \****************************************************************************/
 #include "appinfo.h"
 
-AppInfo* AppInfo::mInstance = NULL;
+AppInfo* AppInfo::sInstance = NULL;
 
 AppInfo::AppInfo()
     : appName("Crochet Charts")

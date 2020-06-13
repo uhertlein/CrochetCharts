@@ -30,15 +30,15 @@
 #include <QDir>
 
 // Global static pointer
-Settings* Settings::mInstance = NULL;
+Settings* Settings::sInstance = NULL;
 
 // singleton constructor:
 Settings*
 Settings::inst()
 {
-    if (!mInstance)  // Only allow one instance of the settings.
-        mInstance = new Settings();
-    return mInstance;
+    if (!sInstance)  // Only allow one instance of the settings.
+        sInstance = new Settings();
+    return sInstance;
 }
 
 Settings::Settings()

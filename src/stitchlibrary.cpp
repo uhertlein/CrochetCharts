@@ -33,15 +33,15 @@
 #include "settings.h"
 
 // Global static pointer
-StitchLibrary* StitchLibrary::mInstance = NULL;
+StitchLibrary* StitchLibrary::sInstance = nullptr;
 
 // singleton constructor:
 StitchLibrary*
 StitchLibrary::inst()
 {
-    if (!mInstance)  // Only allow one instance of the StitchLibrary.
-        mInstance = new StitchLibrary();
-    return mInstance;
+    if (!sInstance)  // Only allow one instance of the StitchLibrary.
+        sInstance = new StitchLibrary();
+    return sInstance;
 }
 
 StitchLibrary::StitchLibrary()

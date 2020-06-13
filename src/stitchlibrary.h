@@ -140,7 +140,7 @@ private:
     bool loadMasterList();
     void saveMasterList();
 
-    static StitchLibrary* mInstance;
+    static StitchLibrary* sInstance;
 
     QList<StitchSet*> mStitchSets;
     StitchSet* mMasterSet;

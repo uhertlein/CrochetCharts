@@ -82,7 +82,7 @@ private:
      */
     QStringList mRecentFiles;
 
-    static Settings* mInstance;
+    static Settings* sInstance;
 
     Settings();
 

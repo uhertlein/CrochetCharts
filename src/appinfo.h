@@ -36,9 +36,9 @@ public:
     static AppInfo*
     inst()
     {
-        if (!mInstance)  // Only allow one instance of the settings.
-            mInstance = new AppInfo();
-        return mInstance;
+        if (!sInstance)  // Only allow one instance of the settings.
+            sInstance = new AppInfo();
+        return sInstance;
     }
 
     const QString appName;
@@ -64,7 +64,7 @@ public:
     const quint32 magicNumberSet;
 
 private:
-    static AppInfo* mInstance;
+    static AppInfo* sInstance;
 
     AppInfo();
 };

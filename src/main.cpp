@@ -18,19 +18,17 @@
  along with Crochet Charts. If not, see <http://www.gnu.org/licenses/>.
 
  \****************************************************************************/
-#include "application.h"
-#include "mainwindow.h"
+
 #include "appinfo.h"
-
-#include <QDebug>
-#include <QDir>
-
+#include "application.h"
+#include "errorhandler.h"
+#include "mainwindow.h"
 #include "settings.h"
-
 #include "splashscreen.h"
 #include "updatefunctions.h"
 
-#include "errorhandler.h"
+#include <QDebug>
+#include <QDir>
 
 int
 main(int argc, char* argv[])
