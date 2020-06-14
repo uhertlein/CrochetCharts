@@ -57,7 +57,7 @@ FileFactory::FileFactory(QWidget* parent)
 FileFactory::FileError
 FileFactory::load()
 {
-    File* fileLoad = 0;
+    File* fileLoad = nullptr;
     QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly))
@@ -138,7 +138,7 @@ FileFactory::save(FileVersion version)
     // Write a header with a "magic number" and a version
     out << AppInfo::inst()->magicNumber;
 
-    File* saveFile = 0;
+    File* saveFile = nullptr;
 
     switch (version)
     {

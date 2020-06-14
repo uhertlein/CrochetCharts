@@ -192,7 +192,7 @@ MainWindow::checkUpdates(bool silent)
     if (mUpdater)
     {
         delete mUpdater;
-        mUpdater = 0;
+        mUpdater = nullptr;
     }
 
     // TODO: check for updates in a separate thread.
@@ -330,14 +330,14 @@ void
 MainWindow::reloadLayerContent(QList<ChartLayer*>& layers, ChartLayer* selected)
 {
     CrochetTab* tab = curCrochetTab();
-    if (tab == NULL)
+    if (!tab)
         return;
 
     QTreeView* view = ui->layersView;
     QStandardItemModel* model = dynamic_cast<QStandardItemModel*>(view->model());
 
     // if there isn't a model yet, create one
-    if (model == NULL)
+    if (!model)
     {
         model = new QStandardItemModel(0, 2, this);
         // and connect the signals
@@ -356,12 +356,11 @@ MainWindow::reloadLayerContent(QList<ChartLayer*>& layers, ChartLayer* selected)
     // dont emit signals while populating the model
     model->blockSignals(true);
 
-    QStandardItem* selecteditem = NULL;
-    ChartLayer* layer;
+    QStandardItem* selecteditem = nullptr;
     for (int i = 0; i < layers.count(); i++)
     {
         // create the item
-        layer = layers[i];
+        ChartLayer* layer = layers[i];
 
         QStandardItem* item = new QStandardItem(layer->name());
 
@@ -387,7 +386,7 @@ MainWindow::reloadLayerContent(QList<ChartLayer*>& layers, ChartLayer* selected)
     model->blockSignals(false);
 
     // finally, select the currently selected layer
-    if (selecteditem != NULL)
+    if (selecteditem)
         view->setCurrentIndex(selecteditem->index());
 }
 
@@ -1104,7 +1103,7 @@ void
 MainWindow::setSelectedGridMode(QString gmode)
 {
     CrochetTab* tab = curCrochetTab();
-    if (tab == NULL)
+    if (!tab)
         return;
 
     ui->actionGridNone->blockSignals(true);
@@ -1961,7 +1960,7 @@ MainWindow::addLayer()
 {
     QString name = ui->layerName->text();
     CrochetTab* tab = curCrochetTab();
-    if (tab != NULL)
+    if (tab)
         tab->addLayer(name);
 }
 
@@ -1969,7 +1968,7 @@ void
 MainWindow::removeLayer()
 {
     CrochetTab* tab = curCrochetTab();
-    if (tab != NULL)
+    if (tab)
         tab->removeSelectedLayer();
 }
 
@@ -1979,7 +1978,7 @@ MainWindow::mergeLayer()
     QTreeView* view = ui->layersView;
     QStandardItemModel* model = dynamic_cast<QStandardItemModel*>(view->model());
 
-    if (model == NULL)
+    if (!model)
         return;
 
     // first we get the currently selected item
@@ -1996,7 +1995,7 @@ MainWindow::mergeLayer()
 
     // and call the function
     CrochetTab* tab = curCrochetTab();
-    if (tab != NULL)
+    if (tab)
         tab->mergeLayer(from->uid(), to->uid());
 }
 
@@ -2006,14 +2005,14 @@ MainWindow::selectLayer(const QModelIndex& index)
     QTreeView* view = ui->layersView;
     QStandardItemModel* model = dynamic_cast<QStandardItemModel*>(view->model());
 
-    if (model == NULL)
+    if (!model)
         return;
 
     QStandardItem* item = model->itemFromIndex(index);
     ChartLayer* layer = static_cast<ChartLayer*>(item->data(Qt::UserRole + 5).value<void*>());
 
     CrochetTab* tab = curCrochetTab();
-    if (tab != NULL)
+    if (tab)
         tab->selectLayer(layer->uid());
 }
 
@@ -2023,7 +2022,7 @@ MainWindow::layerModelChanged(const QModelIndex& index)
     QTreeView* view = ui->layersView;
     QStandardItemModel* model = dynamic_cast<QStandardItemModel*>(view->model());
 
-    if (model == NULL)
+    if (!model)
         return;
 
     QStandardItem* item = model->itemFromIndex(index);

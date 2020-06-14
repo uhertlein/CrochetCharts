@@ -189,9 +189,9 @@ Cell*
 Scene::cell(int row, int column)
 {
     if (row >= grid.count())
-        return 0;
+        return nullptr;
     if (column >= grid[row].count())
-        return 0;
+        return nullptr;
 
     return grid[row][column];
 }
@@ -232,7 +232,7 @@ Scene::selectableItemAt(const QPointF& pos)
             && (item->flags() & QGraphicsItem::ItemIsSelectable) == QGraphicsItem::ItemIsSelectable)
             return item;
     }
-    return NULL;
+    return nullptr;
 }
 
 int
@@ -601,11 +601,11 @@ Scene::mousePressEvent(QGraphicsSceneMouseEvent* e)
     if (e->modifiers() != Qt::ShiftModifier)
         mCurItem = selectableItemAt(e->scenePos());
     else
-        mCurItem = NULL;
+        mCurItem = nullptr;
     // get the biggest group it is in
 
     if (mCurItem)
-        while (mCurItem->parentItem() != NULL)
+        while (mCurItem->parentItem())
         {
             if (mCurItem->parentItem()->type() == ItemGroup::Type)
                 mCurItem = mCurItem->parentItem();
@@ -645,14 +645,14 @@ Scene::mousePressEvent(QGraphicsSceneMouseEvent* e)
         case QGraphicsSimpleTextItem::Type:
         {
             // If we've selected the background text pretend we didn't select it.
-            mCurItem = 0;
+            mCurItem = nullptr;
             break;
         }
         case Guideline::Type:
         {
             // We don't want to select the guidelines when we're manipulating the chart or stitches.
             clearSelection();
-            mCurItem = 0;
+            mCurItem = nullptr;
             break;
         }
         case ChartImage::Type:
@@ -858,7 +858,7 @@ Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent* e)
 
     if (mCurIndicator)
     {
-        mCurIndicator = 0;
+        mCurIndicator = nullptr;
     }
 
     mLeftButtonDownPos = QPointF(0, 0);
@@ -866,7 +866,7 @@ Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent* e)
     if (mSelectionBand)
     {
         delete mSelectionBand;
-        mSelectionBand = 0;
+        mSelectionBand = nullptr;
     }
 
     if (mMoving)
@@ -877,7 +877,7 @@ Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent* e)
         mMoving = false;
     }
 
-    mCurItem = 0;
+    mCurItem = nullptr;
     mHasSelection = false;
 }
 
@@ -1390,7 +1390,7 @@ Scene::rowEditMousePress(QGraphicsSceneMouseEvent* e)
             mRowSelection.clear();
             hideRowLines();
             delete mRowLine;
-            mRowLine = 0;
+            mRowLine = nullptr;
         }
         mRowSelection.append(mStartCell);
 
@@ -1456,13 +1456,13 @@ Scene::rowEditMouseRelease(QGraphicsSceneMouseEvent* e)
         emit rowEdited(true);
     }
 
-    mStartCell = 0;
+    mStartCell = nullptr;
 
     if (mRowLine)
     {
         removeItem(mRowLine);
         delete mRowLine;
-        mRowLine = 0;
+        mRowLine = nullptr;
     }
 }
 
@@ -2020,7 +2020,7 @@ Scene::updateGuidelines()
 void
 Scene::generateGuidelinesRows(int spacingW, int spacingH, int columns, int rows, QPointF center)
 {
-    QGraphicsItem* i = 0;
+    QGraphicsItem* i = nullptr;
 
     // generate columns
     for (int c = 0; c <= columns; c++)
@@ -2042,9 +2042,10 @@ Scene::generateGuidelinesRows(int spacingW, int spacingH, int columns, int rows,
 }
 
 void
-Scene::generateGuidelinesRounds(int /*spacingW*/, int spacingH, int columns, int rows, QPointF center)
+Scene::generateGuidelinesRounds(
+    int /*spacingW*/, int spacingH, int columns, int rows, QPointF center)
 {
-    QGraphicsItem* i = 0;
+    QGraphicsItem* i = nullptr;
 
     // generate dividing lines
     for (int c = 0; c <= columns; c++)
@@ -2078,7 +2079,7 @@ Scene::generateGuidelinesTriangles(
     int spacingW, int spacingH, int columns, int rows, QPointF center)
 {
     Q_UNUSED(columns);
-    QGraphicsItem* i = 0;
+    QGraphicsItem* i = nullptr;
 
     // generate the horizontal lines
     for (int r = 0; r < rows; r++)
@@ -2535,10 +2536,10 @@ Scene::propertiesUpdate(QString property, QVariant newValue)
         undoStack()->beginMacro(property);
         foreach (QGraphicsItem* i, selectedItems())
         {
-            Cell* c = 0;
-            Indicator* ind = 0;
-            ItemGroup* g = 0;
-            ChartImage* ci = 0;
+            Cell* c = nullptr;
+            Indicator* ind = nullptr;
+            ItemGroup* g = nullptr;
+            ChartImage* ci = nullptr;
 
             if (i->type() == Cell::Type)
             {
@@ -2706,7 +2707,7 @@ Scene::copy_rec(QGraphicsItem* item, QPointF displacement)
             ChartItemTools::recalculateTransformations(child);
             QGraphicsItem* childCopy = copy_rec(child, displacement);
             g->addToGroup(child);
-            if (childCopy != NULL)
+            if (childCopy)
             {
                 childCopy->setSelected(false);
                 childCopy->setFlag(QGraphicsItem::ItemIsSelectable, false);
@@ -2716,7 +2717,7 @@ Scene::copy_rec(QGraphicsItem* item, QPointF displacement)
 
         return newGroup;
     }
-    return NULL;
+    return nullptr;
 }
 
 void
@@ -2746,7 +2747,7 @@ Scene::copy(int direction)
         foreach (QGraphicsItem* item, list)
         {
             QGraphicsItem* ret = copy_rec(item, QPointF(-rect.width(), 0));
-            if (ret != NULL)
+            if (ret)
                 ret->setSelected(true);
         }
     }
@@ -2755,7 +2756,7 @@ Scene::copy(int direction)
         foreach (QGraphicsItem* item, list)
         {
             QGraphicsItem* ret = copy_rec(item, QPointF(rect.width(), 0));
-            if (ret != NULL)
+            if (ret)
                 ret->setSelected(true);
         }
     }
@@ -2764,7 +2765,7 @@ Scene::copy(int direction)
         foreach (QGraphicsItem* item, list)
         {
             QGraphicsItem* ret = copy_rec(item, QPointF(0, -rect.height()));
-            if (ret != NULL)
+            if (ret)
                 ret->setSelected(true);
         }
     }
@@ -2773,7 +2774,7 @@ Scene::copy(int direction)
         foreach (QGraphicsItem* item, list)
         {
             QGraphicsItem* ret = copy_rec(item, QPointF(0, rect.height()));
-            if (ret != NULL)
+            if (ret)
                 ret->setSelected(true);
         }
     }
@@ -2794,7 +2795,7 @@ Scene::mirror_rec(
     // first we copy the item
     QGraphicsItem* newItem = copy_rec(item, displacement);
 
-    if (newItem != NULL)
+    if (newItem)
     {
         // then we flip it in the selection
         QPointF oldrel = item->sceneBoundingRect().center() - selectionRect.center();
@@ -2847,9 +2848,8 @@ Scene::mirror(int direction)
         foreach (QGraphicsItem* item, list)
         {
             QGraphicsItem* mir = mirror_rec(item, QPointF(-rect.width(), 0), rect, true, false);
-            if (mir == NULL)
-                continue;
-            mir->setSelected(true);
+            if (mir)
+                mir->setSelected(true);
         }
     }
     else if (direction == 2)
@@ -2858,9 +2858,8 @@ Scene::mirror(int direction)
         foreach (QGraphicsItem* item, list)
         {
             QGraphicsItem* mir = mirror_rec(item, QPointF(rect.width(), 0), rect, true, false);
-            if (mir == NULL)
-                continue;
-            mir->setSelected(true);
+            if (mir)
+                mir->setSelected(true);
         }
     }
     else if (direction == 3)
@@ -2869,9 +2868,8 @@ Scene::mirror(int direction)
         foreach (QGraphicsItem* item, list)
         {
             QGraphicsItem* mir = mirror_rec(item, QPointF(0, -rect.height()), rect, false, true);
-            if (mir == NULL)
-                continue;
-            mir->setSelected(true);
+            if (mir)
+                mir->setSelected(true);
         }
     }
     else if (direction == 4)
@@ -2880,9 +2878,8 @@ Scene::mirror(int direction)
         foreach (QGraphicsItem* item, list)
         {
             QGraphicsItem* mir = mirror_rec(item, QPointF(0, rect.height()), rect, false, true);
-            if (mir == NULL)
-                continue;
-            mir->setSelected(true);
+            if (mir)
+                mir->setSelected(true);
         }
     }
     updateSceneRect();
@@ -3543,7 +3540,7 @@ Scene::removeLayer(unsigned int uid)
     // and select another one, if the removed one was currently selected
     QList<ChartLayer*> l = layers();
     if (l.count() == 0)
-        mSelectedLayer = NULL;
+        mSelectedLayer = nullptr;
     else if (mSelectedLayer == layer)
         selectLayer(l.first()->uid());
 
@@ -3568,28 +3565,28 @@ Scene::removeLayerUndoable(unsigned int uid)
         case Cell::Type:
         {
             Cell* c = qgraphicsitem_cast<Cell*>(item);
-            if (c->layer() == layer->uid() && c->parentItem() == NULL)
+            if (c->layer() == layer->uid() && c->parentItem() == nullptr)
                 toRemove.append(c);
             break;
         }
         case Indicator::Type:
         {
             Indicator* c = qgraphicsitem_cast<Indicator*>(item);
-            if (c->layer() == layer->uid() && c->parentItem() == NULL)
+            if (c->layer() == layer->uid() && c->parentItem() == nullptr)
                 toRemove.append(c);
             break;
         }
         case ItemGroup::Type:
         {
             ItemGroup* c = qgraphicsitem_cast<ItemGroup*>(item);
-            if (c->layer() == layer->uid() && c->parentItem() == NULL)
+            if (c->layer() == layer->uid() && c->parentItem() == nullptr)
                 toRemove.append(c);
             break;
         }
         case ChartImage::Type:
         {
             ChartImage* c = qgraphicsitem_cast<ChartImage*>(item);
-            if (c->layer() == layer->uid() && c->parentItem() == NULL)
+            if (c->layer() == layer->uid() && c->parentItem() == nullptr)
                 toRemove.append(c);
             break;
         }
@@ -3608,7 +3605,7 @@ Scene::removeLayerUndoable(unsigned int uid)
 void
 Scene::removeSelectedLayer()
 {
-    if (mSelectedLayer != NULL)
+    if (mSelectedLayer)
     {
         removeLayerUndoable(mSelectedLayer->uid());
     }
@@ -3618,7 +3615,7 @@ void
 Scene::mergeLayer(unsigned int from, unsigned int to)
 {
     // we need to have a layer selected
-    if (mSelectedLayer != NULL)
+    if (mSelectedLayer)
     {
         mUndoStack.beginMacro("merge layers");
         QList<QGraphicsItem*> itemslist = items();
@@ -3676,7 +3673,7 @@ Scene::selectLayer(unsigned int uid)
     clearSelection();
 
     ChartLayer* layer = mLayers[uid];
-    if (layer != NULL)
+    if (layer)
     {
         mSelectedLayer = layer;
     }
@@ -3689,7 +3686,7 @@ Scene::selectLayer(unsigned int uid)
         {
             Cell* c = qgraphicsitem_cast<Cell*>(item);
             c->setFlag(QGraphicsItem::ItemIsSelectable,
-                       c->layer() == layer->uid() && c->parentItem() == NULL);
+                       c->layer() == layer->uid() && c->parentItem() == nullptr);
             c->setSelected(false);
             break;
         }
@@ -3697,7 +3694,7 @@ Scene::selectLayer(unsigned int uid)
         {
             Indicator* c = qgraphicsitem_cast<Indicator*>(item);
             c->setFlag(QGraphicsItem::ItemIsSelectable,
-                       c->layer() == layer->uid() && c->parentItem() == NULL);
+                       c->layer() == layer->uid() && c->parentItem() == nullptr);
             c->setSelected(false);
             break;
         }
@@ -3705,7 +3702,7 @@ Scene::selectLayer(unsigned int uid)
         {
             ItemGroup* c = qgraphicsitem_cast<ItemGroup*>(item);
             c->setFlag(QGraphicsItem::ItemIsSelectable,
-                       c->layer() == layer->uid() && c->parentItem() == NULL);
+                       c->layer() == layer->uid() && c->parentItem() == nullptr);
             c->setSelected(false);
             break;
         }
@@ -3713,7 +3710,7 @@ Scene::selectLayer(unsigned int uid)
         {
             ChartImage* c = qgraphicsitem_cast<ChartImage*>(item);
             c->setFlag(QGraphicsItem::ItemIsSelectable,
-                       c->layer() == layer->uid() && c->parentItem() == NULL);
+                       c->layer() == layer->uid() && c->parentItem() == nullptr);
             c->setSelected(false);
             break;
         }
@@ -3727,7 +3724,7 @@ Scene::selectLayer(unsigned int uid)
 void
 Scene::editedLayer(ChartLayer* layer)
 {
-    if (layer == NULL || mSelectedLayer == NULL)
+    if (!layer || !mSelectedLayer)
         return;
 
     foreach (QGraphicsItem* item, items())
@@ -3741,7 +3738,7 @@ Scene::editedLayer(ChartLayer* layer)
             {
                 c->setVisible(layer->visible());
                 c->setFlag(QGraphicsItem::ItemIsSelectable,
-                           layer->visible() && c->parentItem() == NULL
+                           layer->visible() && c->parentItem() == nullptr
                                && layer->uid() == mSelectedLayer->uid());
             }
             break;
@@ -3753,7 +3750,7 @@ Scene::editedLayer(ChartLayer* layer)
             {
                 c->setVisible(layer->visible());
                 c->setFlag(QGraphicsItem::ItemIsSelectable,
-                           layer->visible() && c->parentItem() == NULL
+                           layer->visible() && c->parentItem() == nullptr
                                && layer->uid() == mSelectedLayer->uid());
             }
             break;
@@ -3765,7 +3762,7 @@ Scene::editedLayer(ChartLayer* layer)
             {
                 c->setVisible(layer->visible());
                 c->setFlag(QGraphicsItem::ItemIsSelectable,
-                           layer->visible() && c->parentItem() == NULL
+                           layer->visible() && c->parentItem() == nullptr
                                && layer->uid() == mSelectedLayer->uid());
             }
             break;
@@ -3777,7 +3774,7 @@ Scene::editedLayer(ChartLayer* layer)
             {
                 c->setVisible(layer->visible());
                 c->setFlag(QGraphicsItem::ItemIsSelectable,
-                           layer->visible() && c->parentItem() == NULL
+                           layer->visible() && c->parentItem() == nullptr
                                && layer->uid() == mSelectedLayer->uid());
             }
             break;
@@ -3792,7 +3789,7 @@ Scene::editedLayer(ChartLayer* layer)
 ChartLayer*
 Scene::getCurrentLayer()
 {
-    if (mSelectedLayer == NULL)
+    if (!mSelectedLayer)
     {
         if (mLayers.count() == 0)
         {
@@ -3805,6 +3802,7 @@ Scene::getCurrentLayer()
         QList<ChartLayer*> l = layers();
         emit layersChanged(l, mSelectedLayer);
     }
+
     return mSelectedLayer;
 }
 
@@ -3812,12 +3810,11 @@ ChartLayer*
 Scene::getLayer(int uid)
 {
     ChartLayer* layer = mLayers[uid];
-    if (layer == NULL)
-    {
-        addLayer("New Layer", uid);
-        return mLayers[uid];
-    }
-    return layer;
+    if (layer)
+        return layer;
+
+    addLayer("New Layer", uid);
+    return mLayers[uid];
 }
 
 void
@@ -3834,7 +3831,7 @@ Scene::refreshLayers()
 \*************************************************/
 
 bool
-Scene::showChartCenter()
+Scene::showChartCenter() const
 {
     return mShowChartCenter;
 }
@@ -3930,7 +3927,7 @@ Scene::setCellPosition(int row, int column, Cell* c, int columns)
 }
 
 QPointF
-Scene::calcPoint(double radius, double angleInDegrees, QPointF origin)
+Scene::calcPoint(double radius, double angleInDegrees, QPointF origin) const
 {
     // Convert from degrees to radians via multiplication by PI/180
     qreal x = (radius * cos(angleInDegrees * M_PI / 180)) + origin.x();
@@ -3941,7 +3938,7 @@ Scene::calcPoint(double radius, double angleInDegrees, QPointF origin)
 void
 Scene::createRow(int row, int columns, QString stitch)
 {
-    Cell* c = 0;
+    Cell* c = nullptr;
 
     QList<Cell*> modelRow;
     for (int i = 0; i < columns; ++i)

@@ -651,7 +651,7 @@ public:
     /**
      * Is there a visible center symbol?
      */
-    bool showChartCenter();
+    bool showChartCenter() const;
 
     void createRoundsChart(int rows, int cols, QString stitch, QSizeF rowSize, int increaseBy);
     void createRow(int row, int columns, QString stitch);
@@ -660,12 +660,13 @@ public:
      * Does the chart have a symbol at all?
      */
     bool
-    hasChartCenter()
+    hasChartCenter() const
     {
         return (mCenterSymbol ? true : false);
     }
+
     QGraphicsItem*
-    chartCenter()
+    chartCenter() const
     {
         return mCenterSymbol;
     }
@@ -685,7 +686,7 @@ protected:
     void setCellPosition(int row, int column, Cell* c, int columns);
 
 private:
-    QPointF calcPoint(double radius, double angleInDegrees, QPointF origin);
+    QPointF calcPoint(double radius, double angleInDegrees, QPointF origin) const;
 
     QGraphicsItem* mCenterSymbol;
     bool mShowChartCenter;
@@ -694,7 +695,7 @@ private:
 public:
     void setGuidelinesType(QString guides);
     Guidelines
-    guidelines()
+    guidelines() const
     {
         return mGuidelines;
     }

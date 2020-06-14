@@ -43,7 +43,7 @@ Stitch::~Stitch()
         mRenderers.value(key)->deleteLater();
 
     delete mPixmap;
-    mPixmap = 0;
+    mPixmap = nullptr;
 }
 
 void
@@ -54,7 +54,7 @@ Stitch::setFile(QString f)
         mFile = f;
 
         delete mPixmap;
-        mPixmap = 0;
+        mPixmap = nullptr;
 
         setupSvgFiles();
 
@@ -163,7 +163,7 @@ QSvgRenderer*
 Stitch::renderSvg(QColor color)
 {
     if (!isSvg())
-        return 0;
+        return nullptr;
 
     if (!mRenderers.contains(color.name()))
     {
@@ -171,7 +171,7 @@ Stitch::renderSvg(QColor color)
     }
 
     if (!mRenderers.value(color.name())->isValid())
-        return 0;
+        return nullptr;
 
     return mRenderers.value(color.name());
 }

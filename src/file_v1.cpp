@@ -140,7 +140,7 @@ File_v1::save(QDataStream* stream)
     *stream << data->toUtf8();
 
     delete data;
-    data = 0;
+    data = nullptr;
 
     return FileFactory::No_Error;
 }
@@ -172,7 +172,7 @@ void
 File_v1::loadChart(QXmlStreamReader* stream)
 {
     MainWindow* mw = qobject_cast<MainWindow*>(mParent->mParent);
-    CrochetTab* tab = 0;
+    CrochetTab* tab = nullptr;
     QString tabName = "", defaultSt = "";
 
     while (!(stream->isEndElement() && stream->name() == "chart"))
@@ -327,7 +327,7 @@ void
 File_v1::loadCell(CrochetTab* tab, QXmlStreamReader* stream)
 {
     Cell* c = new Cell();
-    Stitch* s = 0;
+    Stitch* s = nullptr;
     int row = -1, column = -1;
     int group = -1;
     QString bgColor;
@@ -520,7 +520,7 @@ File_v1::saveCharts(QXmlStreamWriter* stream)
             }
 
             bool isGrouped = c->parentItem() ? true : false;
-            ItemGroup* g = 0;
+            ItemGroup* g = nullptr;
             if (isGrouped)
             {
                 g = qgraphicsitem_cast<ItemGroup*>(c->parentItem());

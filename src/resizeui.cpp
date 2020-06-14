@@ -48,7 +48,7 @@ void
 ResizeUI::updateContent()
 {
     CrochetTab* currentTab = qobject_cast<CrochetTab*>(mTabWidget->currentWidget());
-    if (currentTab != NULL)
+    if (currentTab)
     {
         QRectF sceneRect = currentTab->scene()->sceneRect();
         setContent(-sceneRect.y(), sceneRect.height() + sceneRect.y(), -sceneRect.x(),
@@ -60,7 +60,7 @@ void
 ResizeUI::updateContent(int index)
 {
     CrochetTab* currentTab = qobject_cast<CrochetTab*>(mTabWidget->widget(index));
-    if (currentTab != NULL)
+    if (currentTab)
     {
         QRectF sceneRect = currentTab->scene()->sceneRect();
         setContent(-sceneRect.y(), sceneRect.height() + sceneRect.y(), -sceneRect.x(),
@@ -96,7 +96,7 @@ void
 ResizeUI::clampPressed()
 {
     CrochetTab* currentTab = qobject_cast<CrochetTab*>(mTabWidget->currentWidget());
-    if (currentTab != NULL)
+    if (currentTab)
     {
         QList<QGraphicsItem*> selection = currentTab->scene()->items();
         if (selection.length() == 0)

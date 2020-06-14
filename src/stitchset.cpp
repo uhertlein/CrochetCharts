@@ -320,7 +320,7 @@ StitchSet::saveXmlFile(QString fileName)
     file.close();
 
     delete data;
-    data = 0;
+    data = nullptr;
 }
 
 void
@@ -354,7 +354,7 @@ StitchSet::saveDataFile(QString fileName)
 
     file.close();
     delete data;
-    data = 0;
+    data = nullptr;
 }
 
 void
@@ -410,25 +410,20 @@ StitchSet::saveXmlStitchSet(QXmlStreamWriter* stream, bool saveIcons)
 Stitch*
 StitchSet::findStitch(QString name)
 {
-    Stitch* found = 0;
-
     foreach (Stitch* s, mStitches)
     {
         if (s->name() == name)
-            found = s;
+            return s;
     }
 
-    return found;
+    return nullptr;
 }
 
 bool
 StitchSet::hasStitch(QString name)
 {
     Stitch* s = this->findStitch(name);
-    if (s)
-        return true;
-    else
-        return false;
+    return (s != nullptr);
 }
 
 void

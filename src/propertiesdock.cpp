@@ -221,11 +221,11 @@ PropertiesDock::selectionProperties()
 
     foreach (QGraphicsItem* i, mScene->selectedItems())
     {
-        Cell* c = 0;
-        ItemGroup* g = 0;
-        Indicator* ind = 0;
-        QGraphicsEllipseItem* cc = 0;  // ChartCenter
-        ChartImage* ci = 0;
+        Cell* c = nullptr;
+        ItemGroup* g = nullptr;
+        Indicator* ind = nullptr;
+        QGraphicsEllipseItem* cc = nullptr;  // ChartCenter
+        ChartImage* ci = nullptr;
         if (i->type() == Cell::Type)
         {
             c = qgraphicsitem_cast<Cell*>(i);

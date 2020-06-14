@@ -189,7 +189,7 @@ StitchIconUi::updateIconList(QString fileName)
     if (fileName.isEmpty())
         return;
 
-    QListWidgetItem* item = 0;
+    QListWidgetItem* item = nullptr;
 
     QFileInfo fileInfo(fileName);
     QList<QListWidgetItem*> foundItems

@@ -213,8 +213,9 @@ Updater::httpFinishedInstaller()
             installer->close();
             installer->remove();
             delete installer;
-            installer = 0;
+            installer = nullptr;
         }
+
         instReply->deleteLater();
         return;
     }
@@ -238,7 +239,7 @@ Updater::httpFinishedInstaller()
     }
 
     instReply->deleteLater();
-    instReply = 0;
+    instReply = nullptr;
 
     installer->deleteLater();
 }

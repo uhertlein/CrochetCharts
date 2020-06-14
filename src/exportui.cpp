@@ -280,7 +280,7 @@ ExportUi::generateSelectionList(bool showAll)
     }
     else
     {
-        CrochetTab* tab = 0;
+        CrochetTab* tab = nullptr;
         for (int i = 0; i < count; ++i)
         {
             if (curSelection == mTabWidget->tabText(i))
@@ -429,7 +429,7 @@ ExportUi::setSelection(QString selection)
     }
     else
     {
-        CrochetTab* tab = 0;
+        CrochetTab* tab = nullptr;
         for (int i = 0; i < mTabWidget->count(); ++i)
         {
             if (selection == mTabWidget->tabText(i) || selection == tr("All Charts"))
@@ -631,7 +631,7 @@ ExportUi::exportSvg()
 {
     int tabCount = mTabWidget->count();
 
-    CrochetTab* tab = 0;
+    CrochetTab* tab = nullptr;
 
     for (int i = 0; i < tabCount; ++i)
     {
@@ -721,7 +721,7 @@ ExportUi::updateChartSizeRatio(QString selection)
     }
     else
     {
-        CrochetTab* tab = 0;
+        CrochetTab* tab = nullptr;
         for (int i = 0; i < mTabWidget->count(); ++i)
         {
             if (selection == mTabWidget->tabText(i))

@@ -306,7 +306,7 @@ StitchLibraryUi::addSelected()
         bool selected = set->data(set->index(i, 5), Qt::EditRole).toBool();
         if (selected)
         {
-            Stitch* s = 0;
+            Stitch* s = nullptr;
             s = static_cast<Stitch*>(set->index(i, 0).internalPointer());
             StitchSet* master = StitchLibrary::inst()->masterStitchSet();
 
@@ -510,7 +510,7 @@ StitchLibraryUi::createSet()
             if (msgbox.clickedButton() == overwrite)
             {
                 StitchLibrary::inst()->removeSet(found->name());
-                found = 0;
+                found = nullptr;
             }
             else if (msgbox.clickedButton() == rename)
             {
@@ -587,7 +587,7 @@ StitchLibraryUi::importSet()
         return;
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    StitchSet* set = 0;
+    StitchSet* set = nullptr;
     set = addStitchSet(fileName);
 
     if (set)
@@ -616,10 +616,10 @@ StitchSet*
 StitchLibraryUi::addStitchSet(QString fileName)
 {
     if (fileName.isEmpty())
-        return 0;
+        return nullptr;
 
     if (!QFileInfo(fileName).exists())
-        return 0;
+        return nullptr;
 
     QString dest = StitchLibrary::inst()->nextSetSaveFile();
 
@@ -632,8 +632,7 @@ StitchLibraryUi::addStitchSet(QString fileName)
 
     set->loadDataFile(fileName, dest);
 
-    StitchSet* test = 0;
-    test = StitchLibrary::inst()->findStitchSet(set->name());
+    StitchSet* test = StitchLibrary::inst()->findStitchSet(set->name());
     if (test)
     {
         QMessageBox msgbox;
@@ -671,7 +670,7 @@ StitchLibraryUi::addStitchSet(QString fileName)
         else
         {
             set->deleteLater();
-            return 0;
+            return nullptr;
         }
     }
 

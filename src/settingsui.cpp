@@ -69,7 +69,7 @@ SettingsUi::SettingsUi(QWidget* parent)
 SettingsUi::~SettingsUi()
 {
     delete ui;
-    ui = 0;
+    ui = nullptr;
 }
 
 void

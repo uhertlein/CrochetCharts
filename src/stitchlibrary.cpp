@@ -239,7 +239,7 @@ StitchLibrary::masterHasStitch(Stitch* s)
 Stitch*
 StitchLibrary::findStitch(QString name, bool fromAll)
 {
-    Stitch* s = 0;
+    Stitch* s = nullptr;
 
     s = mMasterSet->findStitch(name);
 
@@ -276,7 +276,7 @@ StitchLibrary::findStitchSet(QString setName)
     if (mOverlay->name() == setName)
         return mOverlay;
 
-    return 0;
+    return nullptr;
 }
 
 QStringList
@@ -367,7 +367,7 @@ StitchSet*
 StitchLibrary::createStitchSet(QString setName)
 {
     if (setName.isEmpty())
-        return 0;
+        return nullptr;
 
     StitchSet* set = new StitchSet(this, false);
     set->setName(setName);

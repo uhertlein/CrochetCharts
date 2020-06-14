@@ -30,7 +30,7 @@
 #include <QDir>
 
 // Global static pointer
-Settings* Settings::sInstance = NULL;
+Settings* Settings::sInstance = nullptr;
 
 // singleton constructor:
 Settings*

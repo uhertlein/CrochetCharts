@@ -247,11 +247,7 @@ Cell::useAlternateRenderer(bool useAlt)
 Cell*
 Cell::copy(Cell* cell)
 {
-    Cell* c = 0;
-    if (!cell)
-        c = new Cell();
-    else
-        c = cell;
+    Cell* c = cell ? cell : new Cell();
 
     c->setStitch(stitch());
     c->setBgColor(bgColor());
