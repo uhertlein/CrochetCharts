@@ -556,8 +556,8 @@ AddLayer::redo()
 \*************************************************/
 RemoveLayer::RemoveLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent)
     : QUndoCommand(parent)
+    , mScene(scene)
     , mLayer(layer)
-    , s(scene)
 {
     setText(QObject::tr("remove layer"));
 }
@@ -565,24 +565,23 @@ RemoveLayer::RemoveLayer(Scene* scene, ChartLayer* layer, QUndoCommand* parent)
 void
 RemoveLayer::undo()
 {
-    s->addLayer(mLayer);
-    s->refreshLayers();
+    mScene->addLayer(mLayer);
+    mScene->refreshLayers();
 }
 
 void
 RemoveLayer::redo()
 {
-    s->removeLayer(mLayer->uid());
-    s->refreshLayers();
+    mScene->removeLayer(mLayer->uid());
+    mScene->refreshLayers();
 }
 
 /*************************************************\
 | SetLayerStitch                                  |
 \*************************************************/
-SetLayerStitch::SetLayerStitch(Scene* scene, Cell* cell, unsigned int layer, QUndoCommand* parent)
+SetLayerStitch::SetLayerStitch(Scene* /*scene*/, Cell* cell, unsigned int layer, QUndoCommand* parent)
     : QUndoCommand(parent)
-    , s(scene)
-    , c(cell)
+    , mCell(cell)
     , mNew(layer)
     , mOld(cell->layer())
 {
@@ -592,25 +591,24 @@ SetLayerStitch::SetLayerStitch(Scene* scene, Cell* cell, unsigned int layer, QUn
 void
 SetLayerStitch::undo()
 {
-    c->setLayer(mOld);
+    mCell->setLayer(mOld);
 }
 
 void
 SetLayerStitch::redo()
 {
-    c->setLayer(mNew);
+    mCell->setLayer(mNew);
 }
 
 /*************************************************\
 | SetLayerIndicator                               |
 \*************************************************/
-SetLayerIndicator::SetLayerIndicator(Scene* scene,
+SetLayerIndicator::SetLayerIndicator(Scene* /*scene*/,
                                      Indicator* cell,
                                      unsigned int layer,
                                      QUndoCommand* parent)
     : QUndoCommand(parent)
-    , s(scene)
-    , c(cell)
+    , mCell(cell)
     , mNew(layer)
     , mOld(cell->layer())
 {
@@ -620,25 +618,24 @@ SetLayerIndicator::SetLayerIndicator(Scene* scene,
 void
 SetLayerIndicator::undo()
 {
-    c->setLayer(mOld);
+    mCell->setLayer(mOld);
 }
 
 void
 SetLayerIndicator::redo()
 {
-    c->setLayer(mNew);
+    mCell->setLayer(mNew);
 }
 
 /*************************************************\
 | SetLayerGroup                                   |
 \*************************************************/
-SetLayerGroup::SetLayerGroup(Scene* scene,
+SetLayerGroup::SetLayerGroup(Scene* /*scene*/,
                              ItemGroup* cell,
                              unsigned int layer,
                              QUndoCommand* parent)
     : QUndoCommand(parent)
-    , s(scene)
-    , c(cell)
+    , mCell(cell)
     , mNew(layer)
     , mOld(cell->layer())
 {
@@ -648,25 +645,24 @@ SetLayerGroup::SetLayerGroup(Scene* scene,
 void
 SetLayerGroup::undo()
 {
-    c->setLayer(mOld);
+    mCell->setLayer(mOld);
 }
 
 void
 SetLayerGroup::redo()
 {
-    c->setLayer(mNew);
+    mCell->setLayer(mNew);
 }
 
 /*************************************************\
 | SetLayerimage                                |
 \*************************************************/
-SetLayerImage::SetLayerImage(Scene* scene,
+SetLayerImage::SetLayerImage(Scene* /*scene*/,
                              ChartImage* cell,
                              unsigned int layer,
                              QUndoCommand* parent)
     : QUndoCommand(parent)
-    , s(scene)
-    , c(cell)
+    , mCell(cell)
     , mNew(layer)
     , mOld(cell->layer())
 {
@@ -676,11 +672,11 @@ SetLayerImage::SetLayerImage(Scene* scene,
 void
 SetLayerImage::undo()
 {
-    c->setLayer(mOld);
+    mCell->setLayer(mOld);
 }
 
 void
 SetLayerImage::redo()
 {
-    c->setLayer(mNew);
+    mCell->setLayer(mNew);
 }

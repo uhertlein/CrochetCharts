@@ -189,6 +189,7 @@ public:
     {
         return mScene;
     }
+
     ChartView*
     view()
     {
@@ -197,16 +198,16 @@ public:
 
 private:
     QPointer<ChartView> mView;
-    Scene* mScene;
-    TextView* mTextView;
+    Scene* mScene = nullptr;
+    TextView* mTextView = nullptr;
 
     QMap<QString, int>* mPatternStitches;
     QMap<QString, QMap<QString, qint64> >* mPatternColors;
 
     QString mName;
 
-    Ui::OptionsBar* ui;
-    RowEditDialog* mRowEditDialog;
+    Ui::OptionsBar* ui = nullptr;
+    RowEditDialog* mRowEditDialog = nullptr;
 
     Scene::ChartStyle mChartStyle;
 };

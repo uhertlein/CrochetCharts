@@ -49,6 +49,7 @@ public:
     {
         return mType;
     }
+
     void
     setType(QString type)
     {
@@ -554,13 +555,13 @@ private:
     /**
      * Used in the mouse*Event()s to keep the mouse movements on the same cell.
      */
-    QGraphicsItem* mCurItem;
+    QGraphicsItem* mCurItem = nullptr;
     QPointF mCellStartPos;
     QPointF mLeftButtonDownPos;
 
     QPainterPath mSelectionPath;
 
-    Indicator* mCurIndicator;
+    Indicator* mCurIndicator = nullptr;
 
     /**
      * The difference between where the user clicked on the object and the (x,y) of the object.
@@ -569,19 +570,19 @@ private:
     qreal mOldAngle;
 
     SelectMode mSelectMode;
-    AbstractSelectionBand* mSelectionBand;
+    AbstractSelectionBand* mSelectionBand = nullptr;
     // QRubberBand *mRubberBand;
     QPointF mRubberBandStart;
 
     QMap<QGraphicsItem*, QPointF> mOldPositions;
 
     // Is the user moving an object.
-    bool mMoving;
-    bool mIsRubberband;
-    bool mHasSelection;
-    bool mSnapTo;
+    bool mMoving = false;
+    bool mIsRubberband = false;
+    bool mHasSelection = false;
+    bool mSnapTo = false;
     // true if multiple items are being edited at the same time
-    bool mMultiEdit;
+    bool mMultiEdit = false;
 
     EditMode mMode;
 
@@ -593,7 +594,7 @@ private:
     QTransform mOldTransform;
     QSizeF mOldSize;
 
-    qreal mAngle;
+    qreal mAngle = 0.0;
     QPointF mPivotPt;
     QPointF mOrigin;
 
@@ -602,7 +603,7 @@ private:
 
     qreal scenePosToAngle(QPointF pt);
 
-    int mRowSpacing;
+    int mRowSpacing = 9;
     QSizeF mDefaultSize;
     QString mDefaultStitch;
 
@@ -615,14 +616,14 @@ private:
 
     QList<Indicator*> mIndicators;
 
-    Cell* mStartCell;
-    Cell* mEndCell;
-    Cell* mPreviousCell;
+    Cell* mStartCell = nullptr;
+    Cell* mEndCell = nullptr;
+    Cell* mPreviousCell = nullptr;
 
     /**
      *The line between the last cell and the mouse.
      */
-    QGraphicsLineItem* mRowLine;
+    QGraphicsLineItem* mRowLine = nullptr;
 
     /**
      *All lines connecting one cell to another cell for rows.
@@ -632,9 +633,9 @@ private:
     QList<ItemGroup*> mGroups;
 
     QHash<unsigned int, ChartLayer*> mLayers;
-    ChartLayer* mSelectedLayer;
+    ChartLayer* mSelectedLayer = nullptr;
 
-    bool mbackgroundIsEnabled;
+    bool mbackgroundIsEnabled = true;
 
     /***
      * Generic private functions
@@ -662,7 +663,7 @@ public:
     bool
     hasChartCenter() const
     {
-        return (mCenterSymbol ? true : false);
+        return mCenterSymbol != nullptr;
     }
 
     QGraphicsItem*
@@ -688,9 +689,9 @@ protected:
 private:
     QPointF calcPoint(double radius, double angleInDegrees, QPointF origin) const;
 
-    QGraphicsItem* mCenterSymbol;
-    bool mShowChartCenter;
-    bool mSnapAngle;
+    QGraphicsItem* mCenterSymbol = nullptr;
+    bool mShowChartCenter = false;
+    bool mSnapAngle = false;
 
 public:
     void setGuidelinesType(QString guides);

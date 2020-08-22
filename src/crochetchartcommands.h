@@ -500,8 +500,8 @@ public:
     }
 
 private:
+    Scene* mScene = nullptr;
     ChartLayer* mLayer = nullptr;
-    Scene* s = nullptr;
 };
 
 class SetLayerStitch : public QUndoCommand
@@ -524,8 +524,7 @@ public:
     }
 
 private:
-    Scene* s = nullptr;
-    Cell* c = nullptr;
+    Cell* mCell = nullptr;
     unsigned int mNew = 0;
     unsigned int mOld = 0;
 };
@@ -550,8 +549,7 @@ public:
     }
 
 private:
-    Scene* s = nullptr;
-    Indicator* c = nullptr;
+    Indicator* mCell = nullptr;
     unsigned int mNew = 0;
     unsigned int mOld = 0;
 };
@@ -576,8 +574,7 @@ public:
     }
 
 private:
-    Scene* s = nullptr;
-    ItemGroup* c = nullptr;
+    ItemGroup* mCell = nullptr;
     unsigned int mNew = 0;
     unsigned int mOld = 0;
 };
@@ -602,8 +599,7 @@ public:
     }
 
 private:
-    Scene* s = nullptr;
-    ChartImage* c = nullptr;
+    ChartImage* mCell = nullptr;
     unsigned int mNew = 0;
     unsigned int mOld = 0;
 };
