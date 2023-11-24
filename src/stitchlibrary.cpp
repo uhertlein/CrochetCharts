@@ -24,12 +24,12 @@
 #include "stitch.h"
 
 #include <QFile>
-
+#include <QDataStream>
 #include <QDebug>
-#include "debug.h"
-
 #include <QDir>
 #include <QFileInfo>
+
+#include "debug.h"
 #include "settings.h"
 
 // Global static pointer
