@@ -20,36 +20,19 @@
  \****************************************************************************/
 #include "appinfo.h"
 
-AppInfo* AppInfo::sInstance = nullptr;
+AppInfo *AppInfo::sInstance = nullptr;
 
 AppInfo::AppInfo()
-    : appName("Crochet Charts")
-    , appOrg("Stitch Works Software")
-    ,
-
-    appOrgDomain("StitchWorksSoftware.com")
-    , appOrgContact("http://StitchWorksSoftware.com/contact")
-    ,
-
-    appVersion(gGIT_VERSION)
-    , appVersionShort(gGIT_VERSION_SHORT)
-    , appBuildInfo(QString(__DATE__) + " " + QString(__TIME__))
-    ,
-
-    emailRegExp(QRegExp("[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,4}"))
-    ,
-
-    liveUpdatePage("http://stitchworkssoftware.com/custom/update.php")
-    , liveUpdatePageVals("?sws_software=%1&sws_version=%2&sws_os=%3&sws_sn=%4&sws_arch=%5&ver=2")
-    ,
-
-    demoString(QObject::tr("Stitch Works Software - Demo Version  -  "))
-    ,
-
-    projectLife(gPROJECT_LIFE)
-    ,
-
-    magicNumber(0x95973530)
-    , magicNumberSet(0x53095973)
-{
-}
+    : appName("Crochet Charts"), appOrg("Stitch Works Software"),
+      appOrgDomain("StitchWorksSoftware.com"),
+      appOrgContact("http://StitchWorksSoftware.com/contact"),
+      appVersion(gGIT_VERSION), appVersionShort(gGIT_VERSION_SHORT),
+      appBuildInfo(QString(__DATE__) + " " + QString(__TIME__)),
+      emailRegExp(
+          QRegExp("[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,4}")),
+      liveUpdatePage("http://stitchworkssoftware.com/custom/update.php"),
+      liveUpdatePageVals("?sws_software=%1&sws_version=%2&sws_os=%3&sws_sn=%4&"
+                         "sws_arch=%5&ver=2"),
+      demoString(QObject::tr("Stitch Works Software - Demo Version  -  ")),
+      projectLife(gPROJECT_LIFE),
+      magicNumber(0x95973530), magicNumberSet(0x53095973) {}

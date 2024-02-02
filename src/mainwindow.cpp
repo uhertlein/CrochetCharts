@@ -195,12 +195,14 @@ MainWindow::checkUpdates(bool silent)
         mUpdater = nullptr;
     }
 
+#if 0 // stitchworkssoftware.com is not responding
     // TODO: check for updates in a separate thread.
     mUpdater = new Updater(this);
     // append the updater to the centralWidget to keep it out of the way of the menus.
     ui->centralWidget->layout()->addWidget(mUpdater);
 
     mUpdater->checkForUpdates(silent);  // check at startup is always silent.
+#endif
 }
 
 void
