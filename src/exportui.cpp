@@ -467,8 +467,10 @@ ExportUi::exportLegendPdf()
     printer->setResolution(resolution);
 
     QSizeF size = scene->sceneRect().size();
-    if (pageToChartSize)
-        printer->setPaperSize(size, QPrinter::Point);
+    if (pageToChartSize) {
+        QPageSize pageSize(size, QPageSize::Point);
+        printer->setPageSize(pageSize);
+    }
 
     p->begin(printer);
 
@@ -577,8 +579,10 @@ ExportUi::exportPdf()
     printer->setResolution(96);
 
     QSizeF size = ui->view->scene()->sceneRect().size();
-    if (pageToChartSize)
-        printer->setPaperSize(size, QPrinter::Point);
+    if (pageToChartSize) {
+        QPageSize pageSize(size, QPageSize::Point);
+        printer->setPageSize(pageSize);
+    }
 
     p->begin(printer);
 

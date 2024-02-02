@@ -377,7 +377,7 @@ MainWindow::reloadLayerContent(QList<ChartLayer*>& layers, ChartLayer* selected)
         else
             item->setCheckState(Qt::Unchecked);
 
-        item->setData(qVariantFromValue((void*)layer), Qt::UserRole + 5);
+        item->setData(QVariant::fromValue((void*)layer), Qt::UserRole + 5);
 
         if (layer == selected)
             selecteditem = item;

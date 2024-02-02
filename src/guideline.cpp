@@ -26,7 +26,7 @@
 Guideline::Guideline(const QRectF& rect, QGraphicsItem* parent, QGraphicsScene* /*scene*/)
     : QGraphicsEllipseItem(rect, parent)
 {
-    setAcceptedMouseButtons(0);
+    setAcceptedMouseButtons(Qt::MouseButtons{});
 }
 
 void

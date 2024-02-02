@@ -114,7 +114,7 @@ void
 ChartView::wheelEvent(QWheelEvent* event)
 {
     if (event->modifiers() & Qt::CTRL)
-        zoom(event->delta());
+        zoom(event->angleDelta().y());
     else
         QGraphicsView::wheelEvent(event);
 }
