@@ -699,6 +699,7 @@ Scene::mousePressEvent(QGraphicsSceneMouseEvent* e)
         // mRubberBand->setGeometry(QRect(mRubberBandStart.toPoint(), QSize()));
         // mRubberBand->show();
 
+        Q_ASSERT(mSelectionBand != nullptr);
         mSelectionBand->reset();
         mSelectionBand->setPosition(mRubberBandStart.toPoint());
         mSelectionBand->moveMouseTo(mRubberBandStart.toPoint());
@@ -3668,6 +3669,7 @@ Scene::selectLayer(unsigned int uid)
         {
         case Cell::Type:
         {
+            Q_ASSERT(layer != nullptr);
             Cell* c = qgraphicsitem_cast<Cell*>(item);
             c->setFlag(QGraphicsItem::ItemIsSelectable,
                        c->layer() == layer->uid() && c->parentItem() == nullptr);
@@ -3676,6 +3678,7 @@ Scene::selectLayer(unsigned int uid)
         }
         case Indicator::Type:
         {
+            Q_ASSERT(layer != nullptr);
             Indicator* c = qgraphicsitem_cast<Indicator*>(item);
             c->setFlag(QGraphicsItem::ItemIsSelectable,
                        c->layer() == layer->uid() && c->parentItem() == nullptr);
@@ -3684,6 +3687,7 @@ Scene::selectLayer(unsigned int uid)
         }
         case ItemGroup::Type:
         {
+            Q_ASSERT(layer != nullptr);
             ItemGroup* c = qgraphicsitem_cast<ItemGroup*>(item);
             c->setFlag(QGraphicsItem::ItemIsSelectable,
                        c->layer() == layer->uid() && c->parentItem() == nullptr);
@@ -3692,6 +3696,7 @@ Scene::selectLayer(unsigned int uid)
         }
         case ChartImage::Type:
         {
+            Q_ASSERT(layer != nullptr);
             ChartImage* c = qgraphicsitem_cast<ChartImage*>(item);
             c->setFlag(QGraphicsItem::ItemIsSelectable,
                        c->layer() == layer->uid() && c->parentItem() == nullptr);

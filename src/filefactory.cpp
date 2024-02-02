@@ -107,6 +107,7 @@ FileFactory::load()
         fileLoad = new File_v2(mMainWindow, this);
     }
 
+    Q_ASSERT(fileLoad != nullptr);
     return fileLoad->load(&in);
 }
 

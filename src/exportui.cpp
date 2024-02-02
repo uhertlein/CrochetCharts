@@ -641,6 +641,7 @@ ExportUi::exportSvg()
         }
     }
 
+    Q_ASSERT(tab != nullptr);
     QRectF rect = tab->scene()->itemsBoundingRect();
 
     QSvgGenerator gen;

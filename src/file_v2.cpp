@@ -190,6 +190,7 @@ File_v2::loadChart(QXmlStreamReader* stream)
         else if (tag == "defaultSt")
         {
             defaultSt = stream->readElementText();
+            Q_ASSERT(tab != nullptr);
             tab->scene()->mDefaultStitch = defaultSt;
         }
         else if (tag == "chartCenter")
@@ -198,6 +199,7 @@ File_v2::loadChart(QXmlStreamReader* stream)
             qreal y = stream->attributes().value("y").toString().toDouble();
 
             stream->readElementText();
+            Q_ASSERT(tab != nullptr);
             tab->blockSignals(true);
             tab->setShowChartCenter(true);
             tab->scene()->mCenterSymbol->setPos(x, y);
@@ -205,12 +207,14 @@ File_v2::loadChart(QXmlStreamReader* stream)
         }
         else if (tag == "grid")
         {
+            Q_ASSERT(tab != nullptr);
             loadGrid(stream, tab->scene());
         }
         else if (tag == "rowSpacing")
         {
             qreal width = stream->attributes().value("width").toString().toDouble();
             qreal height = stream->attributes().value("height").toString().toDouble();
+            Q_ASSERT(tab != nullptr);
             tab->scene()->mDefaultSize.setHeight(height);
             tab->scene()->mDefaultSize.setWidth(width);
 
@@ -218,14 +222,17 @@ File_v2::loadChart(QXmlStreamReader* stream)
         }
         else if (tag == "cell")
         {
+            Q_ASSERT(tab != nullptr);
             loadCell(tab, stream);
         }
         else if (tag == "indicator")
         {
+            Q_ASSERT(tab != nullptr);
             loadIndicator(tab, stream);
         }
         else if (tag == "chartimage")
         {
+            Q_ASSERT(tab != nullptr);
             loadChartImage(tab, stream);
         }
         else if (tag == "group")
@@ -233,6 +240,7 @@ File_v2::loadChart(QXmlStreamReader* stream)
             stream->readElementText().toInt();
             // create an empty group for future use.
             QList<QGraphicsItem*> items;
+            Q_ASSERT(tab != nullptr);
             tab->scene()->group(items);
         }
         else if (tag == "guidelines")
@@ -243,6 +251,7 @@ File_v2::loadChart(QXmlStreamReader* stream)
             int cellHeight = stream->attributes().value("cellHeight").toString().toInt();
             int cellWidth = stream->attributes().value("cellWidth").toString().toInt();
 
+            Q_ASSERT(tab != nullptr);
             tab->scene()->mGuidelines.setType(type);
             tab->scene()->mGuidelines.setColumns(columns);
             tab->scene()->mGuidelines.setRows(rows);
@@ -258,6 +267,7 @@ File_v2::loadChart(QXmlStreamReader* stream)
             QString name = stream->attributes().value("name").toString();
             unsigned int uid = stream->attributes().value("uid").toString().toUInt();
             bool visible = stream->attributes().value("visible").toString().toInt();
+            Q_ASSERT(tab != nullptr);
             tab->scene()->addLayer(name, uid);
             tab->scene()->getLayer(uid)->setVisible(visible);
             tab->scene()->selectLayer(uid);
@@ -271,6 +281,7 @@ File_v2::loadChart(QXmlStreamReader* stream)
             qreal height = stream->attributes().value("height").toString().toDouble();
 
             QRectF size = QRectF(x, y, width, height);
+            Q_ASSERT(tab != nullptr);
             tab->scene()->setSceneRect(size);
 
             stream->readElementText();
@@ -282,6 +293,7 @@ File_v2::loadChart(QXmlStreamReader* stream)
     }
 
     // refresh the layers so the visibility and selectability of items is correct
+    Q_ASSERT(tab != nullptr);
     tab->scene()->refreshLayers();
 
     tab->updateRows();

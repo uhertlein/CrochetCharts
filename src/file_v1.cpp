@@ -195,6 +195,7 @@ File_v1::loadChart(QXmlStreamReader* stream)
         else if (tag == "defaultSt")
         {
             defaultSt = stream->readElementText();
+            Q_ASSERT(tab != nullptr);
             tab->scene()->mDefaultStitch = defaultSt;
         }
         else if (tag == "chartCenter")
@@ -203,6 +204,7 @@ File_v1::loadChart(QXmlStreamReader* stream)
             qreal y = stream->attributes().value("y").toString().toDouble();
 
             stream->readElementText();
+            Q_ASSERT(tab != nullptr);
             tab->blockSignals(true);
             tab->setShowChartCenter(true);
             tab->scene()->mCenterSymbol->setPos(x, y);
@@ -210,21 +212,25 @@ File_v1::loadChart(QXmlStreamReader* stream)
         }
         else if (tag == "grid")
         {
+            Q_ASSERT(tab != nullptr);
             loadGrid(stream, tab->scene());
         }
         else if (tag == "rowSpacing")
         {
             qreal width = stream->attributes().value("width").toString().toDouble();
             qreal height = stream->attributes().value("height").toString().toDouble();
+            Q_ASSERT(tab != nullptr);
             tab->scene()->mDefaultSize.setHeight(height);
             tab->scene()->mDefaultSize.setWidth(width);
         }
         else if (tag == "cell")
         {
+            Q_ASSERT(tab != nullptr);
             loadCell(tab, stream);
         }
         else if (tag == "indicator")
         {
+            Q_ASSERT(tab != nullptr);
             loadIndicator(tab, stream);
         }
         else if (tag == "group")
@@ -232,10 +238,12 @@ File_v1::loadChart(QXmlStreamReader* stream)
             stream->readElementText().toInt();
             // create an empty group for future use.
             QList<QGraphicsItem*> items;
+            Q_ASSERT(tab != nullptr);
             tab->scene()->group(items);
         }
     }
 
+    Q_ASSERT(tab != nullptr);
     tab->updateRows();
     int index = mParent->mTabWidget->indexOf(tab);
     mParent->mTabWidget->setTabText(index, tabName);
