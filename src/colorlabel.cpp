@@ -53,7 +53,7 @@ void
 ColorLabel::setText(const QString& text)
 {
     QPainter p(this);
-    int w = p.fontMetrics().width(text);
+    int w = p.fontMetrics().horizontalAdvance(text);
     setMinimumWidth(w + 4);
     QLabel::setText(text);
 }
@@ -115,7 +115,7 @@ ColorLabel::paintEvent(QPaintEvent* event)
     painter.setPen(QPen(QColor(Qt::black)));
     painter.setFont(font);
 
-    int txtWidth = painter.fontMetrics().width(text());
+    int txtWidth = painter.fontMetrics().horizontalAdvance(text());
     int txtHeight = painter.fontMetrics().height();
 
     QRectF rect = QRectF((width() - txtWidth) / 2 - 2, (height() - txtHeight) / 2 - 2, txtWidth + 4,
